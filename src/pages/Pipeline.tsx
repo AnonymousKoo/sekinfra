@@ -1,5 +1,6 @@
 import { useClient } from "@/lib/client-context";
-import { leadsByClient, stageLabels, PipelineStage, timeAgo } from "@/lib/mock-data";
+import { stageLabels, PipelineStage, timeAgo } from "@/lib/mock-data";
+import { useLiveLeads } from "@/lib/use-live-leads";
 import { PageHeader } from "@/components/page-header";
 import { useState } from "react";
 import { ArrowRight } from "lucide-react";
@@ -10,7 +11,7 @@ const stages: PipelineStage[] = ["new", "paid", "intake", "emailed", "opened", "
 
 export default function Pipeline() {
   const { client } = useClient();
-  const leads = leadsByClient[client.id];
+  const { data: leads = [] } = useLiveLeads(client.id);
   const [selected, setSelected] = useState<PipelineStage | null>(null);
 
   const stageData = stages.map((stage, i) => {

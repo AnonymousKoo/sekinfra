@@ -1,12 +1,12 @@
 import { useClient } from "@/lib/client-context";
-import { leadsByClient } from "@/lib/mock-data";
+import { useLiveLeads } from "@/lib/use-live-leads";
 import { PageHeader } from "@/components/page-header";
 import { Sparkles, AlertCircle, TrendingUp, ArrowRight } from "lucide-react";
 import { useMemo } from "react";
 
 export default function Analytics() {
   const { client } = useClient();
-  const leads = leadsByClient[client.id];
+  const { data: leads = [] } = useLiveLeads(client.id);
 
   const sources = useMemo(() => {
     const groups: Record<string, { total: number; booked: number }> = {};

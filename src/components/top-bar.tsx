@@ -1,12 +1,15 @@
 import { useClient } from "@/lib/client-context";
-import { Check, ChevronsUpDown, Search, Bell, Command } from "lucide-react";
+import { useAuth } from "@/lib/auth-context";
+import { Check, ChevronsUpDown, Search, Bell, Command, LogOut } from "lucide-react";
 import { useState } from "react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 
 export function TopBar() {
   const { client, setClientId, clients } = useClient();
+  const { user, signOut } = useAuth();
   const [open, setOpen] = useState(false);
+  const initials = (user?.email ?? "OP").slice(0, 2).toUpperCase();
 
   return (
     <header className="sticky top-0 z-30 h-16 border-b border-border bg-background/80 backdrop-blur-xl">
@@ -69,8 +72,16 @@ export function TopBar() {
           <Bell className="h-4 w-4 text-muted-foreground" />
           <span className="absolute top-1.5 right-1.5 h-1.5 w-1.5 rounded-full bg-primary" />
         </button>
+        <button
+          onClick={() => signOut()}
+          title={user?.email ?? "Sign out"}
+          className="flex h-8 items-center gap-1.5 rounded-md border border-border bg-card/60 px-2.5 text-[11px] text-muted-foreground hover:bg-card hover:text-foreground"
+        >
+          <LogOut className="h-3.5 w-3.5" />
+          <span className="hidden sm:inline">Sign out</span>
+        </button>
         <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary-glow text-[11px] font-semibold text-primary-foreground font-display">
-          OP
+          {initials}
         </div>
       </div>
     </header>

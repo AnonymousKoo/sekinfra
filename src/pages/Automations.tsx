@@ -1,5 +1,5 @@
 import { useClient } from "@/lib/client-context";
-import { leadsByClient, activityByClient } from "@/lib/mock-data";
+import { useLiveLeads } from "@/lib/use-live-leads";
 import { PageHeader } from "@/components/page-header";
 import { MetricCard } from "@/components/metric-card";
 import { Mail, Eye, MousePointerClick, Send, AlertTriangle, Clock, Users, Workflow } from "lucide-react";
@@ -7,15 +7,14 @@ import { Link } from "react-router-dom";
 
 export default function Automations() {
   const { client } = useClient();
-  const events = activityByClient[client.id];
-  const leads = leadsByClient[client.id];
+  const { data: leads = [] } = useLiveLeads(client.id);
 
-  const sent = events.filter(e => e.type === "email_sent").length + Math.floor(leads.length * 0.6);
-  const opens = events.filter(e => e.type === "email_opened").length + Math.floor(sent * 0.42);
-  const clicks = events.filter(e => e.type === "link_clicked").length + Math.floor(opens * 0.31);
-  const followups = events.filter(e => e.type === "followup_triggered").length + Math.floor(leads.length * 0.18);
-  const failed = events.filter(e => e.type === "automation_failed").length + 2;
-  const waiting = leads.filter(l => l.status === "needs_followup").length;
+  const sent = leads.filter(l => ["emailed","opened","clicked","booked"].includes(l.stage)).length;
+  const opens = leads.filter(l => ["opened","clicked","booked"].includes(l.stage)).length;
+  const clicks = leads.filter(l => ["clicked","booked"].includes(l.stage)).length;
+  const followups = leads.filter(l => l.status === "needs_followup").length;
+  const failed = leads.filter(l => l.status === "failed").length;
+  const waiting = followups;
 
   const integrations = [
     { name: "Intake Webhook", desc: "Receives form submissions", status: "Active" },
@@ -39,8 +38,8 @@ export default function Automations() {
 
       <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
         <MetricCard label="Emails Sent" value={sent} icon={Mail} delta={9} />
-        <MetricCard label="Email Opens" value={opens} icon={Eye} hint={`${Math.round(opens / sent * 100)}% open rate`} />
-        <MetricCard label="Link Clicks" value={clicks} icon={MousePointerClick} hint={`${Math.round(clicks / opens * 100)}% click-through`} />
+        <MetricCard label="Email Opens" value={opens} icon={Eye} hint={`${sent ? Math.round(opens / sent * 100) : 0}% open rate`} />
+        <MetricCard label="Link Clicks" value={clicks} icon={MousePointerClick} hint={`${opens ? Math.round(clicks / opens * 100) : 0}% click-through`} />
         <MetricCard label="Follow-ups Triggered" value={followups} icon={Send} accent="warning" />
         <MetricCard label="Failed Actions" value={failed} icon={AlertTriangle} accent="danger" delta={-3} />
         <MetricCard label="Avg. Time to Book" value="14h" icon={Clock} hint="from payment received" />
