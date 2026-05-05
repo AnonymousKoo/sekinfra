@@ -38,8 +38,8 @@ export default function Automations() {
 
       <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
         <MetricCard label="Emails Sent" value={sent} icon={Mail} delta={9} />
-        <MetricCard label="Email Opens" value={opens} icon={Eye} hint={`${Math.round(opens / sent * 100)}% open rate`} />
-        <MetricCard label="Link Clicks" value={clicks} icon={MousePointerClick} hint={`${Math.round(clicks / opens * 100)}% click-through`} />
+        <MetricCard label="Email Opens" value={opens} icon={Eye} hint={`${sent ? Math.round(opens / sent * 100) : 0}% open rate`} />
+        <MetricCard label="Link Clicks" value={clicks} icon={MousePointerClick} hint={`${opens ? Math.round(clicks / opens * 100) : 0}% click-through`} />
         <MetricCard label="Follow-ups Triggered" value={followups} icon={Send} accent="warning" />
         <MetricCard label="Failed Actions" value={failed} icon={AlertTriangle} accent="danger" delta={-3} />
         <MetricCard label="Avg. Time to Book" value="14h" icon={Clock} hint="from payment received" />
