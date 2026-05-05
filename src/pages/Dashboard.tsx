@@ -1,6 +1,5 @@
 import { useClient } from "@/lib/client-context";
 import {
-  activityByClient,
   getMetrics,
   getStageCounts,
   getPaidNotBooked,
@@ -9,6 +8,7 @@ import {
   stageLabels,
   timeAgo,
 } from "@/lib/mock-data";
+import { useLiveLeads } from "@/lib/use-live-leads";
 import { MetricCard } from "@/components/metric-card";
 import { PageHeader } from "@/components/page-header";
 import { StatusBadge } from "@/components/status-badge";
@@ -27,10 +27,10 @@ import {
   ArrowRight,
   RefreshCw,
   Zap,
-  AlertCircle,
+  Loader2,
+  WifiOff,
 } from "lucide-react";
 import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
 
 function formatCurrency(n: number) {
   return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(n);
@@ -38,12 +38,16 @@ function formatCurrency(n: number) {
 
 export default function Dashboard() {
   const { client } = useClient();
-  const m = getMetrics(client.id);
-  const stages = getStageCounts(client.id);
-  const recent = activityByClient[client.id].slice(0, 5);
-  const paidNotBooked = getPaidNotBooked(client.id);
-  const clicked = getClickedNotScheduled(client.id);
-  const followups = getNeedsFollowup(client.id);
+  const { data: leads = [], isLoading, isError, error, dataUpdatedAt } = useLiveLeads(client.id);
+  const m = getMetrics(leads);
+  const stages = getStageCounts(leads);
+  const paidNotBooked = getPaidNotBooked(leads);
+  const clicked = getClickedNotScheduled(leads);
+  const followups = getNeedsFollowup(leads);
+  const recent = [...leads]
+    .sort((a, b) => new Date(b.lastActivity).getTime() - new Date(a.lastActivity).getTime())
+    .slice(0, 5)
+    .map(l => ({ id: l.id, leadName: l.name, message: `is at stage "${stageLabels[l.stage]}"`, timestamp: l.lastActivity }));
 
   const insights = [
     {
