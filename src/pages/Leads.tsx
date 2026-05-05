@@ -1,5 +1,6 @@
 import { useClient } from "@/lib/client-context";
-import { leadsByClient, statusLabels, timeAgo, PipelineStage, stageLabels } from "@/lib/mock-data";
+import { statusLabels, timeAgo, PipelineStage, stageLabels } from "@/lib/mock-data";
+import { useLiveLeads } from "@/lib/use-live-leads";
 import { PageHeader } from "@/components/page-header";
 import { StatusBadge } from "@/components/status-badge";
 import { useMemo, useState } from "react";
@@ -8,7 +9,7 @@ import { Link } from "react-router-dom";
 
 export default function Leads() {
   const { client } = useClient();
-  const leads = leadsByClient[client.id];
+  const { data: leads = [] } = useLiveLeads(client.id);
   const [q, setQ] = useState("");
   const [stage, setStage] = useState<PipelineStage | "all">("all");
   const [type, setType] = useState<string>("all");

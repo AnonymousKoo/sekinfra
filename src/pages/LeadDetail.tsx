@@ -1,6 +1,7 @@
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { useClient } from "@/lib/client-context";
-import { leadsByClient, activityByClient, timeAgo, statusLabels, ActivityEvent } from "@/lib/mock-data";
+import { timeAgo, statusLabels, ActivityEvent } from "@/lib/mock-data";
+import { useLiveLeads } from "@/lib/use-live-leads";
 import { PageHeader } from "@/components/page-header";
 import { StatusBadge } from "@/components/status-badge";
 import { ArrowLeft, Mail, Phone, MapPin, Briefcase, Send, CheckCircle2, FileText, ExternalLink, FileCheck, CreditCard, Bell, MousePointerClick, Eye, CalendarCheck, UserPlus } from "lucide-react";
@@ -23,7 +24,8 @@ export default function LeadDetail() {
   const { id } = useParams();
   const { client } = useClient();
   const navigate = useNavigate();
-  const lead = leadsByClient[client.id].find(l => l.id === id);
+  const { data: leads = [] } = useLiveLeads(client.id);
+  const lead = leads.find(l => l.id === id);
 
   if (!lead) {
     return (
@@ -34,10 +36,8 @@ export default function LeadDetail() {
     );
   }
 
-  // Build a synthetic timeline from the activity feed + lead state
-  const events = activityByClient[client.id]
-    .filter(e => e.leadId === lead.id)
-    .slice(0, 8);
+  // Build a synthetic timeline from the lead state
+  const events: { type: ActivityEvent["type"]; message: string; timestamp: string }[] = [];
 
   const fallback: { type: ActivityEvent["type"]; label: string; iso: string }[] = [
     { type: "lead_captured", label: "Lead captured from " + lead.source, iso: lead.createdAt },
