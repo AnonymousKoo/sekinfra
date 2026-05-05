@@ -1,9 +1,10 @@
 import { useClient } from "@/lib/client-context";
-import { activityByClient, ActivityEvent, timeAgo } from "@/lib/mock-data";
+import { ActivityEvent, timeAgo } from "@/lib/mock-data";
+import { useLiveLeads } from "@/lib/use-live-leads";
 import { PageHeader } from "@/components/page-header";
 import { Link } from "react-router-dom";
 import { UserPlus, CreditCard, FileCheck, Mail, Eye, MousePointerClick, CalendarCheck, Send, AlertTriangle, FileText, Bell } from "lucide-react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { cn } from "@/lib/utils";
 
 const map: Record<ActivityEvent["type"], { icon: any; tone: string }> = {
@@ -20,11 +21,26 @@ const map: Record<ActivityEvent["type"], { icon: any; tone: string }> = {
   automation_failed: { icon: AlertTriangle, tone: "text-status-failed" },
 };
 
+const stageToType: Record<string, ActivityEvent["type"]> = {
+  new: "lead_captured", paid: "payment_received", intake: "intake_submitted",
+  emailed: "email_sent", opened: "email_opened", clicked: "link_clicked", booked: "appointment_booked",
+};
+
 const filters = ["all", "lead_captured", "payment_received", "appointment_booked", "automation_failed"] as const;
 
 export default function ActivityFeed() {
   const { client } = useClient();
-  const events = activityByClient[client.id];
+  const { data: leads = [] } = useLiveLeads(client.id);
+  const events: ActivityEvent[] = useMemo(() =>
+    leads
+      .map(l => ({
+        id: l.id, clientId: l.clientId, leadId: l.id, leadName: l.name,
+        type: stageToType[l.stage] ?? "lead_captured",
+        message: `is at "${l.stage}" stage`, timestamp: l.lastActivity,
+      }))
+      .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()),
+    [leads],
+  );
   const [filter, setFilter] = useState<typeof filters[number]>("all");
   const visible = filter === "all" ? events : events.filter(e => e.type === filter);
 

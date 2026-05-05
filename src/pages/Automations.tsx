@@ -1,5 +1,5 @@
 import { useClient } from "@/lib/client-context";
-import { leadsByClient, activityByClient } from "@/lib/mock-data";
+import { useLiveLeads } from "@/lib/use-live-leads";
 import { PageHeader } from "@/components/page-header";
 import { MetricCard } from "@/components/metric-card";
 import { Mail, Eye, MousePointerClick, Send, AlertTriangle, Clock, Users, Workflow } from "lucide-react";
@@ -7,15 +7,14 @@ import { Link } from "react-router-dom";
 
 export default function Automations() {
   const { client } = useClient();
-  const events = activityByClient[client.id];
-  const leads = leadsByClient[client.id];
+  const { data: leads = [] } = useLiveLeads(client.id);
 
-  const sent = events.filter(e => e.type === "email_sent").length + Math.floor(leads.length * 0.6);
-  const opens = events.filter(e => e.type === "email_opened").length + Math.floor(sent * 0.42);
-  const clicks = events.filter(e => e.type === "link_clicked").length + Math.floor(opens * 0.31);
-  const followups = events.filter(e => e.type === "followup_triggered").length + Math.floor(leads.length * 0.18);
-  const failed = events.filter(e => e.type === "automation_failed").length + 2;
-  const waiting = leads.filter(l => l.status === "needs_followup").length;
+  const sent = leads.filter(l => ["emailed","opened","clicked","booked"].includes(l.stage)).length;
+  const opens = leads.filter(l => ["opened","clicked","booked"].includes(l.stage)).length;
+  const clicks = leads.filter(l => ["clicked","booked"].includes(l.stage)).length;
+  const followups = leads.filter(l => l.status === "needs_followup").length;
+  const failed = leads.filter(l => l.status === "failed").length;
+  const waiting = followups;
 
   const integrations = [
     { name: "Intake Webhook", desc: "Receives form submissions", status: "Active" },
