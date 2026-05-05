@@ -213,8 +213,8 @@ export function timeAgo(iso: string): string {
   return `${d}d ago`;
 }
 
-export function getMetrics(clientId: string) {
-  const leads = leadsByClient[clientId] ?? [];
+export function getMetrics(input: string | Lead[]) {
+  const leads = Array.isArray(input) ? input : (leadsByClient[input] ?? []);
   const today = leads.filter(l => Date.now() - new Date(l.createdAt).getTime() < 24 * 3600_000);
   const paid = leads.filter(l => l.payment === "paid");
   const booked = leads.filter(l => l.stage === "booked");
@@ -248,8 +248,8 @@ export function getMetrics(clientId: string) {
   };
 }
 
-export function getStageCounts(clientId: string) {
-  const leads = leadsByClient[clientId] ?? [];
+export function getStageCounts(input: string | Lead[]) {
+  const leads = Array.isArray(input) ? input : (leadsByClient[input] ?? []);
   return stageFlow.map((stage, i) => {
     const count = leads.filter(l => stageFlow.indexOf(l.stage) >= i).length;
     return { stage, count };
@@ -257,24 +257,24 @@ export function getStageCounts(clientId: string) {
 }
 
 // Priority action queues
-export function getPaidNotBooked(clientId: string): Lead[] {
-  const leads = leadsByClient[clientId] ?? [];
+export function getPaidNotBooked(input: string | Lead[]): Lead[] {
+  const leads = Array.isArray(input) ? input : (leadsByClient[input] ?? []);
   return leads
     .filter(l => l.payment === "paid" && l.intake === "complete" && l.stage !== "booked")
     .sort((a, b) => new Date(a.lastActivity).getTime() - new Date(b.lastActivity).getTime())
     .slice(0, 4);
 }
 
-export function getClickedNotScheduled(clientId: string): Lead[] {
-  const leads = leadsByClient[clientId] ?? [];
+export function getClickedNotScheduled(input: string | Lead[]): Lead[] {
+  const leads = Array.isArray(input) ? input : (leadsByClient[input] ?? []);
   return leads
     .filter(l => l.stage === "clicked")
     .sort((a, b) => new Date(b.lastActivity).getTime() - new Date(a.lastActivity).getTime())
     .slice(0, 4);
 }
 
-export function getNeedsFollowup(clientId: string): Array<Lead & { reason: string; nextAction: string }> {
-  const leads = leadsByClient[clientId] ?? [];
+export function getNeedsFollowup(input: string | Lead[]): Array<Lead & { reason: string; nextAction: string }> {
+  const leads = Array.isArray(input) ? input : (leadsByClient[input] ?? []);
   return leads
     .filter(l => l.status === "needs_followup")
     .slice(0, 4)
