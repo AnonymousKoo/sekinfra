@@ -95,7 +95,18 @@ export default function Dashboard() {
         }
       />
 
-      {/* ============== PRIORITY ACTIONS ============== */}
+      {(isLoading || isError) && (
+        <div className={`mb-5 flex items-center gap-2 rounded-md border px-3 py-2 text-[12px] ${isError ? "border-status-failed/30 bg-status-failed/10 text-status-failed" : "border-border/60 bg-surface/40 text-muted-foreground"}`}>
+          {isError ? <WifiOff className="h-3.5 w-3.5" /> : <Loader2 className="h-3.5 w-3.5 animate-spin text-primary" />}
+          <span className="truncate">
+            {isError
+              ? `Live data unavailable from n8n. ${(error as Error)?.message ?? ""}`
+              : "Loading live leads from n8n…"}
+          </span>
+          {!isError && dataUpdatedAt > 0 && <span className="ml-auto text-[10.5px] tabular">last sync {timeAgo(new Date(dataUpdatedAt).toISOString())}</span>}
+        </div>
+      )}
+
       <section className="mb-8">
         <div className="mb-3 flex items-end justify-between">
           <div>
