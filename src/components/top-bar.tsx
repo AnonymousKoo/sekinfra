@@ -1,12 +1,15 @@
 import { useClient } from "@/lib/client-context";
-import { Check, ChevronsUpDown, Search, Bell, Command } from "lucide-react";
+import { useAuth } from "@/lib/auth-context";
+import { Check, ChevronsUpDown, Search, Bell, Command, LogOut } from "lucide-react";
 import { useState } from "react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 
 export function TopBar() {
   const { client, setClientId, clients } = useClient();
+  const { user, signOut } = useAuth();
   const [open, setOpen] = useState(false);
+  const initials = (user?.email ?? "OP").slice(0, 2).toUpperCase();
 
   return (
     <header className="sticky top-0 z-30 h-16 border-b border-border bg-background/80 backdrop-blur-xl">
