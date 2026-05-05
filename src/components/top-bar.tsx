@@ -72,8 +72,16 @@ export function TopBar() {
           <Bell className="h-4 w-4 text-muted-foreground" />
           <span className="absolute top-1.5 right-1.5 h-1.5 w-1.5 rounded-full bg-primary" />
         </button>
+        <button
+          onClick={() => signOut()}
+          title={user?.email ?? "Sign out"}
+          className="flex h-8 items-center gap-1.5 rounded-md border border-border bg-card/60 px-2.5 text-[11px] text-muted-foreground hover:bg-card hover:text-foreground"
+        >
+          <LogOut className="h-3.5 w-3.5" />
+          <span className="hidden sm:inline">Sign out</span>
+        </button>
         <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary-glow text-[11px] font-semibold text-primary-foreground font-display">
-          OP
+          {initials}
         </div>
       </div>
     </header>
