@@ -20,41 +20,53 @@ function deriveStatus(stage: PipelineStage, hoursSince: number): LeadStatus {
   return ({ new: "new", paid: "paid", intake: "intake_complete", emailed: "email_sent", opened: "opened", clicked: "clicked", booked: "booked" } as const)[stage];
 }
 
-function normalizeLead(raw: any, clientId: string, idx: number): Lead {
-  const payment = (pick<string>(raw, ["payment_status", "payment", "paid"], "unpaid")?.toString().toLowerCase() === "paid" || raw.paid === true) ? "paid" : "unpaid";
-  const intake = (pick<string>(raw, ["intake_status", "intake"], "pending")?.toString().toLowerCase() === "complete" || raw.intake === true) ? "complete" : "pending";
-  const booking = pick<string>(raw, ["booking_status", "booking"], "none")?.toString().toLowerCase();
-  const bookingStatus: BookingStatus = ["scheduled", "completed", "no_show"].includes(booking) ? booking as BookingStatus : "none";
+function mapStageName(name: string): PipelineStage {
+  const n = (name || "").toLowerCase().trim().replace(/[\s-]+/g, "_");
+  if (stageFlow.includes(n as PipelineStage)) return n as PipelineStage;
+  if (n.includes("book")) return "booked";
+  if (n.includes("click")) return "clicked";
+  if (n.includes("open")) return "opened";
+  if (n.includes("email") || n.includes("sent")) return "emailed";
+  if (n.includes("intake")) return "intake";
+  if (n.includes("paid") || n.includes("payment")) return "paid";
+  return "new";
+}
 
-  let stage = pick<string>(raw, ["stage", "pipeline_stage"], "")?.toString().toLowerCase() as PipelineStage;
-  if (!stageFlow.includes(stage)) {
-    if (bookingStatus === "scheduled" || bookingStatus === "completed") stage = "booked";
-    else if (intake === "complete") stage = "intake";
-    else if (payment === "paid") stage = "paid";
-    else stage = "new";
-  }
-  const lastActivity = pick<string>(raw, ["last_activity", "updated_at", "lastActivity"], new Date().toISOString());
-  const createdAt = pick<string>(raw, ["created_at", "createdAt", "created"], lastActivity);
+function normalizeLead(raw: any, clientId: string, idx: number): Lead {
+  const stageName = pick<string>(raw, ["pipeline_stages.name", "pipeline_stage_name", "stage_name", "stage"], "");
+  const stage = mapStageName(stageName);
+
+  const payment: PaymentStatus = stageFlow.indexOf(stage) >= stageFlow.indexOf("paid") ? "paid" : "unpaid";
+  const intake: IntakeStatus = stageFlow.indexOf(stage) >= stageFlow.indexOf("intake") ? "complete" : "pending";
+  const bookingStatus: BookingStatus = stage === "booked" ? "scheduled" : "none";
+
+  const lastActivity = pick<string>(raw, ["last_activity_at", "last_activity", "updated_at"], new Date().toISOString());
+  const createdAt = pick<string>(raw, ["stage_entered_at", "created_at", "createdAt"], lastActivity);
   const hoursSince = Math.max(0, (Date.now() - new Date(lastActivity).getTime()) / 3600_000);
 
-  const fullName = pick<string>(raw, ["name", "full_name", "lead_name"], "Unknown Lead");
+  const name = pick<string>(raw, ["clients.name", "client_name", "name", "full_name"], "Unknown Lead");
+  const email = pick<string>(raw, ["clients.email", "client_email", "email"], "");
+  const followups = pick<number>(raw, ["followup_count"], 0);
+  const baseStatus = deriveStatus(stage, hoursSince);
+  const status: LeadStatus = followups > 0 && stage !== "booked" ? "needs_followup" : baseStatus;
+
   return {
     id: pick<string>(raw, ["id", "lead_id", "uuid"], `${clientId}-N${idx}`),
     clientId,
-    name: fullName,
-    email: pick<string>(raw, ["email", "email_address"], ""),
+    name,
+    email,
     phone: pick<string>(raw, ["phone", "phone_number"], ""),
     location: pick<string>(raw, ["location", "city"], ""),
     businessType: pick<string>(raw, ["business_type", "industry", "type"], "—"),
     source: pick<string>(raw, ["source", "lead_source", "utm_source"], "Direct"),
-    payment: payment as PaymentStatus,
-    intake: intake as IntakeStatus,
+    payment,
+    intake,
     booking: bookingStatus,
     stage,
-    status: deriveStatus(stage, hoursSince),
+    status,
     lastActivity,
     createdAt,
-    value: pick<number | undefined>(raw, ["value", "amount", "ticket"], undefined),
+    value: pick<number | undefined>(raw, ["pipeline_value", "value", "amount"], undefined),
   };
 }
 
