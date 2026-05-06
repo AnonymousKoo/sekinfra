@@ -15,7 +15,6 @@ import {
   Zap,
   Loader2,
   WifiOff,
-  Eye,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
