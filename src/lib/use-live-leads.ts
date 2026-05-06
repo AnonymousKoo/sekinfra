@@ -3,6 +3,8 @@ import { Lead, LeadStatus, PipelineStage, PaymentStatus, IntakeStatus, BookingSt
 
 const DASHBOARD_PROXY_URL =
   "https://gnuqaefotwgkwurjpyik.supabase.co/functions/v1/dashboard-proxy";
+const DASHBOARD_PROXY_ANON_KEY =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdudXFhZWZvdHdna3d1cmpweWlrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc2Mzk5NDMsImV4cCI6MjA5MzIxNTk0M30.Z6SHoqWbkOnB318tTStPcT_h6H4AEBxLU8uQT9_KWYw";
 
 const stageFlow: PipelineStage[] = ["new", "paid", "intake", "emailed", "opened", "clicked", "booked"];
 
@@ -77,7 +79,11 @@ export interface DashboardPayload {
 async function fetchDashboard(clientId: string): Promise<DashboardPayload> {
   const res = await fetch(DASHBOARD_PROXY_URL, {
     method: "GET",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      apikey: DASHBOARD_PROXY_ANON_KEY,
+      Authorization: `Bearer ${DASHBOARD_PROXY_ANON_KEY}`,
+    },
   });
   if (!res.ok) throw new Error(`Dashboard proxy returned ${res.status}`);
   const payload = await res.json();
