@@ -4,14 +4,6 @@ import { Lead, LeadStatus, PipelineStage, PaymentStatus, IntakeStatus, BookingSt
 
 const stageFlow: PipelineStage[] = ["new", "paid", "intake", "emailed", "opened", "clicked", "booked"];
 
-function pick<T>(obj: any, keys: string[], fallback: T): T {
-  for (const k of keys) {
-    const v = k.split(".").reduce((o, p) => (o == null ? o : o[p]), obj);
-    if (v !== undefined && v !== null && v !== "") return v as T;
-  }
-  return fallback;
-}
-
 function deriveStatus(stage: PipelineStage, hoursSince: number): LeadStatus {
   if (stage === "booked") return "booked";
   if (stage === "clicked" && hoursSince > 24) return "needs_followup";
@@ -33,32 +25,32 @@ function mapStageName(name: string): PipelineStage {
 }
 
 function normalizeLead(raw: any, clientId: string, idx: number): Lead {
-  const stageName = pick<string>(raw, ["pipeline_stages.name", "pipeline_stage_name", "stage_name", "stage"], "");
+  const stageName = raw?.pipeline_stages?.name ?? "";
   const stage = mapStageName(stageName);
 
   const payment: PaymentStatus = stageFlow.indexOf(stage) >= stageFlow.indexOf("paid") ? "paid" : "unpaid";
   const intake: IntakeStatus = stageFlow.indexOf(stage) >= stageFlow.indexOf("intake") ? "complete" : "pending";
   const bookingStatus: BookingStatus = stage === "booked" ? "scheduled" : "none";
 
-  const lastActivity = pick<string>(raw, ["last_activity_at", "last_activity", "updated_at"], new Date().toISOString());
-  const createdAt = pick<string>(raw, ["stage_entered_at", "created_at", "createdAt"], lastActivity);
+  const lastActivity = raw?.last_activity_at ?? new Date().toISOString();
+  const createdAt = raw?.stage_entered_at ?? lastActivity;
   const hoursSince = Math.max(0, (Date.now() - new Date(lastActivity).getTime()) / 3600_000);
 
-  const name = pick<string>(raw, ["clients.name", "client_name", "name", "full_name"], "Unknown Lead");
-  const email = pick<string>(raw, ["clients.email", "client_email", "email"], "");
-  const followups = pick<number>(raw, ["followup_count"], 0);
+  const name = raw?.clients?.name ?? "Unknown Lead";
+  const email = raw?.clients?.email ?? "";
+  const followups = raw?.followup_count ?? 0;
   const baseStatus = deriveStatus(stage, hoursSince);
   const status: LeadStatus = followups > 0 && stage !== "booked" ? "needs_followup" : baseStatus;
 
   return {
-    id: pick<string>(raw, ["id", "lead_id", "uuid"], `${clientId}-N${idx}`),
+    id: raw?.id ?? `${clientId}-N${idx}`,
     clientId,
     name,
     email,
-    phone: pick<string>(raw, ["phone", "phone_number"], ""),
-    location: pick<string>(raw, ["location", "city"], ""),
-    businessType: pick<string>(raw, ["business_type", "industry", "type"], "—"),
-    source: pick<string>(raw, ["source", "lead_source", "utm_source"], "Direct"),
+    phone: "",
+    location: "",
+    businessType: "—",
+    source: "Direct",
     payment,
     intake,
     booking: bookingStatus,
@@ -66,7 +58,7 @@ function normalizeLead(raw: any, clientId: string, idx: number): Lead {
     status,
     lastActivity,
     createdAt,
-    value: pick<number | undefined>(raw, ["pipeline_value", "value", "amount"], undefined),
+    value: raw?.pipeline_value ?? undefined,
   };
 }
 
@@ -74,23 +66,24 @@ export function useLiveLeads(clientId: string) {
   return useQuery({
     queryKey: ["live-leads", clientId],
     queryFn: async (): Promise<Lead[]> => {
-      const { data, error } = await supabase.functions.invoke("n8n-leads", { method: "GET" });
-      if (error) throw error;
-      if (data && typeof data === "object" && "success" in data && (data as any).success === false) {
-        throw new Error((data as any).error || "n8n request failed");
+      const { data, error } = await (supabase as any)
+        .from("leads")
+        .select(`
+          id,
+          pipeline_value,
+          followup_count,
+          stage_entered_at,
+          last_activity_at,
+          clients(name, email),
+          pipeline_stages(name)
+        `)
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        console.error("Leads query error:", error);
+        throw error;
       }
-      // Accept multiple shapes: {data:{leads:[]}}, {leads:[]}, or [...]
-      const payload: any = data;
-      const list: any[] = Array.isArray(payload)
-        ? payload
-        : Array.isArray(payload?.data?.leads)
-        ? payload.data.leads
-        : Array.isArray(payload?.leads)
-        ? payload.leads
-        : Array.isArray(payload?.data)
-        ? payload.data
-        : [];
-      return list.map((r, i) => normalizeLead(r, clientId, i));
+      return (data ?? []).map((r: any, i: number) => normalizeLead(r, clientId, i));
     },
     refetchInterval: 60_000,
     staleTime: 30_000,
