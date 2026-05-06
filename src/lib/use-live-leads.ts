@@ -79,13 +79,12 @@ async function fetchDashboard(clientId: string): Promise<DashboardPayload> {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
-      apikey: DASHBOARD_PROXY_ANON_KEY,
-      Authorization: `Bearer ${DASHBOARD_PROXY_ANON_KEY}`,
     },
   });
   if (!res.ok) throw new Error(`Dashboard proxy returned ${res.status}`);
   const payload = await res.json();
-  const data = payload?.data ?? payload ?? {};
+  if (payload && payload.success === false) throw new Error("Dashboard API failed");
+  const data = payload?.data ?? {};
 
   const rawLeads: any[] = Array.isArray(data.leads) ? data.leads : [];
   const leads = rawLeads.map((r, i) => normalizeLead(r, clientId, i));
