@@ -79,7 +79,11 @@ export interface DashboardPayload {
 async function fetchDashboard(clientId: string): Promise<DashboardPayload> {
   const res = await fetch(DASHBOARD_PROXY_URL, {
     method: "GET",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      apikey: DASHBOARD_PROXY_ANON_KEY,
+      Authorization: `Bearer ${DASHBOARD_PROXY_ANON_KEY}`,
+    },
   });
   if (!res.ok) throw new Error(`Dashboard proxy returned ${res.status}`);
   const payload = await res.json();
