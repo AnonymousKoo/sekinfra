@@ -1,6 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
-import { leadsSupabase } from "@/integrations/supabase/leads-client";
 import { Lead, LeadStatus, PipelineStage, PaymentStatus, IntakeStatus, BookingStatus } from "./mock-data";
+
+const DASHBOARD_PROXY_URL =
+  "https://gnuqaefotwgkwurjpyik.supabase.co/functions/v1/dashboard-proxy";
 
 const stageFlow: PipelineStage[] = ["new", "paid", "intake", "emailed", "opened", "clicked", "booked"];
 
@@ -25,7 +27,7 @@ function mapStageName(name: string): PipelineStage {
 }
 
 function normalizeLead(raw: any, clientId: string, idx: number): Lead {
-  const stageName = raw?.pipeline_stages?.name ?? "";
+  const stageName = raw?.pipeline_stages?.name ?? raw?.stage_name ?? raw?.stage ?? "";
   const stage = mapStageName(stageName);
 
   const payment: PaymentStatus = stageFlow.indexOf(stage) >= stageFlow.indexOf("paid") ? "paid" : "unpaid";
@@ -36,8 +38,8 @@ function normalizeLead(raw: any, clientId: string, idx: number): Lead {
   const createdAt = raw?.stage_entered_at ?? lastActivity;
   const hoursSince = Math.max(0, (Date.now() - new Date(lastActivity).getTime()) / 3600_000);
 
-  const name = raw?.clients?.name ?? "Unknown Lead";
-  const email = raw?.clients?.email ?? "";
+  const name = raw?.clients?.name ?? raw?.client_name ?? raw?.name ?? "Unknown Lead";
+  const email = raw?.clients?.email ?? raw?.client_email ?? raw?.email ?? "";
   const followups = raw?.followup_count ?? 0;
   const baseStatus = deriveStatus(stage, hoursSince);
   const status: LeadStatus = followups > 0 && stage !== "booked" ? "needs_followup" : baseStatus;
@@ -47,10 +49,10 @@ function normalizeLead(raw: any, clientId: string, idx: number): Lead {
     clientId,
     name,
     email,
-    phone: "",
-    location: "",
-    businessType: "—",
-    source: "Direct",
+    phone: raw?.phone ?? "",
+    location: raw?.location ?? "",
+    businessType: raw?.business_type ?? "—",
+    source: raw?.source ?? "Direct",
     payment,
     intake,
     booking: bookingStatus,
@@ -62,30 +64,52 @@ function normalizeLead(raw: any, clientId: string, idx: number): Lead {
   };
 }
 
-export function useLiveLeads(clientId: string) {
-  return useQuery({
-    queryKey: ["live-leads", clientId],
-    queryFn: async (): Promise<Lead[]> => {
-      const { data, error } = await (leadsSupabase as any)
-        .from("leads")
-        .select(`
-          id,
-          pipeline_value,
-          followup_count,
-          stage_entered_at,
-          last_activity_at,
-          clients(name, email),
-          pipeline_stages(name)
-        `)
-        .order("created_at", { ascending: false });
+export interface DashboardPayload {
+  leads: Lead[];
+  summary: Record<string, any>;
+  priority_actions: any[];
+  pipeline: any[];
+  activity: any[];
+  automations: any[];
+  settings: Record<string, any>;
+}
 
-      if (error) {
-        console.error("Leads query error:", error);
-        throw error;
-      }
-      return (data ?? []).map((r: any, i: number) => normalizeLead(r, clientId, i));
-    },
+async function fetchDashboard(clientId: string): Promise<DashboardPayload> {
+  const res = await fetch(DASHBOARD_PROXY_URL, {
+    method: "GET",
+    headers: { "Content-Type": "application/json" },
+  });
+  if (!res.ok) throw new Error(`Dashboard proxy returned ${res.status}`);
+  const payload = await res.json();
+  const data = payload?.data ?? payload ?? {};
+
+  const rawLeads: any[] = Array.isArray(data.leads) ? data.leads : [];
+  const leads = rawLeads.map((r, i) => normalizeLead(r, clientId, i));
+
+  return {
+    leads,
+    summary: data.summary ?? {},
+    priority_actions: Array.isArray(data.priority_actions) ? data.priority_actions : [],
+    pipeline: Array.isArray(data.pipeline) ? data.pipeline : [],
+    activity: Array.isArray(data.activity) ? data.activity : [],
+    automations: Array.isArray(data.automations) ? data.automations : [],
+    settings: data.settings ?? {},
+  };
+}
+
+export function useDashboardData(clientId: string) {
+  return useQuery({
+    queryKey: ["dashboard-proxy", clientId],
+    queryFn: () => fetchDashboard(clientId),
     refetchInterval: 60_000,
     staleTime: 30_000,
   });
+}
+
+export function useLiveLeads(clientId: string) {
+  const query = useDashboardData(clientId);
+  return {
+    ...query,
+    data: query.data?.leads ?? [],
+  } as typeof query & { data: Lead[] };
 }
