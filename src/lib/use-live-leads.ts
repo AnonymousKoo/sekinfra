@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { leadsSupabase } from "@/integrations/supabase/leads-client";
 import { Lead, LeadStatus, PipelineStage, PaymentStatus, IntakeStatus, BookingStatus } from "./mock-data";
 
 const stageFlow: PipelineStage[] = ["new", "paid", "intake", "emailed", "opened", "clicked", "booked"];
@@ -66,7 +66,7 @@ export function useLiveLeads(clientId: string) {
   return useQuery({
     queryKey: ["live-leads", clientId],
     queryFn: async (): Promise<Lead[]> => {
-      const { data, error } = await (supabase as any)
+      const { data, error } = await (leadsSupabase as any)
         .from("leads")
         .select(`
           id,
