@@ -1,6 +1,6 @@
 import { useClient } from "@/lib/client-context";
 import { useAuth } from "@/lib/auth-context";
-import { Check, ChevronsUpDown, Search, Bell, Command, LogOut } from "lucide-react";
+import { Check, ChevronsUpDown, Search, Bell, Command, LogOut, Sparkles, Activity } from "lucide-react";
 import { useState } from "react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
@@ -12,9 +12,9 @@ export function TopBar() {
   const initials = (user?.email ?? "OP").slice(0, 2).toUpperCase();
 
   return (
-    <header className="sticky top-0 z-30 h-16 border-b border-border bg-background/80 backdrop-blur-xl">
-      <div className="flex h-full items-center gap-4 px-5">
-        {/* Client switcher */}
+    <header className="sticky top-0 z-30 h-16 border-b border-border bg-background/70 backdrop-blur-xl">
+      <div className="flex h-full items-center gap-3 px-5">
+        {/* Org switcher */}
         <Popover open={open} onOpenChange={setOpen}>
           <PopoverTrigger asChild>
             <button className="flex items-center gap-2.5 rounded-md border border-border bg-card/60 px-3 py-1.5 text-left transition-colors hover:bg-card">
@@ -29,7 +29,7 @@ export function TopBar() {
             </button>
           </PopoverTrigger>
           <PopoverContent align="start" className="w-72 p-1.5 bg-popover border-border">
-            <p className="px-2 py-1.5 text-[10px] font-medium uppercase tracking-wider text-muted-foreground">Switch workspace</p>
+            <p className="px-2 py-1.5 text-[10px] font-medium uppercase tracking-wider text-muted-foreground">Switch organization</p>
             {clients.map(c => (
               <button
                 key={c.id}
@@ -52,12 +52,17 @@ export function TopBar() {
           </PopoverContent>
         </Popover>
 
+        {/* Env badge */}
+        <span className="hidden md:inline-flex items-center gap-1.5 rounded-md border border-status-booked/30 bg-status-booked/10 px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-status-booked">
+          <span className="h-1.5 w-1.5 rounded-full bg-status-booked animate-pulse-soft" /> Production
+        </span>
+
         {/* Search */}
         <div className="hidden md:flex flex-1 max-w-lg">
           <div className="relative w-full">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
             <input
-              placeholder="Search leads, events, automations…"
+              placeholder="Search leads, incidents, workflows, infra…"
               className="w-full rounded-md border border-border bg-card/40 py-1.5 pl-9 pr-16 text-[13px] placeholder:text-muted-foreground/70 focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/30"
             />
             <kbd className="absolute right-2 top-1/2 -translate-y-1/2 hidden md:flex items-center gap-0.5 rounded border border-border bg-muted/40 px-1.5 py-0.5 text-[10px] font-mono text-muted-foreground">
@@ -68,9 +73,22 @@ export function TopBar() {
 
         <div className="flex-1 md:flex-none" />
 
+        {/* Live system health */}
+        <div className="hidden lg:flex items-center gap-1.5 rounded-md border border-border bg-card/60 px-2.5 py-1.5">
+          <Activity className="h-3.5 w-3.5 text-status-booked" />
+          <span className="text-[10.5px] font-medium tabular text-foreground">99.98%</span>
+          <span className="text-[10px] text-muted-foreground">uptime</span>
+        </div>
+
+        {/* AI assistant */}
+        <button className="hidden sm:flex h-8 items-center gap-1.5 rounded-md border border-primary/30 bg-primary/10 px-2.5 text-[11px] font-medium text-primary hover:bg-primary/15">
+          <Sparkles className="h-3.5 w-3.5" />
+          <span>Ask AI</span>
+        </button>
+
         <button className="relative flex h-8 w-8 items-center justify-center rounded-md border border-border bg-card/60 hover:bg-card">
           <Bell className="h-4 w-4 text-muted-foreground" />
-          <span className="absolute top-1.5 right-1.5 h-1.5 w-1.5 rounded-full bg-primary" />
+          <span className="absolute top-1.5 right-1.5 h-1.5 w-1.5 rounded-full bg-status-failed" />
         </button>
         <button
           onClick={() => signOut()}
@@ -78,7 +96,6 @@ export function TopBar() {
           className="flex h-8 items-center gap-1.5 rounded-md border border-border bg-card/60 px-2.5 text-[11px] text-muted-foreground hover:bg-card hover:text-foreground"
         >
           <LogOut className="h-3.5 w-3.5" />
-          <span className="hidden sm:inline">Sign out</span>
         </button>
         <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary-glow text-[11px] font-semibold text-primary-foreground font-display">
           {initials}
