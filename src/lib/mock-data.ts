@@ -30,6 +30,30 @@ export interface Lead {
   lastActivity: string; // ISO
   createdAt: string;
   value?: number;
+
+  // Operational lifecycle (from API)
+  operationalState?: string;
+  lifecycleStage?: string;
+  infrastructureStatus?: string;
+  securityStatus?: string;
+  automationStatus?: string;
+  oiaSubmitted?: boolean;
+  oiaCompleted?: boolean;
+  deploymentStarted?: boolean;
+  dashboardReady?: boolean;
+  goLive?: boolean;
+  paymentReceived?: boolean;
+  bookedCall?: boolean;
+  bookingDate?: string | null;
+  followupCount?: number;
+  followupStatus?: string;
+  nextFollowup?: string | null;
+  riskLevel?: string;
+  uptimePercentage?: number;
+  activeAlerts?: number;
+  totalIncidents?: number;
+  businessName?: string | null;
+  paymentAmount?: number;
 }
 
 export interface ActivityEvent {
