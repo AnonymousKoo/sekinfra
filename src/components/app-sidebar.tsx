@@ -73,8 +73,8 @@ export function AppSidebar() {
           <span className="absolute -bottom-0.5 -right-0.5 h-1.5 w-1.5 rounded-full bg-status-booked ring-2 ring-sidebar animate-pulse-soft" />
         </div>
         <div className="flex flex-col leading-tight">
-          <span className="text-[14px] font-semibold tracking-tight text-foreground font-display">AVUHZ</span>
-          <span className="text-[9.5px] uppercase tracking-[0.18em] text-muted-foreground">Operational Authority</span>
+          <span className="text-[14px] font-semibold tracking-tight text-foreground font-display">SEKINFRA</span>
+          <span className="text-[9.5px] uppercase tracking-[0.18em] text-muted-foreground">Operational Infrastructure</span>
         </div>
       </div>
 
