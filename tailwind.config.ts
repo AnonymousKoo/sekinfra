@@ -3,6 +3,9 @@ import type { Config } from "tailwindcss";
 export default {
   darkMode: ["class"],
   content: ["./pages/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}", "./app/**/*.{ts,tsx}", "./src/**/*.{ts,tsx}"],
+  safelist: [
+    { pattern: /(bg|text|border|from|to|via)-(status-(booked|followup|failed|new|paid|intake|emailed|opened|clicked|neutral)|primary|primary-glow)(\/(10|15|20|30|40|50|60))?/ },
+  ],
   prefix: "",
   theme: {
     container: {

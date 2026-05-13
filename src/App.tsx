@@ -17,6 +17,15 @@ import Automations from "./pages/Automations";
 import FollowUpRules from "./pages/FollowUpRules";
 import Analytics from "./pages/Analytics";
 import SettingsPage from "./pages/Settings";
+import RevenueEngine from "./pages/RevenueEngine";
+import Infrastructure from "./pages/Infrastructure";
+import Incidents from "./pages/Incidents";
+import Monitoring from "./pages/Monitoring";
+import Reliability from "./pages/Reliability";
+import AIInsights from "./pages/AIInsights";
+import Compliance from "./pages/Compliance";
+import Clients from "./pages/Clients";
+import Workflows from "./pages/Workflows";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -36,6 +45,7 @@ const App = () => (
             <Routes>
               <Route path="/auth" element={<Auth />} />
               <Route path="/" element={<Protected><Dashboard /></Protected>} />
+              <Route path="/revenue" element={<Protected><RevenueEngine /></Protected>} />
               <Route path="/pipeline" element={<Protected><Pipeline /></Protected>} />
               <Route path="/leads" element={<Protected><Leads /></Protected>} />
               <Route path="/leads/:id" element={<Protected><LeadDetail /></Protected>} />
@@ -43,6 +53,14 @@ const App = () => (
               <Route path="/automations" element={<Protected><Automations /></Protected>} />
               <Route path="/automations/rules" element={<Protected><FollowUpRules /></Protected>} />
               <Route path="/analytics" element={<Protected><Analytics /></Protected>} />
+              <Route path="/infrastructure" element={<Protected><Infrastructure /></Protected>} />
+              <Route path="/incidents" element={<Protected><Incidents /></Protected>} />
+              <Route path="/monitoring" element={<Protected><Monitoring /></Protected>} />
+              <Route path="/reliability" element={<Protected><Reliability /></Protected>} />
+              <Route path="/ai-insights" element={<Protected><AIInsights /></Protected>} />
+              <Route path="/compliance" element={<Protected><Compliance /></Protected>} />
+              <Route path="/clients" element={<Protected><Clients /></Protected>} />
+              <Route path="/workflows" element={<Protected><Workflows /></Protected>} />
               <Route path="/settings" element={<Protected><SettingsPage /></Protected>} />
               <Route path="*" element={<NotFound />} />
             </Routes>
