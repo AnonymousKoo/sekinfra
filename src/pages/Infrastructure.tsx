@@ -1,7 +1,7 @@
 import { StubPage } from "@/components/stub-page";
 import { Server } from "lucide-react";
 export default function Infrastructure() {
-  return <StubPage title="Infrastructure" description="VPS, container, and API health across the Avuhz operating layer." icon={Server}
+  return <StubPage title="Infrastructure" description="VPS, container, and API health across the SekInfra operating layer." icon={Server}
     modules={[
       { title: "VPS Fleet", desc: "Uptime, CPU/memory, network telemetry per node." },
       { title: "Container Status", desc: "Docker / orchestration state across services." },

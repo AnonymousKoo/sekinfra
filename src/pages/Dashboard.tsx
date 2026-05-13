@@ -245,7 +245,7 @@ export default function Dashboard() {
               <Sparkles className="h-4 w-4 text-primary" />
               <h2 className="text-sm font-semibold text-foreground">AI Operational Intelligence</h2>
             </div>
-            <p className="text-[10.5px] text-muted-foreground">Observations, predictions, and recommendations from the Avuhz intelligence layer.</p>
+            <p className="text-[10.5px] text-muted-foreground">Observations, predictions, and recommendations from the SekInfra intelligence layer.</p>
             <ul className="mt-4 space-y-3">
               {aiInsights.map((ai, i) => {
                 const c = ai.tone === "crit" ? "status-failed" : ai.tone === "warn" ? "status-followup" : "primary";
@@ -279,7 +279,7 @@ export default function Dashboard() {
             <h2 className="text-[15px] font-semibold text-foreground font-display flex items-center gap-2">
               <Server className="h-4 w-4 text-primary" /> Infrastructure Command
             </h2>
-            <p className="mt-0.5 text-[11.5px] text-muted-foreground">Service health, latency, and uptime across the Avuhz operating layer.</p>
+            <p className="mt-0.5 text-[11.5px] text-muted-foreground">Service health, latency, and uptime across the SekInfra operating layer.</p>
           </div>
           <Link to="/infrastructure" className="text-[11px] text-primary hover:underline">Open NOC →</Link>
         </div>

@@ -28,7 +28,7 @@ export function StubPage({ title, description, icon: Icon, modules = [] }: Props
           <div>
             <h2 className="text-lg font-semibold text-foreground font-display">Module under provisioning</h2>
             <p className="mt-1 max-w-xl text-[12.5px] text-muted-foreground">
-              This operational surface is being wired into the Avuhz control plane. Live telemetry,
+              This operational surface is being wired into the SekInfra control plane. Live telemetry,
               AI recommendations, and drill-down panels will appear here.
             </p>
           </div>
