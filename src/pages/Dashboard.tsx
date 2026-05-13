@@ -28,8 +28,8 @@ const stageOrder = [
   { key: "new", label: "New Lead" },
   { key: "intake", label: "Intake Received" },
   { key: "oia_booked", label: "OIA Booked" },
-  { key: "oia_complete", label: "OIA Completed" },
   { key: "paid", label: "Payment Received" },
+  { key: "oia_complete", label: "OIA Completed" },
   { key: "activation", label: "Activation" },
   { key: "live", label: "Dashboard Live" },
 ];
