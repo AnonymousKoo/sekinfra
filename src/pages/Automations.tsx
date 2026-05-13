@@ -110,7 +110,7 @@ export default function Automations() {
         <MetricCard label="Active Follow-ups" value={followups} icon={Send} accent={followups > 0 ? "warning" : "success"} />
         <MetricCard label="Flagged" value={flagged} icon={AlertTriangle} accent={flagged > 0 ? "warning" : "success"} />
         <MetricCard label="Bookings Captured" value={leads.filter(l => l.bookedCall).length} icon={CalendarCheck} accent="success" />
-        <MetricCard label="Emails Sent" value={leads.filter(l => l.welcomeEmailSent || l.oiaEmailSent || l.dashboardEmailSent).length || workflows.find(w => w.name.includes("Reminder"))?.successCount || 0} icon={Mail} />
+        <MetricCard label="Emails Sent" value={workflows.find(w => w.name.includes("Reminder"))?.successCount ?? 0} icon={Mail} />
       </div>
 
       <section className="card-surface mt-6 overflow-hidden">
