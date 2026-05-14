@@ -12,6 +12,9 @@ export interface AlertRow {
   payload: any;
   acknowledged_at: string | null;
   resolved_at: string | null;
+  lead_id: string | null;
+  type: string | null;
+  resolved: boolean;
 }
 
 export interface InfraEventRow {
