@@ -14,6 +14,75 @@ export type Database = {
   }
   public: {
     Tables: {
+      alerts: {
+        Row: {
+          acknowledged_at: string | null
+          created_at: string
+          id: string
+          message: string
+          payload: Json | null
+          resolved_at: string | null
+          service: string | null
+          severity: string
+          source: string | null
+          status: string
+        }
+        Insert: {
+          acknowledged_at?: string | null
+          created_at?: string
+          id?: string
+          message: string
+          payload?: Json | null
+          resolved_at?: string | null
+          service?: string | null
+          severity?: string
+          source?: string | null
+          status?: string
+        }
+        Update: {
+          acknowledged_at?: string | null
+          created_at?: string
+          id?: string
+          message?: string
+          payload?: Json | null
+          resolved_at?: string | null
+          service?: string | null
+          severity?: string
+          source?: string | null
+          status?: string
+        }
+        Relationships: []
+      }
+      infrastructure_events: {
+        Row: {
+          created_at: string
+          id: string
+          message: string | null
+          payload: Json | null
+          service_name: string
+          source: string | null
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          message?: string | null
+          payload?: Json | null
+          service_name: string
+          source?: string | null
+          status?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          message?: string | null
+          payload?: Json | null
+          service_name?: string
+          source?: string | null
+          status?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string
@@ -32,6 +101,39 @@ export type Database = {
           email?: string | null
           full_name?: string | null
           id?: string
+        }
+        Relationships: []
+      }
+      reliability_events: {
+        Row: {
+          created_at: string
+          event_type: string
+          id: string
+          message: string | null
+          payload: Json | null
+          resolved_at: string | null
+          service: string | null
+          severity: string
+        }
+        Insert: {
+          created_at?: string
+          event_type: string
+          id?: string
+          message?: string | null
+          payload?: Json | null
+          resolved_at?: string | null
+          service?: string | null
+          severity?: string
+        }
+        Update: {
+          created_at?: string
+          event_type?: string
+          id?: string
+          message?: string | null
+          payload?: Json | null
+          resolved_at?: string | null
+          service?: string | null
+          severity?: string
         }
         Relationships: []
       }

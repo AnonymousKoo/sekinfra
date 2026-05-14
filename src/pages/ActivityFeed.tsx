@@ -1,5 +1,6 @@
 import { useClient } from "@/lib/client-context";
 import { useDashboardData } from "@/lib/use-live-leads";
+import { useInfrastructureEvents, useAlerts } from "@/lib/use-operational";
 import { PageHeader } from "@/components/page-header";
 import { useMemo, useState } from "react";
 import { cn } from "@/lib/utils";
@@ -62,13 +63,15 @@ const FILTERS: Array<{ key: string; label: string }> = [
 export default function ActivityFeed() {
   const { client } = useClient();
   const { data, isLoading } = useDashboardData(client.id);
+  const dbInfra = useInfrastructureEvents();
+  const dbAlerts = useAlerts();
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState<string>("all");
   const [drawer, setDrawer] = useState<Event | null>(null);
 
   const events: Event[] = useMemo(() => {
     const apiActivity = data?.activity ?? [];
-    const infraEvents = data?.infrastructure_events ?? [];
+    const proxyInfra = data?.infrastructure_events ?? [];
 
     const fromActivity: Event[] = apiActivity.map((a: any, i: number) => {
       const cls = classifyEvent(a);
@@ -86,22 +89,40 @@ export default function ActivityFeed() {
       };
     });
 
-    const fromInfra: Event[] = infraEvents.map((e: any, i: number) => ({
-      id: e.id ?? `infra-${i}`,
+    const normalizeInfra = (e: any, i: number, src: string): Event => ({
+      id: e.id ?? `${src}-${i}`,
       timestamp: e.timestamp ?? e.created_at ?? new Date().toISOString(),
-      type: e.event_type ?? "infrastructure_event",
+      type: e.event_type ?? e.status ?? "infrastructure_event",
       severity: (e.severity === "critical" ? "crit" : e.severity === "high" ? "warn" : "info") as Severity,
       source: e.source ?? "Infrastructure",
-      client: e.client_name ?? client.name,
-      message: e.message ?? e.description ?? "Infrastructure event",
-      status: e.resolved ? "success" : "pending",
+      client: e.client_name ?? e.service_name ?? client.name,
+      message: e.message ?? e.description ?? `${e.service_name ?? "Service"} → ${e.status ?? "event"}`,
+      status: e.resolved || e.resolved_at ? "success" : "pending",
       raw: e,
+    });
+
+    const fromInfra: Event[] = [
+      ...(dbInfra.data ?? []).map((e, i) => normalizeInfra(e, i, "db-infra")),
+      ...proxyInfra.map((e: any, i: number) => normalizeInfra(e, i, "proxy-infra")),
+    ];
+
+    const fromAlerts: Event[] = (dbAlerts.data ?? []).map((a, i) => ({
+      id: a.id ?? `alert-${i}`,
+      timestamp: a.created_at,
+      type: "alert",
+      severity: (["critical", "high"].includes(a.severity?.toLowerCase()) ? "crit" : a.severity?.toLowerCase() === "warning" ? "warn" : "info") as Severity,
+      source: a.source ?? "Alerts",
+      client: a.service ?? client.name,
+      message: a.message,
+      status: a.resolved_at ? "success" : a.status === "acknowledged" ? "pending" : "failed",
+      raw: a,
     }));
 
-    return [...fromActivity, ...fromInfra].sort(
+    return [...fromActivity, ...fromInfra, ...fromAlerts].sort(
       (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime(),
     );
-  }, [data, client.name]);
+  }, [data, client.name, dbInfra.data, dbAlerts.data]);
+
 
   const visible = useMemo(() => {
     return events
