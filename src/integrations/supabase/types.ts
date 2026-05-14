@@ -19,37 +19,46 @@ export type Database = {
           acknowledged_at: string | null
           created_at: string
           id: string
+          lead_id: string | null
           message: string
           payload: Json | null
+          resolved: boolean
           resolved_at: string | null
           service: string | null
           severity: string
           source: string | null
           status: string
+          type: string | null
         }
         Insert: {
           acknowledged_at?: string | null
           created_at?: string
           id?: string
+          lead_id?: string | null
           message: string
           payload?: Json | null
+          resolved?: boolean
           resolved_at?: string | null
           service?: string | null
           severity?: string
           source?: string | null
           status?: string
+          type?: string | null
         }
         Update: {
           acknowledged_at?: string | null
           created_at?: string
           id?: string
+          lead_id?: string | null
           message?: string
           payload?: Json | null
+          resolved?: boolean
           resolved_at?: string | null
           service?: string | null
           severity?: string
           source?: string | null
           status?: string
+          type?: string | null
         }
         Relationships: []
       }
