@@ -38,7 +38,60 @@ export interface ReliabilityEventRow {
   payload: any;
 }
 
+export interface IncidentLogRow {
+  id: string;
+  created_at: string;
+  workflow_name: string | null;
+  node_name: string | null;
+  error_message: string | null;
+  severity: string;
+  status: string;
+  resolved_at: string | null;
+  payload: any;
+}
+
+export interface EventLogRow {
+  id: string;
+  created_at: string;
+  event_type: string;
+  source: string | null;
+  status: string | null;
+  message: string | null;
+  payload: any;
+}
+
 const PAGE = 200;
+
+export function useIncidentLogs() {
+  return useQuery({
+    queryKey: ["ops", "incident_logs"],
+    queryFn: async (): Promise<IncidentLogRow[]> => {
+      const { data, error } = await (supabase as any)
+        .from("incident_logs")
+        .select("*")
+        .order("created_at", { ascending: false })
+        .limit(PAGE);
+      if (error) throw error;
+      return (data ?? []) as IncidentLogRow[];
+    },
+    refetchInterval: 60_000,
+  });
+}
+
+export function useEventLogs(filter?: { eventType?: string; contains?: string }) {
+  return useQuery({
+    queryKey: ["ops", "event_logs", filter?.eventType ?? "", filter?.contains ?? ""],
+    queryFn: async (): Promise<EventLogRow[]> => {
+      let q = (supabase as any).from("event_logs").select("*").order("created_at", { ascending: false }).limit(PAGE);
+      if (filter?.eventType) q = q.eq("event_type", filter.eventType);
+      if (filter?.contains) q = q.ilike("event_type", `%${filter.contains}%`);
+      const { data, error } = await q;
+      if (error) throw error;
+      return (data ?? []) as EventLogRow[];
+    },
+    refetchInterval: 60_000,
+  });
+}
 
 export function useAlerts() {
   return useQuery({
