@@ -1,104 +1,59 @@
 import { PageHeader } from "@/components/page-header";
-import { useInfrastructureEvents, sevClass, timeAgo } from "@/lib/use-operational";
-import { useDashboardData } from "@/lib/use-live-leads";
-import { useClient } from "@/lib/client-context";
+import { useEventLogs, timeAgo } from "@/lib/use-operational";
 import { Server, Loader2, X } from "lucide-react";
 import { useMemo, useState } from "react";
 import { cn } from "@/lib/utils";
 
+const statusTone = (s?: string | null) => {
+  const v = (s ?? "").toLowerCase();
+  if (["ok", "healthy", "up", "success", "deployed", "running", "completed"].includes(v))
+    return "bg-status-booked/15 text-status-booked border-status-booked/30";
+  if (["degraded", "warning", "pending", "starting"].includes(v))
+    return "bg-status-followup/15 text-status-followup border-status-followup/30";
+  if (["down", "failed", "critical", "error"].includes(v))
+    return "bg-status-failed/15 text-status-failed border-status-failed/30";
+  return "bg-muted/40 text-muted-foreground border-border/50";
+};
+
 export default function Infrastructure() {
-  const { client } = useClient();
-  const dbQ = useInfrastructureEvents();
-  const proxyQ = useDashboardData(client.id);
+  const { data, isLoading, error } = useEventLogs({ contains: "infra" });
   const [drawer, setDrawer] = useState<any>(null);
+  const events = data ?? [];
 
-  const events = useMemo(() => {
-    const fromDb = (dbQ.data ?? []).map(e => ({
-      id: e.id,
-      timestamp: e.created_at,
-      service: e.service_name,
-      status: e.status,
-      source: e.source ?? "supabase",
-      message: e.message ?? `${e.service_name} → ${e.status}`,
-      raw: e,
-    }));
-    const fromProxy = ((proxyQ.data?.infrastructure_events as any[]) ?? []).map((e: any, i) => ({
-      id: e.id ?? `proxy-${i}`,
-      timestamp: e.timestamp ?? e.created_at ?? new Date().toISOString(),
-      service: e.service_name ?? e.service ?? "service",
-      status: e.status ?? (e.resolved ? "resolved" : "active"),
-      source: e.source ?? "proxy",
-      message: e.message ?? e.description ?? "Infrastructure event",
-      raw: e,
-    }));
-    return [...fromDb, ...fromProxy].sort(
-      (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime(),
-    );
-  }, [dbQ.data, proxyQ.data]);
-
-  const services = useMemo(() => {
-    const map = new Map<string, { service: string; status: string; lastSeen: string; count: number }>();
-    for (const e of events) {
-      const cur = map.get(e.service);
-      if (!cur || new Date(e.timestamp) > new Date(cur.lastSeen)) {
-        map.set(e.service, { service: e.service, status: e.status, lastSeen: e.timestamp, count: (cur?.count ?? 0) + 1 });
-      } else {
-        cur.count++;
-      }
-    }
-    return Array.from(map.values());
+  const buckets = useMemo(() => {
+    const health = events.filter(e => e.event_type?.toLowerCase().includes("health"));
+    const deploys = events.filter(e => /deploy|provision|release/i.test(e.event_type));
+    const workflows = events.filter(e => /workflow|run|job/i.test(e.event_type));
+    return { health, deploys, workflows };
   }, [events]);
-
-  const loading = dbQ.isLoading || proxyQ.isLoading;
-  const error = dbQ.error;
 
   return (
     <>
       <PageHeader
         title="Infrastructure"
-        description="VPS, container, and service event history across the SekInfra operating layer."
-        actions={loading ? <Loader2 className="h-4 w-4 animate-spin text-primary" /> : null}
+        description="System health events, deployment states, and workflow runs across the SekInfra operating layer."
+        actions={isLoading ? <Loader2 className="h-4 w-4 animate-spin text-primary" /> : null}
       />
 
-      {services.length > 0 && (
-        <div className="mb-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {services.slice(0, 9).map(s => (
-            <div key={s.service} className="card-surface p-4">
-              <div className="flex items-start justify-between">
-                <div>
-                  <div className="text-[12.5px] font-semibold text-foreground">{s.service}</div>
-                  <div className="mt-0.5 text-[10.5px] text-muted-foreground">{s.count} events · {timeAgo(s.lastSeen)}</div>
-                </div>
-                <span className={cn("rounded-md border px-1.5 py-0.5 text-[9.5px] uppercase tracking-wider font-semibold",
-                  s.status === "healthy" || s.status === "ok" || s.status === "resolved"
-                    ? "bg-status-booked/15 text-status-booked border-status-booked/30"
-                    : s.status === "degraded" || s.status === "warning"
-                    ? "bg-status-followup/15 text-status-followup border-status-followup/30"
-                    : s.status === "down" || s.status === "failed" || s.status === "critical"
-                    ? "bg-status-failed/15 text-status-failed border-status-failed/30"
-                    : "bg-muted/40 text-muted-foreground border-border/50",
-                )}>
-                  {s.status}
-                </span>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
+      <div className="mb-4 grid gap-3 sm:grid-cols-3">
+        <Stat label="Health events" value={buckets.health.length} />
+        <Stat label="Deployment events" value={buckets.deploys.length} />
+        <Stat label="Workflow runs" value={buckets.workflows.length} />
+      </div>
 
       <div className="card-surface overflow-hidden">
         <div className="border-b border-border/60 px-4 py-2.5 text-[11px] uppercase tracking-wider text-muted-foreground">
-          Event history
+          Infrastructure event stream · {events.length}
         </div>
         {error ? (
           <div className="px-5 py-12 text-center text-[13px] text-status-failed">Failed to load infrastructure events</div>
-        ) : loading ? (
+        ) : isLoading ? (
           <div className="px-5 py-12 text-center text-[13px] text-muted-foreground">Loading…</div>
         ) : events.length === 0 ? (
           <div className="px-5 py-12 text-center">
             <Server className="mx-auto h-6 w-6 text-muted-foreground/60" />
-            <p className="mt-2 text-[13px] text-foreground">No live events yet</p>
-            <p className="mt-1 text-[11px] text-muted-foreground">Service health and event telemetry will populate here as it streams in.</p>
+            <p className="mt-2 text-[13px] text-foreground">No infrastructure events yet</p>
+            <p className="mt-1 text-[11px] text-muted-foreground">Service health, deployments, and workflow runs will populate here.</p>
           </div>
         ) : (
           <ul className="divide-y divide-border/50 max-h-[640px] overflow-auto">
@@ -108,13 +63,13 @@ export default function Infrastructure() {
                   <Server className="h-4 w-4 text-muted-foreground" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-[13px] text-foreground truncate">{e.message}</p>
-                  <p className="text-[10.5px] text-muted-foreground">{e.service} · {e.source}</p>
+                  <p className="text-[13px] text-foreground truncate">{e.message ?? e.event_type}</p>
+                  <p className="text-[10.5px] text-muted-foreground">{e.event_type} · {e.source ?? "system"}</p>
                 </div>
-                <span className="rounded-md border border-border/50 bg-muted/30 px-1.5 py-0.5 text-[9.5px] uppercase tracking-wider font-semibold text-muted-foreground">
-                  {e.status}
+                <span className={cn("rounded-md border px-1.5 py-0.5 text-[9.5px] uppercase tracking-wider font-semibold", statusTone(e.status))}>
+                  {e.status ?? "—"}
                 </span>
-                <span className="text-[11px] tabular text-muted-foreground whitespace-nowrap w-16 text-right">{timeAgo(e.timestamp)}</span>
+                <span className="text-[11px] tabular text-muted-foreground whitespace-nowrap w-16 text-right">{timeAgo(e.created_at)}</span>
               </li>
             ))}
           </ul>
@@ -127,16 +82,25 @@ export default function Infrastructure() {
             <div className="mb-4 flex items-start justify-between">
               <div>
                 <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Infrastructure event</div>
-                <h3 className="text-[15px] font-semibold">{drawer.message}</h3>
+                <h3 className="text-[15px] font-semibold">{drawer.message ?? drawer.event_type}</h3>
               </div>
               <button onClick={() => setDrawer(null)}><X className="h-4 w-4 text-muted-foreground" /></button>
             </div>
             <pre className="rounded-md border border-border/60 bg-surface/40 p-3 text-[10.5px] text-muted-foreground overflow-auto max-h-[70vh]">
-              {JSON.stringify(drawer.raw, null, 2)}
+              {JSON.stringify(drawer, null, 2)}
             </pre>
           </div>
         </div>
       )}
     </>
+  );
+}
+
+function Stat({ label, value }: { label: string; value: number }) {
+  return (
+    <div className="card-surface p-4">
+      <div className="text-[10px] uppercase tracking-wider text-muted-foreground">{label}</div>
+      <div className="mt-1 metric-number text-2xl font-semibold">{value}</div>
+    </div>
   );
 }
