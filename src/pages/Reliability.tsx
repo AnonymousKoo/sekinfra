@@ -1,52 +1,33 @@
 import { PageHeader } from "@/components/page-header";
-import { useAlerts, useInfrastructureEvents, useReliabilityEvents, timeAgo } from "@/lib/use-operational";
-import { ShieldCheck, Loader2, Activity, AlertTriangle } from "lucide-react";
+import { useDashboardData } from "@/lib/use-live-leads";
+import { useClient } from "@/lib/client-context";
+import { ShieldCheck, Loader2, Rocket, Users, Percent } from "lucide-react";
 import { useMemo } from "react";
 import { cn } from "@/lib/utils";
 
 export default function Reliability() {
-  const alertsQ = useAlerts();
-  const infraQ = useInfrastructureEvents();
-  const relQ = useReliabilityEvents();
+  const { client } = useClient();
+  const { data, isLoading, error } = useDashboardData(client.id);
 
-  const loading = alertsQ.isLoading || infraQ.isLoading || relQ.isLoading;
-  const error = alertsQ.error || infraQ.error || relQ.error;
+  const summary = data?.summary ?? {};
+  const leads = data?.leads ?? [];
 
   const metrics = useMemo(() => {
-    const alerts = alertsQ.data ?? [];
-    const infra = infraQ.data ?? [];
-    const rel = relQ.data ?? [];
-
-    const unresolvedAlerts = alerts.filter(a => a.status !== "resolved").length;
-    const activeIncidents = rel.filter(r => !r.resolved_at && r.event_type?.toLowerCase().includes("incident")).length;
-    const downEvents = infra.filter(e => ["down", "failed", "critical"].includes(e.status?.toLowerCase())).length;
-
-    const lastRecovery = rel
-      .filter(r => r.event_type?.toLowerCase().includes("recover") || r.resolved_at)
-      .sort((a, b) => new Date(b.resolved_at ?? b.created_at).getTime() - new Date(a.resolved_at ?? a.created_at).getTime())[0];
-
-    const totalSignals = alerts.length + infra.length + rel.length;
-    const badSignals = unresolvedAlerts + activeIncidents + downEvents;
-    const score = totalSignals === 0 ? 100 : Math.max(0, Math.round(100 - (badSignals / Math.max(totalSignals, 10)) * 100));
-
-    return { unresolvedAlerts, activeIncidents, downEvents, lastRecovery, score, totalSignals };
-  }, [alertsQ.data, infraQ.data, relQ.data]);
-
-  const recent = useMemo(() => {
-    const items = [
-      ...(relQ.data ?? []).map(r => ({ id: r.id, t: r.created_at, kind: "Reliability", title: r.message ?? r.event_type, severity: r.severity })),
-      ...(alertsQ.data ?? []).slice(0, 20).map(a => ({ id: a.id, t: a.created_at, kind: "Alert", title: a.message, severity: a.severity })),
-      ...(infraQ.data ?? []).slice(0, 20).map(e => ({ id: e.id, t: e.created_at, kind: "Infra", title: e.message ?? `${e.service_name} → ${e.status}`, severity: e.status })),
-    ].sort((a, b) => new Date(b.t).getTime() - new Date(a.t).getTime()).slice(0, 50);
-    return items;
-  }, [alertsQ.data, infraQ.data, relQ.data]);
+    const booked = Number(summary.booked ?? 0);
+    const goLive = leads.filter(l => l.goLive).length;
+    const activeClients = leads.filter(l => l.goLive || l.dashboardReady || l.deploymentStarted).length;
+    const started = leads.filter(l => l.deploymentStarted || l.dashboardReady || l.goLive).length;
+    const successRate = started === 0 ? null : Math.round((goLive / started) * 100);
+    const score = successRate === null ? 100 : Math.max(0, Math.min(100, successRate));
+    return { booked, goLive, activeClients, successRate, score, started };
+  }, [summary, leads]);
 
   return (
     <>
       <PageHeader
         title="Reliability"
-        description="Uptime posture, incident load, and recovery telemetry across services."
-        actions={loading ? <Loader2 className="h-4 w-4 animate-spin text-primary" /> : null}
+        description="Deployment success, activation, and live client posture."
+        actions={isLoading ? <Loader2 className="h-4 w-4 animate-spin text-primary" /> : null}
       />
 
       <div className="mb-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
@@ -56,60 +37,70 @@ export default function Reliability() {
             metrics.score >= 90 ? "text-status-booked" : metrics.score >= 70 ? "text-status-followup" : "text-status-failed")}>
             {metrics.score}
           </div>
-          <div className="mt-1 text-[10.5px] text-muted-foreground">{metrics.totalSignals} signals analyzed</div>
+          <div className="mt-1 text-[10.5px] text-muted-foreground">{metrics.started} deployments tracked</div>
         </div>
-        <div className="card-surface p-4">
-          <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-wider text-muted-foreground">
-            <AlertTriangle className="h-3 w-3 text-status-failed" /> Active incidents
-          </div>
-          <div className="mt-1 metric-number text-2xl font-semibold">{metrics.activeIncidents}</div>
-        </div>
-        <div className="card-surface p-4">
-          <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Unresolved alerts</div>
-          <div className="mt-1 metric-number text-2xl font-semibold">{metrics.unresolvedAlerts}</div>
-        </div>
-        <div className="card-surface p-4">
-          <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Last recovery</div>
-          <div className="mt-1 text-[13px] font-semibold text-foreground truncate">
-            {metrics.lastRecovery?.message ?? metrics.lastRecovery?.event_type ?? "—"}
-          </div>
-          <div className="mt-0.5 text-[10.5px] text-muted-foreground">
-            {timeAgo(metrics.lastRecovery?.resolved_at ?? metrics.lastRecovery?.created_at)}
-          </div>
-        </div>
+        <Stat icon={Rocket} label="Go-live count" value={metrics.goLive} tone="ok" />
+        <Stat icon={Percent} label="Deployment success" value={metrics.successRate === null ? "—" : `${metrics.successRate}%`} tone="info" />
+        <Stat icon={Users} label="Active clients" value={metrics.activeClients} tone="info" />
+      </div>
+
+      <div className="mb-4 card-surface p-4">
+        <div className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1">Bookings (from operational summary)</div>
+        <div className="metric-number text-2xl font-semibold">{metrics.booked}</div>
       </div>
 
       <div className="card-surface overflow-hidden">
         <div className="border-b border-border/60 px-4 py-2.5 text-[11px] uppercase tracking-wider text-muted-foreground">
-          Recent reliability signals
+          Client deployment posture
         </div>
         {error ? (
           <div className="px-5 py-12 text-center text-[13px] text-status-failed">Failed to load reliability data</div>
-        ) : loading ? (
+        ) : isLoading ? (
           <div className="px-5 py-12 text-center text-[13px] text-muted-foreground">Loading…</div>
-        ) : recent.length === 0 ? (
+        ) : leads.length === 0 ? (
           <div className="px-5 py-12 text-center">
             <ShieldCheck className="mx-auto h-6 w-6 text-status-booked/70" />
-            <p className="mt-2 text-[13px] text-foreground">All clear — no live signals yet</p>
-            <p className="mt-1 text-[11px] text-muted-foreground">Reliability events, alerts, and infra signals will aggregate here.</p>
+            <p className="mt-2 text-[13px] text-foreground">No deployments tracked yet</p>
+            <p className="mt-1 text-[11px] text-muted-foreground">Client activation and go-live state will appear here.</p>
           </div>
         ) : (
           <ul className="divide-y divide-border/50 max-h-[560px] overflow-auto">
-            {recent.map(r => (
-              <li key={`${r.kind}-${r.id}`} className="flex items-center gap-4 px-5 py-3">
-                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md border border-border/60 bg-surface/40">
-                  <Activity className="h-4 w-4 text-muted-foreground" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-[13px] text-foreground truncate">{r.title}</p>
-                  <p className="text-[10.5px] text-muted-foreground">{r.kind} · {r.severity}</p>
-                </div>
-                <span className="text-[11px] tabular text-muted-foreground whitespace-nowrap w-16 text-right">{timeAgo(r.t)}</span>
-              </li>
-            ))}
+            {leads.map(l => {
+              const live = l.goLive;
+              const ready = l.dashboardReady;
+              return (
+                <li key={l.id} className="flex items-center gap-4 px-5 py-3">
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md border border-border/60 bg-surface/40">
+                    <Rocket className={cn("h-4 w-4", live ? "text-status-booked" : ready ? "text-status-followup" : "text-muted-foreground")} />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[13px] text-foreground truncate">{l.name}</p>
+                    <p className="text-[10.5px] text-muted-foreground truncate">{l.email}</p>
+                  </div>
+                  <span className={cn("rounded-md border px-1.5 py-0.5 text-[9.5px] uppercase tracking-wider font-semibold",
+                    live ? "bg-status-booked/15 text-status-booked border-status-booked/30" :
+                    ready ? "bg-status-followup/15 text-status-followup border-status-followup/30" :
+                    "bg-muted/40 text-muted-foreground border-border/50")}>
+                    {live ? "live" : ready ? "ready" : (l.operationalState ?? "pending")}
+                  </span>
+                </li>
+              );
+            })}
           </ul>
         )}
       </div>
     </>
+  );
+}
+
+function Stat({ icon: Icon, label, value, tone }: { icon: any; label: string; value: number | string; tone: "ok" | "info" | "warn" }) {
+  const color = tone === "ok" ? "text-status-booked" : tone === "warn" ? "text-status-followup" : "text-primary";
+  return (
+    <div className="card-surface p-4">
+      <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-wider text-muted-foreground">
+        <Icon className={cn("h-3 w-3", color)} /> {label}
+      </div>
+      <div className="mt-1 metric-number text-2xl font-semibold">{value}</div>
+    </div>
   );
 }
