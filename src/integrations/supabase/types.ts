@@ -62,6 +62,72 @@ export type Database = {
         }
         Relationships: []
       }
+      event_logs: {
+        Row: {
+          created_at: string
+          event_type: string
+          id: string
+          message: string | null
+          payload: Json | null
+          source: string | null
+          status: string | null
+        }
+        Insert: {
+          created_at?: string
+          event_type: string
+          id?: string
+          message?: string | null
+          payload?: Json | null
+          source?: string | null
+          status?: string | null
+        }
+        Update: {
+          created_at?: string
+          event_type?: string
+          id?: string
+          message?: string | null
+          payload?: Json | null
+          source?: string | null
+          status?: string | null
+        }
+        Relationships: []
+      }
+      incident_logs: {
+        Row: {
+          created_at: string
+          error_message: string | null
+          id: string
+          node_name: string | null
+          payload: Json | null
+          resolved_at: string | null
+          severity: string
+          status: string
+          workflow_name: string | null
+        }
+        Insert: {
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          node_name?: string | null
+          payload?: Json | null
+          resolved_at?: string | null
+          severity?: string
+          status?: string
+          workflow_name?: string | null
+        }
+        Update: {
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          node_name?: string | null
+          payload?: Json | null
+          resolved_at?: string | null
+          severity?: string
+          status?: string
+          workflow_name?: string | null
+        }
+        Relationships: []
+      }
       infrastructure_events: {
         Row: {
           created_at: string
