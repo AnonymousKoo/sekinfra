@@ -1,62 +1,46 @@
 import { PageHeader } from "@/components/page-header";
 import { useDashboardData } from "@/lib/use-live-leads";
 import { useClient } from "@/lib/client-context";
-import { TrendingUp, Loader2, CreditCard, Users, AlertTriangle } from "lucide-react";
-import { useMemo } from "react";
+import { TrendingUp, Loader2, CreditCard, AlertTriangle, RotateCcw, Percent } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const fmtCurrency = (n: number) =>
-  n >= 1000 ? `$${(n / 1000).toFixed(1)}k` : `$${n.toLocaleString()}`;
+  n >= 1000 ? `$${(n / 1000).toFixed(1)}k` : `$${Number(n || 0).toLocaleString()}`;
 
 export default function RevenueEngine() {
   const { client } = useClient();
   const { data, isLoading, error } = useDashboardData(client.id);
-
-  const leads = data?.leads ?? [];
   const summary = data?.summary ?? {};
+  const leads = data?.leads ?? [];
 
-  const breakdown = useMemo(() => {
-    const paid = leads.filter(l => l.paymentReceived || l.payment === "paid");
-    const unpaid = leads.filter(l => !(l.paymentReceived || l.payment === "paid"));
-    const live = leads.filter(l => l.goLive || l.dashboardReady);
-    const atRisk = leads.filter(l => l.followupCount && l.followupCount > 0 && !l.goLive);
-    const totalValue = paid.reduce((s, l) => s + (l.paymentAmount || l.value || 0), 0);
-    const lifecycle = leads.reduce((acc, l) => {
-      const k = l.lifecycleStage ?? l.operationalState ?? "unknown";
-      acc[k] = (acc[k] ?? 0) + 1;
-      return acc;
-    }, {} as Record<string, number>);
-    return { paid, unpaid, live, atRisk, totalValue, lifecycle };
-  }, [leads]);
+  const revenueToday = Number(summary.revenue_today ?? 0);
+  const revenueAtRisk = Number(summary.revenue_at_risk ?? 0);
+  const paidToBooked = Number(summary.paid_to_booked ?? 0);
+  const recoveredBookings = Number(summary.recovered_bookings ?? 0);
+  const paidToday = Number(summary.paid_today ?? 0);
+  const totalLeads = Number(summary.total_leads ?? leads.length);
+  const booked = Number(summary.booked ?? 0);
 
   return (
     <>
       <PageHeader
         title="Revenue Engine"
-        description="Revenue intelligence: payments, lifecycle stages, activation, and revenue-at-risk signals."
+        description="Revenue intelligence: payments, conversion, activation, and revenue-at-risk signals."
         actions={isLoading ? <Loader2 className="h-4 w-4 animate-spin text-primary" /> : null}
       />
 
       <div className="mb-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        <Stat label="Revenue today" value={fmtCurrency(Number(summary.revenue_today ?? 0))} icon={TrendingUp} tone="ok" />
-        <Stat label="Paid leads" value={String(breakdown.paid.length)} icon={CreditCard} tone="info" />
-        <Stat label="Live deployments" value={String(breakdown.live.length)} icon={Users} tone="ok" />
-        <Stat label="Revenue at risk" value={fmtCurrency(Number(summary.revenue_at_risk ?? 0))} icon={AlertTriangle} tone="warn" />
+        <Stat label="Revenue today" value={fmtCurrency(revenueToday)} icon={TrendingUp} tone="ok" />
+        <Stat label="Revenue at risk" value={fmtCurrency(revenueAtRisk)} icon={AlertTriangle} tone="warn" />
+        <Stat label="Paid → Booked" value={`${paidToBooked}%`} icon={Percent} tone="info" />
+        <Stat label="Recovered bookings" value={String(recoveredBookings)} icon={RotateCcw} tone="ok" />
       </div>
 
-      {Object.keys(breakdown.lifecycle).length > 0 && (
-        <div className="card-surface mb-4 p-4">
-          <div className="text-[10px] uppercase tracking-wider text-muted-foreground mb-2">Lifecycle distribution</div>
-          <div className="flex flex-wrap gap-2">
-            {Object.entries(breakdown.lifecycle).map(([k, v]) => (
-              <div key={k} className="rounded-md border border-border/60 bg-surface/40 px-2.5 py-1 text-[11px]">
-                <span className="text-muted-foreground">{k}</span>
-                <span className="ml-1.5 font-semibold text-foreground tabular">{v}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
+      <div className="mb-4 grid gap-3 sm:grid-cols-3">
+        <Stat label="Paid today" value={String(paidToday)} icon={CreditCard} tone="info" />
+        <Stat label="Total leads" value={String(totalLeads)} icon={TrendingUp} tone="info" />
+        <Stat label="Booked" value={String(booked)} icon={TrendingUp} tone="ok" />
+      </div>
 
       <div className="card-surface overflow-hidden">
         <div className="border-b border-border/60 px-4 py-2.5 text-[11px] uppercase tracking-wider text-muted-foreground">
@@ -73,13 +57,12 @@ export default function RevenueEngine() {
             <p className="mt-1 text-[11px] text-muted-foreground">Lead activity and payments will appear here.</p>
           </div>
         ) : (
-          <div className="max-h-[640px] overflow-auto">
+          <div className="max-h-[560px] overflow-auto">
             <table className="w-full text-[12.5px]">
               <thead className="text-[10px] uppercase tracking-wider text-muted-foreground sticky top-0 bg-card/95 backdrop-blur">
                 <tr>
                   <th className="px-4 py-2.5 text-left font-medium">Client</th>
-                  <th className="px-4 py-2.5 text-left font-medium">Lifecycle</th>
-                  <th className="px-4 py-2.5 text-left font-medium">Operational</th>
+                  <th className="px-4 py-2.5 text-left font-medium">Stage</th>
                   <th className="px-4 py-2.5 text-left font-medium">Payment</th>
                   <th className="px-4 py-2.5 text-right font-medium">Amount</th>
                 </tr>
@@ -91,10 +74,9 @@ export default function RevenueEngine() {
                     <tr key={l.id} className="hover:bg-surface-elevated/40">
                       <td className="px-4 py-2.5">
                         <div className="font-medium text-foreground">{l.name}</div>
-                        <div className="text-[10.5px] text-muted-foreground truncate max-w-[200px]">{l.email}</div>
+                        <div className="text-[10.5px] text-muted-foreground truncate max-w-[220px]">{l.email}</div>
                       </td>
-                      <td className="px-4 py-2.5 text-muted-foreground">{l.lifecycleStage ?? "—"}</td>
-                      <td className="px-4 py-2.5 text-muted-foreground">{l.operationalState ?? "—"}</td>
+                      <td className="px-4 py-2.5 text-muted-foreground">{l.lifecycleStage ?? l.stage ?? "—"}</td>
                       <td className="px-4 py-2.5">
                         <span className={cn("rounded-md border px-1.5 py-0.5 text-[10px] uppercase font-semibold tracking-wider",
                           l.paymentReceived || l.payment === "paid"
