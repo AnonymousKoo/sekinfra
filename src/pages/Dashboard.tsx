@@ -1,7 +1,7 @@
 import { useClient } from "@/lib/client-context";
 import { useDashboardData } from "@/lib/use-live-leads";
 import { useAlerts, useIncidentLogs, timeAgo as opsTimeAgo } from "@/lib/use-operational";
-import { useMonitoring, fmtPct } from "@/lib/use-monitoring";
+import { useMonitoring } from "@/lib/use-monitoring";
 import { MetricCard } from "@/components/metric-card";
 import { PageHeader } from "@/components/page-header";
 import {
