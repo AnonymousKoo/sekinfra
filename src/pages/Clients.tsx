@@ -1,6 +1,6 @@
 import { useClient } from "@/lib/client-context";
 import { useDashboardData } from "@/lib/use-live-leads";
-import { Lead } from "@/lib/mock-data";
+import { Lead } from "@/lib/types";
 import { PageHeader } from "@/components/page-header";
 import { useMemo, useState } from "react";
 import { Search, Building2, Loader2, X, ExternalLink, Activity as ActivityIcon } from "lucide-react";

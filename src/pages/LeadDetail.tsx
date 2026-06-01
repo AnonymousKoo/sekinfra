@@ -1,6 +1,6 @@
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { useClient } from "@/lib/client-context";
-import { timeAgo, statusLabels, ActivityEvent } from "@/lib/mock-data";
+import { timeAgo, statusLabels, ActivityEvent } from "@/lib/types";
 import { useLiveLeads } from "@/lib/use-live-leads";
 import { PageHeader } from "@/components/page-header";
 import { StatusBadge } from "@/components/status-badge";

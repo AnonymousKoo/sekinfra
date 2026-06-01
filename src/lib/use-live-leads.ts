@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { Lead, LeadStatus, PipelineStage, PaymentStatus, IntakeStatus, BookingStatus } from "./mock-data";
+import { Lead, LeadStatus, PipelineStage, PaymentStatus, IntakeStatus, BookingStatus } from "./types";
 
 const DASHBOARD_PROXY_URL =
   "https://gnuqaefotwgkwurjpyik.supabase.co/functions/v1/dashboard-proxy";
