@@ -134,7 +134,7 @@ export default function Dashboard() {
           <MetricCard label="Revenue Today" value={moneyOrDash(revenueToday)} icon={DollarSign} accent="success" />
           <MetricCard label="MRR" value={moneyOrDash(mrr)} icon={TrendingUp} accent="success" />
           <MetricCard label="Revenue at Risk" value={moneyOrDash(revenueAtRisk)} icon={AlertTriangle} accent="warning" hint="paid, not activated" />
-          <MetricCard label="Active Clients" value={intOrDash(activeClients ?? leads.filter(l => l.goLive || l.dashboardReady).length || undefined)} icon={Users} />
+          <MetricCard label="Active Clients" value={intOrDash(activeClients ?? (leads.filter(l => l.goLive || l.dashboardReady).length || undefined))} icon={Users} />
           <MetricCard label="Paid → Booked" value={pct(paidToBooked)} icon={CalendarCheck} accent="success" />
           <MetricCard label="Active Follow-Ups" value={intOrDash(followUps)} icon={RefreshCw} accent="warning" />
           <MetricCard label="Open Incidents" value={openIncidents} icon={AlertOctagon} accent={openIncidents > 0 ? "warning" : "success"} />
