@@ -1,6 +1,7 @@
 import { useClient } from "@/lib/client-context";
 import { useDashboardData } from "@/lib/use-live-leads";
-import { useAlerts, useInfrastructureEvents, useIncidentLogs, timeAgo as opsTimeAgo } from "@/lib/use-operational";
+import { useAlerts, useIncidentLogs, timeAgo as opsTimeAgo } from "@/lib/use-operational";
+import { useMonitoring } from "@/lib/use-monitoring";
 import { MetricCard } from "@/components/metric-card";
 import { PageHeader } from "@/components/page-header";
 import {
@@ -46,7 +47,7 @@ export default function Dashboard() {
   const { client } = useClient();
   const { data, isLoading, dataUpdatedAt } = useDashboardData(client.id);
   const alertsQ = useAlerts();
-  const infraQ = useInfrastructureEvents();
+  const monitoringQ = useMonitoring();
   const incidentsQ = useIncidentLogs();
 
   const summary = data?.summary ?? {};
@@ -77,25 +78,37 @@ export default function Dashboard() {
   );
   const aiActions = summary.ai_actions;
 
-  // Infra services: derive from infrastructure_events (latest status per service).
+  // Infra services: derive from monitoring-proxy (Prometheus + Uptime Kuma).
   const infraServices = useMemo(() => {
-    const events = infraQ.data ?? [];
-    const map = new Map<string, { name: string; status: string; at: string }>();
-    for (const e of events) {
-      if (!e.service_name) continue;
-      const prev = map.get(e.service_name);
-      if (!prev || new Date(e.created_at).getTime() > new Date(prev.at).getTime()) {
-        map.set(e.service_name, { name: e.service_name, status: e.status ?? "unknown", at: e.created_at });
-      }
-    }
-    return Array.from(map.values()).slice(0, 6);
-  }, [infraQ.data]);
+    const monitors = monitoringQ.data?.uptime?.monitors ?? [];
+    const norm = (s: string) => {
+      const v = (s ?? "").toString().toLowerCase();
+      if (v === "1" || v === "up") return "up";
+      if (v === "0" || v === "down") return "down";
+      if (v === "2" || v === "pending") return "pending";
+      if (v === "3" || v === "maintenance") return "maintenance";
+      return v || "unknown";
+    };
+    return monitors.slice(0, 6).map(m => ({
+      name: m.id,
+      status: norm(m.status),
+      at: m.time ?? new Date().toISOString(),
+      ping: m.ping,
+    }));
+  }, [monitoringQ.data]);
 
   const infraHealth = useMemo(() => {
-    if (infraServices.length === 0) return null;
-    const healthy = infraServices.filter(s => /^(ok|healthy|up|running)$/i.test(s.status)).length;
-    return Math.round((healthy / infraServices.length) * 100);
-  }, [infraServices]);
+    const u = monitoringQ.data?.uptime;
+    if (!u || !u.total) {
+      // Fallback to Prometheus cluster signals
+      const c = monitoringQ.data?.cluster;
+      if (c?.pods_total && c.pods_ready != null) {
+        return Math.round((c.pods_ready / c.pods_total) * 100);
+      }
+      return null;
+    }
+    return Math.round((u.up / u.total) * 100);
+  }, [monitoringQ.data]);
 
   // Automation success: from real automations payload.
   const automationRate = useMemo(() => {
@@ -272,20 +285,24 @@ export default function Dashboard() {
             <h2 className="text-[15px] font-semibold text-foreground font-display flex items-center gap-2">
               <Server className="h-4 w-4 text-primary" /> Infrastructure Command
             </h2>
-            <p className="mt-0.5 text-[11.5px] text-muted-foreground">Latest service health from infrastructure telemetry.</p>
+            <p className="mt-0.5 text-[11.5px] text-muted-foreground">Live service health via monitoring-proxy (Prometheus + Uptime Kuma).</p>
           </div>
           <Link to="/infrastructure" className="text-[11px] text-primary hover:underline">Open NOC →</Link>
         </div>
-        {infraServices.length === 0 ? (
+        {monitoringQ.isLoading ? (
+          <div className="flex items-center justify-center px-4 py-8 text-[12px] text-muted-foreground">
+            <Loader2 className="mr-2 h-3.5 w-3.5 animate-spin" /> Querying Prometheus…
+          </div>
+        ) : infraServices.length === 0 ? (
           <div className="rounded-md border border-dashed border-border/60 bg-surface/30 px-4 py-8 text-center">
-            <p className="text-[12px] text-muted-foreground">No infrastructure events recorded.</p>
-            <p className="mt-1 text-[10.5px] text-muted-foreground/70">Service status will appear as agents emit telemetry.</p>
+            <p className="text-[12px] text-muted-foreground">No monitors reported by Prometheus / Uptime Kuma.</p>
+            <p className="mt-1 text-[10.5px] text-muted-foreground/70">Service status will appear as the monitoring stack exposes targets.</p>
           </div>
         ) : (
           <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
             {infraServices.map(s => {
               const ok = /^(ok|healthy|up|running)$/i.test(s.status);
-              const warn = /^(degraded|warning|pending|starting)$/i.test(s.status);
+              const warn = /^(degraded|warning|pending|starting|maintenance)$/i.test(s.status);
               const c = ok ? "status-booked" : warn ? "status-followup" : "status-failed";
               return (
                 <div key={s.name} className="flex items-center justify-between rounded-md border border-border/60 bg-surface/40 px-3 py-2.5">
@@ -294,7 +311,9 @@ export default function Dashboard() {
                       <span className={`h-1.5 w-1.5 rounded-full bg-${c} animate-pulse-soft`} />
                       <span className="text-[12px] font-medium text-foreground truncate">{s.name}</span>
                     </div>
-                    <div className="mt-0.5 text-[10px] tabular text-muted-foreground">updated {opsTimeAgo(s.at)}</div>
+                    <div className="mt-0.5 text-[10px] tabular text-muted-foreground">
+                      {s.ping != null ? `${Math.round(s.ping)}ms · ` : ""}updated {opsTimeAgo(s.at)}
+                    </div>
                   </div>
                   <div className={`text-[10px] uppercase tracking-[0.1em] font-semibold text-${c}`}>{s.status}</div>
                 </div>
