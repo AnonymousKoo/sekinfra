@@ -1,5 +1,14 @@
-import { createContext, useContext, useState, ReactNode } from "react";
-import { clients, Client } from "./mock-data";
+import { createContext, useContext, ReactNode } from "react";
+import { Client } from "./types";
+
+// Single-workspace context. Multi-tenant client switching will be wired
+// in when the backend exposes a real organizations source.
+const WORKSPACE: Client = {
+  id: "sek",
+  name: "SEKINFRA Internal",
+  industry: "Operating system",
+  initial: "S",
+};
 
 interface Ctx {
   client: Client;
@@ -10,10 +19,8 @@ interface Ctx {
 const ClientContext = createContext<Ctx | null>(null);
 
 export function ClientProvider({ children }: { children: ReactNode }) {
-  const [id, setId] = useState("sek");
-  const client = clients.find(c => c.id === id) ?? clients[0];
   return (
-    <ClientContext.Provider value={{ client, setClientId: setId, clients }}>
+    <ClientContext.Provider value={{ client: WORKSPACE, setClientId: () => {}, clients: [WORKSPACE] }}>
       {children}
     </ClientContext.Provider>
   );
