@@ -73,12 +73,7 @@ export function TopBar() {
 
         <div className="flex-1 md:flex-none" />
 
-        {/* Live system health */}
-        <div className="hidden lg:flex items-center gap-1.5 rounded-md border border-border bg-card/60 px-2.5 py-1.5">
-          <Activity className="h-3.5 w-3.5 text-status-booked" />
-          <span className="text-[10.5px] font-medium tabular text-foreground">99.98%</span>
-          <span className="text-[10px] text-muted-foreground">uptime</span>
-        </div>
+        {/* Live system health placeholder — wire to monitoring-proxy when ready */}
 
         {/* AI assistant */}
         <button className="hidden sm:flex h-8 items-center gap-1.5 rounded-md border border-primary/30 bg-primary/10 px-2.5 text-[11px] font-medium text-primary hover:bg-primary/15">
