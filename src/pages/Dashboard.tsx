@@ -81,9 +81,17 @@ export default function Dashboard() {
   // Infra services: derive from monitoring-proxy (Prometheus + Uptime Kuma).
   const infraServices = useMemo(() => {
     const monitors = monitoringQ.data?.uptime?.monitors ?? [];
+    const norm = (s: string) => {
+      const v = (s ?? "").toString().toLowerCase();
+      if (v === "1" || v === "up") return "up";
+      if (v === "0" || v === "down") return "down";
+      if (v === "2" || v === "pending") return "pending";
+      if (v === "3" || v === "maintenance") return "maintenance";
+      return v || "unknown";
+    };
     return monitors.slice(0, 6).map(m => ({
       name: m.id,
-      status: m.status,
+      status: norm(m.status),
       at: m.time ?? new Date().toISOString(),
       ping: m.ping,
     }));
