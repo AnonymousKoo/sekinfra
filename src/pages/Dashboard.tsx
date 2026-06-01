@@ -47,7 +47,7 @@ export default function Dashboard() {
   const { client } = useClient();
   const { data, isLoading, dataUpdatedAt } = useDashboardData(client.id);
   const alertsQ = useAlerts();
-  const infraQ = useInfrastructureEvents();
+  const monitoringQ = useMonitoring();
   const incidentsQ = useIncidentLogs();
 
   const summary = data?.summary ?? {};
@@ -78,25 +78,29 @@ export default function Dashboard() {
   );
   const aiActions = summary.ai_actions;
 
-  // Infra services: derive from infrastructure_events (latest status per service).
+  // Infra services: derive from monitoring-proxy (Prometheus + Uptime Kuma).
   const infraServices = useMemo(() => {
-    const events = infraQ.data ?? [];
-    const map = new Map<string, { name: string; status: string; at: string }>();
-    for (const e of events) {
-      if (!e.service_name) continue;
-      const prev = map.get(e.service_name);
-      if (!prev || new Date(e.created_at).getTime() > new Date(prev.at).getTime()) {
-        map.set(e.service_name, { name: e.service_name, status: e.status ?? "unknown", at: e.created_at });
-      }
-    }
-    return Array.from(map.values()).slice(0, 6);
-  }, [infraQ.data]);
+    const monitors = monitoringQ.data?.uptime?.monitors ?? [];
+    return monitors.slice(0, 6).map(m => ({
+      name: m.id,
+      status: m.status,
+      at: m.time ?? new Date().toISOString(),
+      ping: m.ping,
+    }));
+  }, [monitoringQ.data]);
 
   const infraHealth = useMemo(() => {
-    if (infraServices.length === 0) return null;
-    const healthy = infraServices.filter(s => /^(ok|healthy|up|running)$/i.test(s.status)).length;
-    return Math.round((healthy / infraServices.length) * 100);
-  }, [infraServices]);
+    const u = monitoringQ.data?.uptime;
+    if (!u || !u.total) {
+      // Fallback to Prometheus cluster signals
+      const c = monitoringQ.data?.cluster;
+      if (c?.pods_total && c.pods_ready != null) {
+        return Math.round((c.pods_ready / c.pods_total) * 100);
+      }
+      return null;
+    }
+    return Math.round((u.up / u.total) * 100);
+  }, [monitoringQ.data]);
 
   // Automation success: from real automations payload.
   const automationRate = useMemo(() => {
