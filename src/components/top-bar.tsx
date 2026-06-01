@@ -1,6 +1,6 @@
 import { useClient } from "@/lib/client-context";
 import { useAuth } from "@/lib/auth-context";
-import { Check, ChevronsUpDown, Search, Bell, Command, LogOut, Sparkles, Activity } from "lucide-react";
+import { Check, ChevronsUpDown, Search, Bell, Command, LogOut, Sparkles } from "lucide-react";
 import { useState } from "react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
