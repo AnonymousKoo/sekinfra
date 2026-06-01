@@ -1,6 +1,6 @@
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { useClient } from "@/lib/client-context";
-import { timeAgo, statusLabels, ActivityEvent } from "@/lib/mock-data";
+import { timeAgo, statusLabels, ActivityEvent } from "@/lib/types";
 import { useLiveLeads } from "@/lib/use-live-leads";
 import { PageHeader } from "@/components/page-header";
 import { StatusBadge } from "@/components/status-badge";
@@ -36,20 +36,10 @@ export default function LeadDetail() {
     );
   }
 
-  // Build a synthetic timeline from the lead state
-  const events: { type: ActivityEvent["type"]; message: string; timestamp: string }[] = [];
+  // Real timeline only — no synthetic fallbacks.
+  // TODO: wire to a per-lead activity stream once the backend exposes it.
+  const timeline: { type: ActivityEvent["type"]; label: string; iso: string }[] = [];
 
-  const fallback: { type: ActivityEvent["type"]; label: string; iso: string }[] = [
-    { type: "lead_captured", label: "Lead captured from " + lead.source, iso: lead.createdAt },
-    ...(lead.payment === "paid" ? [{ type: "payment_received" as const, label: "Payment received · $" + (lead.value ?? 0), iso: lead.createdAt }] : []),
-    ...(lead.intake === "complete" ? [{ type: "intake_submitted" as const, label: "Intake form submitted", iso: lead.createdAt }] : []),
-    ...(["emailed","opened","clicked","booked"].includes(lead.stage) ? [{ type: "email_sent" as const, label: "Booking email sent via Resend", iso: lead.lastActivity }] : []),
-    ...(["opened","clicked","booked"].includes(lead.stage) ? [{ type: "email_opened" as const, label: "Email opened", iso: lead.lastActivity }] : []),
-    ...(["clicked","booked"].includes(lead.stage) ? [{ type: "link_clicked" as const, label: "Booking link clicked", iso: lead.lastActivity }] : []),
-    ...(lead.stage === "booked" ? [{ type: "appointment_booked" as const, label: "Appointment scheduled via Cal.com", iso: lead.lastActivity }] : []),
-  ];
-
-  const timeline = (events.length > 0 ? events.map(e => ({ type: e.type, label: e.message, iso: e.timestamp })) : fallback).slice().reverse();
 
   return (
     <>
@@ -107,23 +97,30 @@ export default function LeadDetail() {
             <h2 className="text-sm font-semibold text-foreground">Event timeline</h2>
             <span className="text-[11px] text-muted-foreground">{timeline.length} events</span>
           </div>
-          <ol className="mt-5 relative space-y-5 border-l border-border/60 pl-6">
-            {timeline.map((e, i) => {
-              const Icon = eventIcon[e.type] ?? FileText;
-              return (
-                <li key={i} className="relative">
-                  <span className="absolute -left-[33px] flex h-6 w-6 items-center justify-center rounded-full border border-border bg-surface">
-                    <Icon className="h-3 w-3 text-primary" />
-                  </span>
-                  <div className="flex items-baseline justify-between gap-3">
-                    <p className="text-[13px] text-foreground">{e.label}</p>
-                    <span className="text-[10.5px] tabular text-muted-foreground whitespace-nowrap">{timeAgo(e.iso)}</span>
-                  </div>
-                  <p className="mt-0.5 text-[10.5px] text-muted-foreground/80 capitalize">{e.type.replace(/_/g, " ")}</p>
-                </li>
-              );
-            })}
-          </ol>
+          {timeline.length === 0 ? (
+            <div className="mt-5 rounded-md border border-dashed border-border/60 bg-surface/30 px-4 py-10 text-center">
+              <p className="text-[12.5px] text-muted-foreground">No activity events recorded yet.</p>
+              <p className="mt-1 text-[10.5px] text-muted-foreground/70">Events will stream here once the backend emits per-lead activity.</p>
+            </div>
+          ) : (
+            <ol className="mt-5 relative space-y-5 border-l border-border/60 pl-6">
+              {timeline.map((e, i) => {
+                const Icon = eventIcon[e.type] ?? FileText;
+                return (
+                  <li key={i} className="relative">
+                    <span className="absolute -left-[33px] flex h-6 w-6 items-center justify-center rounded-full border border-border bg-surface">
+                      <Icon className="h-3 w-3 text-primary" />
+                    </span>
+                    <div className="flex items-baseline justify-between gap-3">
+                      <p className="text-[13px] text-foreground">{e.label}</p>
+                      <span className="text-[10.5px] tabular text-muted-foreground whitespace-nowrap">{timeAgo(e.iso)}</span>
+                    </div>
+                    <p className="mt-0.5 text-[10.5px] text-muted-foreground/80 capitalize">{e.type.replace(/_/g, " ")}</p>
+                  </li>
+                );
+              })}
+            </ol>
+          )}
         </section>
       </div>
     </>

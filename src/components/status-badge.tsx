@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import { LeadStatus, statusColor, statusLabels } from "@/lib/mock-data";
+import { LeadStatus, statusColor, statusLabels } from "@/lib/types";
 
 export function StatusBadge({ status, className }: { status: LeadStatus; className?: string }) {
   return (

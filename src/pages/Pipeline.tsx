@@ -6,7 +6,7 @@ import { ArrowRight, Loader2, Hexagon, TrendingUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Lead } from "@/lib/mock-data";
+import { Lead } from "@/lib/types";
 
 const STAGES = [
   { key: "new_lead", label: "New Lead" },

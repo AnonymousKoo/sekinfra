@@ -1,7 +1,7 @@
 import { useClient } from "@/lib/client-context";
 import { useDashboardData } from "@/lib/use-live-leads";
 import { PageHeader } from "@/components/page-header";
-import { Lead } from "@/lib/mock-data";
+import { Lead } from "@/lib/types";
 import { useMemo, useState } from "react";
 import { Search, Filter, ArrowUpDown, X, Loader2, Mail, Phone, Calendar, DollarSign, ExternalLink } from "lucide-react";
 import { Link } from "react-router-dom";
