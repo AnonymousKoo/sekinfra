@@ -11,12 +11,11 @@ import { Lead } from "@/lib/types";
 const STAGES = [
   { key: "new_lead", label: "New Lead" },
   { key: "intake_received", label: "Intake Submitted" },
-  { key: "oia_booked", label: "OIA Booked" },
+  { key: "oia_returned", label: "OIA Completed" },
   { key: "payment_pending", label: "Payment Pending" },
   { key: "payment_received", label: "Payment Received" },
-  { key: "oia_completed", label: "OIA Completed" },
   { key: "activation", label: "Activation" },
-  { key: "dashboard_live", label: "Dashboard Live" },
+  { key: "live", label: "Dashboard Live" },
 ] as const;
 
 type StageKey = typeof STAGES[number]["key"];
