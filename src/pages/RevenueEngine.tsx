@@ -18,7 +18,7 @@ export default function RevenueEngine() {
   const paidToBooked = Number(summary.paid_to_booked ?? 0);
   const recoveredBookings = Number(summary.recovered_bookings ?? 0);
   const paidToday = Number(summary.paid_today ?? 0);
-  const totalLeads = Number(summary.total_leads ?? leads.length);
+  const totalLeads = Number(summary.total_leads ?? 0);
   const booked = Number(summary.booked ?? 0);
 
   return (
@@ -76,14 +76,18 @@ export default function RevenueEngine() {
                         <div className="font-medium text-foreground">{l.name}</div>
                         <div className="text-[10.5px] text-muted-foreground truncate max-w-[220px]">{l.email}</div>
                       </td>
-                      <td className="px-4 py-2.5 text-muted-foreground">{l.lifecycleStage ?? l.stage ?? "—"}</td>
+                      <td className="px-4 py-2.5">
+                        <span className={cn("rounded-md border px-1.5 py-0.5 text-[10px] uppercase font-semibold tracking-wider bg-primary/10 text-primary border-primary/20")}>
+                          {l.pipeline_stage ?? "—"}
+                        </span>
+                      </td>
                       <td className="px-4 py-2.5">
                         <span className={cn("rounded-md border px-1.5 py-0.5 text-[10px] uppercase font-semibold tracking-wider",
-                          l.paymentReceived || l.payment === "paid"
+                          l.paymentReceived === true
                             ? "bg-status-booked/15 text-status-booked border-status-booked/30"
                             : "bg-status-failed/15 text-status-failed border-status-failed/30",
                         )}>
-                          {l.paymentReceived || l.payment === "paid" ? "received" : "pending"}
+                          {l.paymentReceived === true ? "RECEIVED" : "PENDING"}
                         </span>
                       </td>
                       <td className="px-4 py-2.5 text-right tabular text-foreground">

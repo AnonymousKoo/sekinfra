@@ -91,6 +91,7 @@ function normalizeLead(raw: any, clientId: string, idx: number): Lead {
     totalIncidents: raw?.total_incidents ?? 0,
     businessName: raw?.business_name ?? null,
     paymentAmount: raw?.payment_amount ?? 0,
+    pipeline_stage: raw?.pipeline_stage ?? undefined,
   };
 }
 
