@@ -33,14 +33,14 @@ function moneyOrDash(v: any): string {
   return Number.isFinite(n) ? fmtCurrency(n) : "—";
 }
 
-const stageOrder = [
-  { key: "new", label: "New Lead" },
-  { key: "intake", label: "Intake Received" },
-  { key: "oia_booked", label: "OIA Booked" },
-  { key: "paid", label: "Payment Received" },
-  { key: "oia_complete", label: "OIA Completed" },
-  { key: "activation", label: "Activation" },
-  { key: "live", label: "Dashboard Live" },
+const stageOrder: { label: string; stages: string[] }[] = [
+  { label: "New Lead", stages: ["new_lead"] },
+  { label: "Intake Received", stages: ["intake_received"] },
+  { label: "OIA Booked", stages: ["call_booked"] },
+  { label: "Payment Received", stages: ["payment_received"] },
+  { label: "OIA Completed", stages: ["oia_returned"] },
+  { label: "Activation", stages: ["deploying", "credentials_received"] },
+  { label: "Dashboard Live", stages: ["live"] },
 ];
 
 export default function Dashboard() {
@@ -57,12 +57,12 @@ export default function Dashboard() {
   const automations = data?.automations ?? [];
   const leads = data?.leads ?? [];
 
-  const pipeline = stageOrder.map(s => {
-    const found = pipelineRaw.find((p: any) => {
-      const n = (p?.stage ?? p?.name ?? "").toString().toLowerCase();
-      return n === s.key || n.includes(s.key.split("_")[0]);
-    });
-    return { ...s, count: num(found?.count ?? found?.value, 0) };
+  const pipeline = stageOrder.map((s, idx) => {
+    const count = s.stages.reduce((sum, key) => {
+      const found = pipelineRaw.find((p: any) => (p?.stage ?? "").toString().toLowerCase() === key);
+      return sum + num(found?.count ?? found?.value, 0);
+    }, 0);
+    return { key: s.stages[0] ?? `stage-${idx}`, label: s.label, count };
   });
 
   // Live metrics from real sources only — no synthetic fallbacks.
