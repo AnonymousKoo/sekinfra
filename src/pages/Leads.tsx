@@ -67,7 +67,7 @@ export default function Leads() {
     [leads, q, stage, type, sortDesc],
   );
 
-  const totalRevenue = filtered.reduce((s, l) => s + (l.value ?? l.paymentAmount ?? 0), 0);
+  const totalRevenue = leads.filter(l => l.paymentReceived === true).reduce((s, l) => s + (l.paymentAmount ?? 0), 0);
 
   return (
     <>
