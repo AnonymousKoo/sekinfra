@@ -11,12 +11,11 @@ import { Lead } from "@/lib/types";
 const STAGES = [
   { key: "new_lead", label: "New Lead" },
   { key: "intake_received", label: "Intake Submitted" },
-  { key: "oia_booked", label: "OIA Booked" },
+  { key: "oia_returned", label: "OIA Completed" },
   { key: "payment_pending", label: "Payment Pending" },
   { key: "payment_received", label: "Payment Received" },
-  { key: "oia_completed", label: "OIA Completed" },
   { key: "activation", label: "Activation" },
-  { key: "dashboard_live", label: "Dashboard Live" },
+  { key: "live", label: "Dashboard Live" },
 ] as const;
 
 type StageKey = typeof STAGES[number]["key"];
@@ -35,12 +34,13 @@ function timeAgo(iso?: string | null) {
 }
 
 function leadInStage(l: Lead, key: StageKey): boolean {
-  const op = (l.operationalState ?? "").toLowerCase();
   if (key === "payment_pending") {
-    return l.bookedCall === true && !l.paymentReceived;
+    return l.paymentReceived === false && l.pipeline_stage === "oia_returned";
   }
-  if (key === "new_lead") return op === "new_lead" || (!l.oiaSubmitted && !l.bookedCall);
-  return op === key;
+  if (key === "activation") {
+    return l.pipeline_stage === "deploying" || l.pipeline_stage === "credentials_received";
+  }
+  return l.pipeline_stage === key;
 }
 
 export default function Pipeline() {
@@ -52,18 +52,28 @@ export default function Pipeline() {
 
   const stageData = useMemo(() => {
     return STAGES.map(s => {
+      let count = 0;
+      if (s.key === "payment_pending") {
+        count = leads.filter(l => l.paymentReceived === false && l.pipeline_stage === "oia_returned").length;
+      } else if (s.key === "activation") {
+        count = ["deploying", "credentials_received"].reduce((sum, stageKey) => {
+          const p = pipelineApi.find((p: any) => p.stage === stageKey);
+          return sum + (typeof p?.count === "number" ? p.count : 0);
+        }, 0);
+      } else {
+        const p = pipelineApi.find((p: any) => p.stage === s.key);
+        count = typeof p?.count === "number" ? p.count : 0;
+      }
       const inStage = leads.filter(l => leadInStage(l, s.key));
-      const apiCount = pipelineApi.find((p: any) => p.stage === s.key)?.count;
-      const count = typeof apiCount === "number" ? apiCount : inStage.length;
       const revenue = inStage.reduce((sum, l) => sum + (l.value ?? l.paymentAmount ?? 0), 0);
       return { ...s, count, revenue, leads: inStage };
     });
   }, [leads, pipelineApi]);
 
-  const totalLeads = stageData[0]?.count || stageData.reduce((s, x) => s + x.count, 0);
-  const totalRevenue = stageData.reduce((s, x) => s + x.revenue, 0);
-  const liveCount = stageData[stageData.length - 1].count;
-  const overallConv = totalLeads ? Math.round((liveCount / totalLeads) * 100) : 0;
+  const totalRevenue = leads.filter(l => l.paymentReceived === true).reduce((sum, l) => sum + (l.paymentAmount ?? 0), 0);
+  const livePipelineCount = pipelineApi.find((p: any) => p.stage === "live")?.count ?? 0;
+  const totalLeadsSummary = Number(data?.summary?.total_leads ?? 0);
+  const overallConv = totalLeadsSummary ? Math.round((livePipelineCount / totalLeadsSummary) * 100) : 0;
 
   const inSelected = selected ? stageData.find(s => s.key === selected)?.leads ?? [] : [];
 
@@ -91,7 +101,7 @@ export default function Pipeline() {
         </div>
         <div className="card-surface p-4">
           <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Live dashboards</div>
-          <div className="mt-1 metric-number text-2xl font-semibold text-status-booked">{liveCount}</div>
+          <div className="mt-1 metric-number text-2xl font-semibold text-status-booked">{Number(data?.summary?.active_clients ?? 0)}</div>
         </div>
       </div>
 
