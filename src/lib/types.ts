@@ -57,7 +57,7 @@ export interface Lead {
   totalIncidents?: number;
   businessName?: string | null;
   paymentAmount?: number;
-}
+  pipeline_stage?: string;
 
 export interface ActivityEvent {
   id: string;

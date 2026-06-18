@@ -18,7 +18,7 @@ export default function RevenueEngine() {
   const paidToBooked = Number(summary.paid_to_booked ?? 0);
   const recoveredBookings = Number(summary.recovered_bookings ?? 0);
   const paidToday = Number(summary.paid_today ?? 0);
-  const totalLeads = Number(summary.total_leads ?? leads.length);
+  const totalLeads = Number(summary.total_leads ?? 0);
   const booked = Number(summary.booked ?? 0);
 
   return (
