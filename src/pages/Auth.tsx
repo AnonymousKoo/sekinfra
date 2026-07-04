@@ -14,7 +14,9 @@ export default function Auth() {
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) navigate("/", { replace: true });
     });
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, s) => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_e, s) => {
       if (s) navigate("/", { replace: true });
     });
     return () => subscription.unsubscribe();
@@ -25,7 +27,11 @@ export default function Auth() {
     setLoading(true);
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     setLoading(false);
-    if (error) toast.error(error.message);
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
+    navigate("/", { replace: true });
   };
 
   return (
@@ -66,7 +72,8 @@ export default function Auth() {
           <div className="mt-6 flex items-start gap-2 rounded-md border border-border/60 bg-surface/40 p-3">
             <ShieldCheck className="mt-0.5 h-3.5 w-3.5 shrink-0 text-status-booked" />
             <p className="text-[11px] leading-relaxed text-muted-foreground">
-              All session data is encrypted. Lead PII, payment status, and revenue metrics are gated behind authentication.
+              All session data is encrypted. Lead PII, payment status, and revenue metrics are gated behind
+              authentication.
             </p>
           </div>
         </div>
