@@ -26,10 +26,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     supabase.auth
       .getSession()
-
+      .then(({ data: { session: s } }) => {
         setSession(s);
         setUser(s?.user ?? null);
       })
+
       .catch((err) => {
         console.error("getSession failed:", err);
       })
