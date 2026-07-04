@@ -24,16 +24,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setUser(s?.user ?? null);
     });
 
-<<<<<<< HEAD
-    supabase.auth.getSession()
-=======
     supabase.auth
       .getSession()
->>>>>>> 72e2bc343786fda230418528647f39dd09c82c4e
       .then(({ data: { session: s } }) => {
         setSession(s);
         setUser(s?.user ?? null);
       })
+
       .catch((err) => {
         console.error("getSession failed:", err);
       })
