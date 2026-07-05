@@ -1,8 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import { Lead, LeadStatus, PipelineStage, PaymentStatus, IntakeStatus, BookingStatus } from "./types";
-
-const DASHBOARD_PROXY_URL =
-  "https://gnuqaefotwgkwurjpyik.supabase.co/functions/v1/dashboard-proxy";
 
 const stageFlow: PipelineStage[] = ["new", "paid", "intake", "emailed", "opened", "clicked", "booked"];
 
@@ -11,11 +9,24 @@ function deriveStatus(stage: PipelineStage, hoursSince: number): LeadStatus {
   if (stage === "clicked" && hoursSince > 24) return "needs_followup";
   if (stage === "emailed" && hoursSince > 12) return "needs_followup";
   if (stage === "paid" && hoursSince > 6) return "needs_followup";
-  return ({ new: "new", paid: "paid", intake: "intake_complete", emailed: "email_sent", opened: "opened", clicked: "clicked", booked: "booked" } as const)[stage];
+  return (
+    {
+      new: "new",
+      paid: "paid",
+      intake: "intake_complete",
+      emailed: "email_sent",
+      opened: "opened",
+      clicked: "clicked",
+      booked: "booked",
+    } as const
+  )[stage];
 }
 
 function mapStageName(name: string): PipelineStage {
-  const n = (name || "").toLowerCase().trim().replace(/[\s-]+/g, "_");
+  const n = (name || "")
+    .toLowerCase()
+    .trim()
+    .replace(/[\s-]+/g, "_");
   if (stageFlow.includes(n as PipelineStage)) return n as PipelineStage;
   if (n.includes("book")) return "booked";
   if (n.includes("click")) return "clicked";
@@ -27,19 +38,23 @@ function mapStageName(name: string): PipelineStage {
 }
 
 function normalizeLead(raw: any, clientId: string, idx: number): Lead {
-  // Prefer the API's operational state, then fall back to legacy fields
   const opState: string = raw?.operational_state ?? raw?.stage ?? raw?.pipeline_stages?.name ?? "";
   const stage = mapStageName(opState);
 
-  const payment: PaymentStatus = raw?.payment_received || raw?.payment_status === "paid"
-    ? "paid"
-    : stageFlow.indexOf(stage) >= stageFlow.indexOf("paid") ? "paid" : "unpaid";
-  const intake: IntakeStatus = raw?.intake_status === true || raw?.oia_submitted
-    ? "complete"
-    : stageFlow.indexOf(stage) >= stageFlow.indexOf("intake") ? "complete" : "pending";
-  const bookingStatus: BookingStatus = raw?.booked_call || raw?.booking_status === "booked" || stage === "booked"
-    ? "scheduled"
-    : "none";
+  const payment: PaymentStatus =
+    raw?.payment_received || raw?.payment_status === "paid"
+      ? "paid"
+      : stageFlow.indexOf(stage) >= stageFlow.indexOf("paid")
+        ? "paid"
+        : "unpaid";
+  const intake: IntakeStatus =
+    raw?.intake_status === true || raw?.oia_submitted
+      ? "complete"
+      : stageFlow.indexOf(stage) >= stageFlow.indexOf("intake")
+        ? "complete"
+        : "pending";
+  const bookingStatus: BookingStatus =
+    raw?.booked_call || raw?.booking_status === "booked" || stage === "booked" ? "scheduled" : "none";
 
   const lastActivity = raw?.updated_at ?? raw?.last_activity_at ?? raw?.created_at ?? new Date().toISOString();
   const createdAt = raw?.created_at ?? raw?.stage_entered_at ?? lastActivity;
@@ -68,7 +83,6 @@ function normalizeLead(raw: any, clientId: string, idx: number): Lead {
     lastActivity,
     createdAt,
     value: raw?.pipeline_value ?? raw?.payment_amount ?? undefined,
-
     operationalState: raw?.operational_state ?? undefined,
     lifecycleStage: raw?.lifecycle_stage ?? undefined,
     infrastructureStatus: raw?.infrastructure_status ?? undefined,
@@ -109,12 +123,10 @@ export interface DashboardPayload {
 }
 
 async function fetchDashboard(clientId: string): Promise<DashboardPayload> {
-  const res = await fetch(DASHBOARD_PROXY_URL, {
+  const { data: payload, error } = await supabase.functions.invoke("dashboard-proxy", {
     method: "GET",
-    headers: { "Content-Type": "application/json" },
   });
-  if (!res.ok) throw new Error(`Dashboard proxy returned ${res.status}`);
-  const payload = await res.json();
+  if (error) throw new Error(`Dashboard proxy error: ${error.message}`);
   if (payload && payload.success === false) throw new Error("Dashboard API failed");
   const data = payload?.data ?? {};
 
