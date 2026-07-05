@@ -122,11 +122,20 @@ export interface DashboardPayload {
   infrastructure_events: any[];
 }
 
+const DASHBOARD_PROXY_URL = "https://gnuqaefotwgkwurjpyik.supabase.co/functions/v1/dashboard-proxy";
+const DASHBOARD_PROXY_ANON_KEY =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdudXFhZWZvdHdna3d1cmpweWlrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc2Mzk5NDMsImV4cCI6MjA5MzIxNTk0M30.Z6SHoqWbkOnB318tTStPcT_h6H4AEBxLU8uQT9_KWYw";
+
 async function fetchDashboard(clientId: string): Promise<DashboardPayload> {
-  const { data: payload, error } = await supabase.functions.invoke("dashboard-proxy", {
+  const res = await fetch(DASHBOARD_PROXY_URL, {
     method: "GET",
+    headers: {
+      apikey: DASHBOARD_PROXY_ANON_KEY,
+      Authorization: `Bearer ${DASHBOARD_PROXY_ANON_KEY}`,
+    },
   });
-  if (error) throw new Error(`Dashboard proxy error: ${error.message}`);
+  if (!res.ok) throw new Error(`Dashboard proxy error: HTTP ${res.status}`);
+  const payload = await res.json().catch(() => null);
   if (payload && payload.success === false) throw new Error("Dashboard API failed");
   const data = payload?.data ?? {};
 
