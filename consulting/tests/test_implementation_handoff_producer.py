@@ -52,6 +52,7 @@ class ImplementationHandoffProducerTests(unittest.TestCase):
             "excluded_scope": ["Production deployment is excluded."],
             "constraints": ["Preserve existing client records."], "context_references": [],
             "integrations": [{"id": "integration.calendar", "statement": "Existing calendar API boundary."}],
+            "allowed_access_level": "SANDBOX_ONLY",
             "risks": [{"id": "risk.concurrent-edits", "statement": "Concurrent edits may conflict."}],
             "implementation_requirements": [{"id": "requirement.atomic", "statement": "Apply scheduling updates atomically."}],
             "acceptance_criteria": [{"criterion_id": "criterion.audit", "expected_condition": "Every scheduling change is attributable.", "evidence_requirement": "Automated audit-trail test reference."}],
@@ -90,12 +91,30 @@ class ImplementationHandoffProducerTests(unittest.TestCase):
             with self.assertRaises(ValueError): self.produce()
             source[key] = original
 
-    def test_secret_fields_and_missing_dual_approval_are_rejected(self):
+    def test_secret_fields_values_and_missing_dual_approval_are_rejected(self):
         self.outcome["api_token"] = "prohibited"
         with self.assertRaises(ValueError): self.produce()
         self.outcome.pop("api_token")
+        self.outcome["constraints"].append("api_key=fictional-but-prohibited")
+        with self.assertRaises(ValueError): self.produce()
+        self.outcome["constraints"].pop()
         self.outcome["upstream_approval_references"].pop()
         with self.assertRaises(ValueError): self.produce()
+
+    def test_revisions_require_exact_predecessor_shape(self):
+        first = self.produce()
+        self.outcome["handoff_version"] = 2
+        self.outcome["supersedes_handoff_reference"] = {
+            "reference_type": "IMPLEMENTATION_HANDOFF",
+            "reference_id": first["implementation_handoff_id"],
+            "reference_version": first["handoff_version"],
+            "reference_digest": first["handoff_digest"],
+        }
+        revised = self.produce()
+        self.assertFalse(list(self.validator.iter_errors(revised)))
+        self.outcome["supersedes_handoff_reference"]["reference_version"] = 2
+        with self.assertRaises(ValueError):
+            self.produce()
 
 
 if __name__ == "__main__":

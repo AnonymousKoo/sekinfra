@@ -4,11 +4,18 @@ from __future__ import annotations
 import copy
 import hashlib
 import json
+import re
 
 
 SECRET_FIELD_PARTS = frozenset({
     "credential", "password", "private_key", "secret", "token", "authenticated_url",
 })
+SECRET_VALUE = re.compile(
+    r"(?i)(?:password|passwd|api[_-]?key|access[_-]?token|refresh[_-]?token|"
+    r"client[_-]?secret|authorization)\s*[:=]\s*\S+|"
+    r"bearer\s+[a-z0-9._~+/=-]{8,}|"
+    r"\b(?:https?|postgres(?:ql)?|mysql)://[^\s/:]+:[^\s/@]+@"
+)
 
 
 def canonical_digest(value: dict) -> str:
@@ -26,6 +33,8 @@ def _reject_secret_fields(value, path="handoff"):
     elif isinstance(value, list):
         for index, child in enumerate(value):
             _reject_secret_fields(child, f"{path}[{index}]")
+    elif isinstance(value, str) and SECRET_VALUE.search(value):
+        raise ValueError(f"secret-bearing value is prohibited at {path}")
 
 
 def _finding_key(reference):
@@ -70,9 +79,25 @@ def produce_implementation_handoff(*, outcome, conversion, delivery, findings):
         raise ValueError("selected finding identity/version/digest binding mismatch")
     if any(item.get("state") != "FINAL" for item in findings):
         raise ValueError("only FINAL findings may support an implementation handoff")
+    version = outcome.get("handoff_version")
+    supersedes = outcome.get("supersedes_handoff_reference")
+    if not isinstance(version, int) or isinstance(version, bool) or version < 1:
+        raise ValueError("handoff version must be a positive integer")
+    if version == 1 and supersedes is not None:
+        raise ValueError("initial handoff cannot supersede history")
+    if version > 1:
+        if not isinstance(supersedes, dict) or supersedes.get("reference_type") != "IMPLEMENTATION_HANDOFF":
+            raise ValueError("revised handoff must bind prior ImplementationHandoff history")
+        if (supersedes.get("reference_id") != outcome["implementation_handoff_id"]
+                or supersedes.get("reference_version") != version - 1
+                or not isinstance(supersedes.get("reference_digest"), str)
+                or not re.fullmatch(r"sha256:[0-9a-f]{64}", supersedes["reference_digest"])):
+            raise ValueError("revised handoff predecessor identity/version/digest is invalid")
     approvals = outcome["upstream_approval_references"]
-    if {item["approval_role"] for item in approvals} != {"CLIENT_APPROVER", "PROVIDER_APPROVER"}:
-        raise ValueError("exact client and provider approvals are required")
+    if (len(approvals) != 2
+            or {item["approval_role"] for item in approvals} != {"CLIENT_APPROVER", "PROVIDER_APPROVER"}
+            or len({item["approval_reference"] for item in approvals}) != 2):
+        raise ValueError("exact separate client and provider approvals are required")
     if outcome["source_conversion_reference"] != {
         "reference_id": conversion["oia_conversion_decision_id"],
         "reference_version": conversion["decision_version"],
@@ -96,6 +121,7 @@ def produce_implementation_handoff(*, outcome, conversion, delivery, findings):
         "constraints": copy.deepcopy(outcome.get("constraints", [])),
         "context_references": copy.deepcopy(outcome.get("context_references", [])),
         "integrations": copy.deepcopy(outcome.get("integrations", [])),
+        "allowed_access_level": outcome["allowed_access_level"],
         "risks": copy.deepcopy(outcome.get("risks", [])),
         "implementation_requirements": copy.deepcopy(outcome["implementation_requirements"]),
         "acceptance_criteria": copy.deepcopy(outcome["acceptance_criteria"]),
