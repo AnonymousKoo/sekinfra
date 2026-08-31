@@ -28,10 +28,11 @@ from tests.runtime import test_phase5c_runtime as phase5c_runtime
 
 DSN = os.environ.get("SEKINFRA_POSTGRES_DSN")
 ROLE = "sekinfra_phase5c_rls_test"
+RLS_PASSWORD = os.environ.get("SEKINFRA_PHASE5C_RLS_TEST_PASSWORD")
 DIGEST = "sha256:" + "a" * 64
 
 
-@unittest.skipUnless(DSN, "local Phase 5C PostgreSQL DSN is required")
+@unittest.skipUnless(DSN and RLS_PASSWORD, "local Phase 5C PostgreSQL DSN and test password are required")
 class Phase5CPostgresPersistenceTests(unittest.TestCase):
     OTHER_TENANT = "c5c20000-0000-4000-8000-000000000001"
 
@@ -44,8 +45,8 @@ class Phase5CPostgresPersistenceTests(unittest.TestCase):
         with cls.owner(autocommit=True) as connection:
             connection.execute(sql.SQL("drop role if exists {}").format(sql.Identifier(ROLE)))
             connection.execute(sql.SQL(
-                "create role {} login nosuperuser nobypassrls nocreatedb nocreaterole noinherit"
-            ).format(sql.Identifier(ROLE)))
+                "create role {} login password {} nosuperuser nobypassrls nocreatedb nocreaterole noinherit"
+            ).format(sql.Identifier(ROLE), sql.Literal(RLS_PASSWORD)))
             connection.execute(sql.SQL("grant sekinfra_consulting_service to {}").format(sql.Identifier(ROLE)))
 
     @classmethod
@@ -55,7 +56,7 @@ class Phase5CPostgresPersistenceTests(unittest.TestCase):
 
     @classmethod
     def service_factory(cls):
-        connection = psycopg.connect(DSN, user=ROLE, autocommit=True, row_factory=dict_row)
+        connection = psycopg.connect(DSN, user=ROLE, password=RLS_PASSWORD, autocommit=True, row_factory=dict_row)
         connection.execute("set role sekinfra_consulting_service")
         return connection
 
