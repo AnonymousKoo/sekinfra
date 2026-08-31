@@ -10,7 +10,9 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "test:consulting": "cd consulting && PYTHONPATH=src:.:tests/contracts:tests/runtime python3 -m unittest discover -s tests/runtime -p 'test_*.py'",
+    "test:consulting:boundary": "cd consulting && PYTHONPATH=src python3 -m unittest tests/test_implementation_handoff_producer.py tests/test_domain_boundary.py"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
