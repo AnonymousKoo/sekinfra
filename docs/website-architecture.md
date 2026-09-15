@@ -97,3 +97,12 @@ Two directly addressable, non-production prototype routes demonstrate one synthe
 The operator projection includes plan detail, inspection coverage, provenance summaries, internal observations, root cause confidence, draft and final findings, and delivery readiness. The client projection is intentionally narrower: approved scope, access boundaries, high level progress, final delivered findings, immutable delivery history, and explanatory next phase options. It excludes internal observations, hypotheses, draft findings, secure evidence references, assessor notes, and raw audit metadata.
 
 These routes provide no authentication, API, persistence, client action, authority facade, database access, or Avuhz integration. Cross lifecycle stage and next action labels are prototype presentation summaries because the current domain does not provide unified canonical read models for them.
+
+
+## OIA Workspace UX 2
+
+OIA Workspace UX 2 adds two synthetic operator routes: `/workspace` for the attention overview and `/workspace/engagements` for the engagement index. Along with `/workspace/engagements/demo`, these operator routes render only in local development and Vercel preview. Every operator entry route calls the shared production prototype guard and returns a 404 when `VERCEL_ENV` is `production`. The existing client demonstration remains at `/client/engagements/demo`.
+
+The workspace fixture uses a fixed synthetic reference time and a minimal set of domain style facts to derive deterministic presentation queues. Queue membership, attention ownership, cross lifecycle stage, and next action are nonauthoritative presentation projections. They do not define a backend summary contract, persisted task, or canonical cross lifecycle read model.
+
+The workspace remains server rendered and read only. It adds no authentication, persistence, API, database access, client action, production connection, or Avuhz integration.
