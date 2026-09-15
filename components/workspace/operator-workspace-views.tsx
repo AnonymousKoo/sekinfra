@@ -66,8 +66,8 @@ export function OperatorWorkspaceOverview() {
       </header>
 
       <aside aria-label="Projection warning" className="rounded-xl border border-[#9a7619] bg-[#fff9df] p-5 text-[#664c08]">
-        <p className="font-bold">Queue state and next action are presentation projections.</p>
-        <p className="mt-2 text-sm leading-6">They are not authoritative runtime fields. No canonical cross lifecycle read model exists yet.</p>
+        <p className="font-bold">Queue membership is still a presentation projection.</p>
+        <p className="mt-2 text-sm leading-6">Exact assessment facts can now come from OIAEngagementProgressView v1. Attention ownership and pre assessment portfolio state remain synthetic until their domain rules are modeled.</p>
       </aside>
 
       <dl aria-label="Workspace summary" className="grid grid-cols-2 gap-3 lg:grid-cols-4">
@@ -118,7 +118,7 @@ function EngagementIndexCard({ summary }: { summary: WorkspaceEngagementSummary 
     <article className="min-w-0 rounded-[var(--radius-card)] border border-[var(--line)] bg-white p-5 sm:p-6">
       <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
         <div className="min-w-0">
-          <p className="text-xs font-bold uppercase tracking-[.12em] text-[var(--brand)]">{summary.identity.detailHref ? "Detailed synthetic engagement" : "Synthetic summary only"}</p>
+          <p className="text-xs font-bold uppercase tracking-[.12em] text-[var(--brand)]">{summary.readModel ? "Read model backed synthetic engagement" : summary.identity.detailHref ? "Detailed synthetic engagement" : "Synthetic summary only"}</p>
           <h2 className="mt-2 text-xl sm:text-2xl"><EngagementName summary={summary} /></h2>
           <p className="mt-2 text-[var(--ink-muted)]">{summary.identity.label}</p>
         </div>
@@ -134,9 +134,10 @@ function EngagementIndexCard({ summary }: { summary: WorkspaceEngagementSummary 
         {summary.presentationAttentionOwner ? <div><dt className="font-bold">Presentation attention owner</dt><dd className="mt-1 text-[var(--ink-muted)]">{summary.presentationAttentionOwner.owner === "SEKINFRA" ? "SekInfra" : "Client"}. Not authoritative.</dd></div> : null}
         {coverage ? <div><dt className="font-bold">Inspection coverage</dt><dd className="mt-1 text-[var(--ink-muted)]">{coverage}</dd></div> : null}
         {findings ? <div><dt className="font-bold">Findings</dt><dd className="mt-1 text-[var(--ink-muted)]">{findings}</dd></div> : null}
-        {summary.assessmentAccess?.expiresAt && summary.assessmentAccess.expiresLabel ? <div><dt className="font-bold">Access expiry</dt><dd className="mt-1 text-[var(--ink-muted)]"><time dateTime={summary.assessmentAccess.expiresAt}>{summary.assessmentAccess.expiresLabel}</time>. State <code>{summary.assessmentAccess.state}</code>.</dd></div> : null}
+        {summary.assessmentAccess?.expiresAt && summary.assessmentAccess.expiresLabel ? <div><dt className="font-bold">{summary.assessmentAccess.state === "ACTIVE" ? "Access expiry" : "Scheduled access expiry"}</dt><dd className="mt-1 text-[var(--ink-muted)]"><time dateTime={summary.assessmentAccess.expiresAt}>{summary.assessmentAccess.expiresLabel}</time>. State <code>{summary.assessmentAccess.state}</code>.</dd></div> : null}
         {summary.latestDeliverySequence ? <div><dt className="font-bold">Latest delivery</dt><dd className="mt-1 text-[var(--ink-muted)]">Delivery {String(summary.latestDeliverySequence).padStart(2, "0")}</dd></div> : null}
         {summary.scopeState ? <div><dt className="font-bold">Scope state</dt><dd className="mt-1 text-[var(--ink-muted)]"><code>{summary.scopeState}</code></dd></div> : null}
+        {summary.readModel ? <div><dt className="font-bold">Technical facts source</dt><dd className="mt-1 text-[var(--ink-muted)]">{summary.readModel.name} v{summary.readModel.version}. Synthetic contract snapshot, not live production data.</dd></div> : null}
       </dl>
     </article>
   </li>;
@@ -153,8 +154,8 @@ export function OperatorEngagementIndex() {
       </header>
 
       <aside aria-label="Projection warning" className="rounded-xl border border-[#9a7619] bg-[#fff9df] p-5 text-[#664c08]">
-        <p className="font-bold">Queue badges and attention ownership are presentation projections. They are not authoritative.</p>
-        <p className="mt-2 text-sm leading-6">They are not runtime tasks, approvals, or a canonical cross lifecycle read model.</p>
+        <p className="font-bold">Queue badges and attention ownership remain presentation projections.</p>
+        <p className="mt-2 text-sm leading-6">Assessment backed technical facts may come from OIAEngagementProgressView v1. These queues are still not runtime tasks or approvals.</p>
       </aside>
 
       <section aria-labelledby="engagement-list-heading">

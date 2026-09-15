@@ -1,0 +1,128 @@
+{
+  "tenant_id": "d5000000-0000-4000-8000-000000000001",
+  "engagement_id": "d5000000-0000-4000-8000-000000000002",
+  "oia_assessment_id": "d5000000-0000-4000-8000-000000000003",
+  "engagement_state": "OPEN",
+  "assessment_state": "FINDINGS_DELIVERED",
+  "assessment_record_version": 3,
+  "diagnostic_scope": {
+    "diagnostic_scope_id": "d5000000-0000-4000-8000-000000000004",
+    "scope_version": 1,
+    "status": "APPROVED"
+  },
+  "assessment_access": {
+    "assessment_access_grant_id": "d5000000-0000-4000-8000-000000000005",
+    "state": "CLOSED",
+    "usable": false,
+    "reason": "GRANT_NOT_ACTIVE",
+    "expires_at": "2027-02-28T17:00:00Z"
+  },
+  "assessment_plan": {
+    "oia_assessment_plan_id": "d5000000-0000-4000-8000-000000000006",
+    "plan_version": 1,
+    "state": "APPROVED"
+  },
+  "inspection_coverage": {
+    "available": true,
+    "total_items": 7,
+    "counts": {
+      "NOT_STARTED": 1,
+      "IN_PROGRESS": 1,
+      "PARTIALLY_EVIDENCED": 1,
+      "SUFFICIENTLY_EVIDENCED": 2,
+      "BLOCKED": 1,
+      "NOT_APPLICABLE": 1
+    },
+    "ready_for_observation_analysis": false
+  },
+  "evidence_progress": {
+    "evidence_count": 4,
+    "counts_by_type": [
+      {
+        "evidence_type": "HUMAN_INTERVIEW_CORROBORATION",
+        "count": 1
+      },
+      {
+        "evidence_type": "METRIC_SNAPSHOT",
+        "count": 1
+      },
+      {
+        "evidence_type": "OPERATIONAL_SEQUENCE_EVIDENCE",
+        "count": 1
+      },
+      {
+        "evidence_type": "WORKFLOW_SYSTEM_MAP",
+        "count": 1
+      }
+    ],
+    "counts_by_source_system": [
+      {
+        "source_system_reference": "fictional-crm",
+        "count": 1
+      },
+      {
+        "source_system_reference": "fictional-dispatch-board",
+        "count": 1
+      },
+      {
+        "source_system_reference": "fictional-reporting-view",
+        "count": 1
+      },
+      {
+        "source_system_reference": "synthetic-staff-interview",
+        "count": 1
+      }
+    ]
+  },
+  "findings": {
+    "current_finding_count": 2,
+    "draft_finding_count": 1,
+    "final_finding_count": 1,
+    "priority_counts": [
+      {
+        "priority": "CRITICAL",
+        "count": 0
+      },
+      {
+        "priority": "HIGH",
+        "count": 1
+      },
+      {
+        "priority": "MEDIUM",
+        "count": 0
+      },
+      {
+        "priority": "LOW",
+        "count": 0
+      }
+    ]
+  },
+  "delivery": {
+    "delivery_count": 1,
+    "latest_delivery_id": "d5000000-0000-4000-8000-000000000007",
+    "latest_delivery_sequence": 1,
+    "latest_delivered_at": "2027-01-22T19:00:00Z"
+  },
+  "phase5c_progression": {
+    "tenant_id": "d5000000-0000-4000-8000-000000000001",
+    "engagement_id": "d5000000-0000-4000-8000-000000000002",
+    "conversion_accepted": false,
+    "ongoing_agreement_active": false,
+    "ongoing_commercial_valid": false,
+    "ongoing_access_usable": false,
+    "implementation_authorized": false,
+    "deployment_authorized": false,
+    "managed_operations_authorized": false,
+    "generated_at": "2027-02-15T17:00:00Z"
+  },
+  "next_required_action": {
+    "code": "RECORD_CONVERSION_DECISION",
+    "reason_codes": [
+      "CONVERSION_MISSING"
+    ]
+  },
+  "implementation_authorized": false,
+  "deployment_authorized": false,
+  "generated_at": "2027-02-15T17:00:00Z",
+  "read_model_version": 1
+}

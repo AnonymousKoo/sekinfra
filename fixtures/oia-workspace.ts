@@ -1,4 +1,6 @@
 import { oiaDemoEngagement } from "./oia-demo-engagement.ts";
+import northlineProgressJson from "./oia-engagement-progress-demo.json" with { type: "json" };
+import { projectProgressTechnicalFacts, type OiaEngagementProgressView } from "../lib/oia-workspace-read-model.ts";
 
 export const WORKSPACE_SYNTHETIC_NOTICE = "Synthetic operator workspace. No active engagements or production data.";
 export const WORKSPACE_REFERENCE_TIME = "2027-02-15T17:00:00Z";
@@ -6,7 +8,7 @@ export const ACCESS_EXPIRY_WARNING_DAYS = 14;
 export const WORKSPACE_QUEUE_MODEL = {
   kind: "PRESENTATION_PROJECTION",
   authoritative: false,
-  notice: "Queue membership and next action are presentation projections. They are not authoritative. No canonical cross lifecycle read model exists yet.",
+  notice: "Queue membership remains presentation only and is not authoritative task state. Exact assessment facts may come from OIAEngagementProgressView v1, while attention ownership and pre assessment state remain synthetic presentation data.",
 } as const;
 
 export type DiagnosticScopeState = "DRAFT" | "REVIEW_PENDING" | "APPROVED" | "REJECTED" | "SUPERSEDED" | "CANCELLED";
@@ -20,7 +22,7 @@ export type PresentationAttentionOwner = "CLIENT" | "SEKINFRA";
 
 export type WorkspaceEngagementSummary = {
   provenance: {
-    kind: "SYNTHETIC_FIXTURE";
+    kind: "SYNTHETIC_FIXTURE" | "CONTRACT_VALIDATED_READ_MODEL_FIXTURE";
     authoritative: false;
     notice: string;
   };
@@ -35,6 +37,8 @@ export type WorkspaceEngagementSummary = {
   assessmentState?: AssessmentState;
   assessmentAccess?: {
     state: AssessmentAccessState;
+    usable?: boolean;
+    reason?: string;
     expiresAt?: string;
     expiresLabel?: string;
   };
@@ -42,6 +46,13 @@ export type WorkspaceEngagementSummary = {
   findingCounts?: Partial<Record<FindingState, number>>;
   latestDeliverySequence?: number;
   conversionState?: ConversionState;
+  readModel?: {
+    name: "OIAEngagementProgressView";
+    version: 1;
+    generatedAt: string;
+    oiaAssessmentId: string;
+    nextRequiredAction: { code: string; reason_codes: string[] };
+  };
   presentationAttentionOwner?: {
     owner: PresentationAttentionOwner;
     presentationOnly: true;
@@ -53,6 +64,9 @@ export type WorkspaceEngagementSummary = {
     authoritative: false;
   };
 };
+
+const northlineProgress = northlineProgressJson as unknown as OiaEngagementProgressView;
+const northlineTechnicalFacts = projectProgressTechnicalFacts(northlineProgress);
 
 const syntheticProvenance = {
   kind: "SYNTHETIC_FIXTURE",
@@ -76,7 +90,11 @@ export const oiaWorkspaceFixture = {
   referenceTimeLabel: "February 15, 2027 at 12:00 PM Eastern Time",
   engagements: [
     {
-      provenance: syntheticProvenance,
+      provenance: {
+        kind: "CONTRACT_VALIDATED_READ_MODEL_FIXTURE",
+        authoritative: false,
+        notice: "Synthetic OIAEngagementProgressView v1 snapshot. Contract valid, but not live production data.",
+      },
       identity: {
         engagementId: oiaDemoEngagement.identity.engagementId,
         organization: oiaDemoEngagement.identity.organization,
@@ -84,30 +102,12 @@ export const oiaWorkspaceFixture = {
         detailHref: "/workspace/engagements/demo",
       },
       stage: oiaDemoEngagement.presentation.stage,
-      scopeState: oiaDemoEngagement.scope.state,
-      assessmentState: oiaDemoEngagement.assessment.technicalState,
+      ...northlineTechnicalFacts,
       assessmentAccess: {
-        state: oiaDemoEngagement.authority.currentAssessmentAccessGrant.technicalState,
-        expiresAt: oiaDemoEngagement.authority.expiresAt,
+        ...northlineTechnicalFacts.assessmentAccess,
         expiresLabel: oiaDemoEngagement.authority.expiresLabel,
       },
-      inspectionCoverage: {
-        total: oiaDemoEngagement.assessment.inspections.length,
-        NOT_STARTED: 1,
-        IN_PROGRESS: 1,
-        PARTIALLY_EVIDENCED: 1,
-        SUFFICIENTLY_EVIDENCED: 2,
-        BLOCKED: 1,
-        NOT_APPLICABLE: 1,
-      },
-      findingCounts: { DRAFT: 1, FINAL: 1, SUPERSEDED: 0 },
-      latestDeliverySequence: 1,
       presentationAttentionOwner: presentationOwner("CLIENT"),
-      presentationConversionCondition: {
-        condition: "AWAITING_CLIENT_DECISION",
-        presentationOnly: true,
-        authoritative: false,
-      },
     },
     {
       provenance: syntheticProvenance,
@@ -280,11 +280,11 @@ const queueDefinitions: ReadonlyArray<Omit<WorkspaceQueue, "engagements"> & { in
   {
     key: "awaiting-conversion-decision",
     label: "Awaiting conversion decision",
-    purpose: "Surfaces delivered findings with the synthetic presentation condition Awaiting client decision.",
+    purpose: "Surfaces delivered findings that require a conversion decision, using the bounded read model when an exact assessment is available.",
     presentationOnly: true,
     authoritative: false,
-    // This combination is presentation logic only. The contracts do not define an absent-decision queue or unified lifecycle read model.
-    includes: (summary) => summary.assessmentState === "FINDINGS_DELIVERED" && (summary.latestDeliverySequence ?? 0) > 0 && summary.presentationConversionCondition?.condition === "AWAITING_CLIENT_DECISION",
+    // Exact assessed engagements can use the bounded read-model next action. Pre-assessment and legacy synthetic summaries still require an explicit presentation condition.
+    includes: (summary) => summary.assessmentState === "FINDINGS_DELIVERED" && (summary.latestDeliverySequence ?? 0) > 0 && (summary.readModel?.nextRequiredAction.code === "RECORD_CONVERSION_DECISION" || summary.presentationConversionCondition?.condition === "AWAITING_CLIENT_DECISION"),
   },
   {
     key: "access-expiring-soon",

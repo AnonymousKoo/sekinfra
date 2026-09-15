@@ -16,7 +16,7 @@ export const oiaDemoEngagement = {
     notice: SYNTHETIC_DEMO_NOTICE,
   },
   identity: {
-    engagementId: "demo-oia-engagement",
+    engagementId: "d5000000-0000-4000-8000-000000000002",
     organization: "Northline Field Services",
     label: "Emergency request response assessment",
   },
@@ -29,7 +29,7 @@ export const oiaDemoEngagement = {
     lifecycle,
     stage: "Decide",
     status: "Delivery 01 is available for review",
-    operatorNextAction: "Review the remaining evidence gap before considering a later findings delivery.",
+    operatorNextAction: "Record the client decision on Delivery 01 before establishing any ongoing authority.",
     clientNextAction: "Review Delivery 01 and consider the next phase options.",
   },
   scope: {
@@ -44,7 +44,7 @@ export const oiaDemoEngagement = {
     diagnosticAgreement: { technicalState: "VERIFIED_ACTIVE", label: "Diagnostic agreement verified" },
     paymentCondition: { technicalState: "VERIFIED", label: "Payment condition verified" },
     assessmentAccessGrantApprovalMilestone: { technicalState: "APPROVED", label: "Diagnostic access approved" },
-    currentAssessmentAccessGrant: { technicalState: "ACTIVE", label: "Diagnostic access verified and active" },
+    currentAssessmentAccessGrant: { technicalState: "CLOSED", label: "Diagnostic access closed after findings delivery" },
     expiresAt: "2027-02-28T17:00:00Z",
     expiresLabel: "February 28, 2027 at 12:00 PM Eastern Time",
     implementationAuthority: false,
@@ -143,7 +143,7 @@ export const oiaDemoEngagement = {
     },
   ],
   domainGaps: [
-    "Cross lifecycle status and next action are prototype presentation summaries, not canonical OIA fields.",
+    "The operator workspace can consume OIAEngagementProgressView v1 for exact assessment facts, but this detailed demonstration remains synthetic.",
     "No client facing API, authentication, session integration, or browser authority facade exists.",
     "No authoritative persisted implementation handoff lifecycle is represented here.",
   ],

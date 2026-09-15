@@ -96,13 +96,20 @@ Two directly addressable, non-production prototype routes demonstrate one synthe
 
 The operator projection includes plan detail, inspection coverage, provenance summaries, internal observations, root cause confidence, draft and final findings, and delivery readiness. The client projection is intentionally narrower: approved scope, access boundaries, high level progress, final delivered findings, immutable delivery history, and explanatory next phase options. It excludes internal observations, hypotheses, draft findings, secure evidence references, assessor notes, and raw audit metadata.
 
-These routes provide no authentication, API, persistence, client action, authority facade, database access, or Avuhz integration. Cross lifecycle stage and next action labels are prototype presentation summaries because the current domain does not provide unified canonical read models for them.
+These routes provide no authentication, API, persistence, client action, authority facade, database access, or Avuhz integration. The detailed demo still uses presentation stage labels, while exact assessment technical facts can now be represented by `OIAEngagementProgressView v1`.
 
 
 ## OIA Workspace UX 2
 
 OIA Workspace UX 2 adds two synthetic operator routes: `/workspace` for the attention overview and `/workspace/engagements` for the engagement index. Along with `/workspace/engagements/demo`, these operator routes render only in local development and Vercel preview. Every operator entry route calls the shared production prototype guard and returns a 404 when `VERCEL_ENV` is `production`. The existing client demonstration remains at `/client/engagements/demo`.
 
-The workspace fixture uses a fixed synthetic reference time and a minimal set of domain style facts to derive deterministic presentation queues. Queue membership, attention ownership, cross lifecycle stage, and next action are nonauthoritative presentation projections. They do not define a backend summary contract, persisted task, or canonical cross lifecycle read model.
+The workspace fixture uses a fixed synthetic reference time and deterministic presentation queues. Queue membership and attention ownership remain nonauthoritative presentation projections. Exact assessment technical facts may now come from `OIAEngagementProgressView v1`; pre assessment portfolio state still remains synthetic because the domain does not define a safe current Scope, access Grant, or assessment selection rule for an arbitrary engagement.
 
 The workspace remains server rendered and read only. It adds no authentication, persistence, API, database access, client action, production connection, or Avuhz integration.
+## OIA Workspace Read Model 1
+
+This slice connects the operator prototype to the public `OIAEngagementProgressView v1` contract without inventing a live transport. Northline Field Services uses a checked-in synthetic snapshot that is validated against the consulting JSON Schema. Its Scope state, assessment state, assessment-access usability, inspection coverage, Finding counts, delivery sequence, and bounded next required action are projected from that contract shape.
+
+The snapshot is not production data and is never described as authoritative stored state. Organization labels, lifecycle display labels, and attention ownership remain presentation data. Other pre assessment portfolio entries remain synthetic until the domain defines an unambiguous current-resource invariant.
+
+The operator workspace contains no browser database access, API adapter, Python subprocess, authentication, Supabase connection, or Avuhz runtime call. The production route guard remains unchanged. `OIAEngagementProgressView v1` explicitly keeps implementation and deployment authority false, and the frontend adapter fails closed if either value is true.

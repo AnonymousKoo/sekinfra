@@ -34,7 +34,8 @@ test("workspace fixture is synthetic and deterministic", () => {
   assert.equal(oiaWorkspaceFixture.provenance.authoritative, false);
   assert.equal(oiaWorkspaceFixture.referenceTime, WORKSPACE_REFERENCE_TIME);
   assert.equal(WORKSPACE_REFERENCE_TIME, "2027-02-15T17:00:00Z");
-  assert.ok(oiaWorkspaceFixture.engagements.every((item) => item.provenance.kind === "SYNTHETIC_FIXTURE" && item.provenance.authoritative === false));
+  assert.ok(oiaWorkspaceFixture.engagements.every((item) => item.provenance.authoritative === false));
+  assert.equal(oiaWorkspaceFixture.engagements.filter((item) => item.provenance.kind === "CONTRACT_VALIDATED_READ_MODEL_FIXTURE").length, 1);
   assert.deepEqual(
     deriveWorkspaceQueues(oiaWorkspaceFixture.engagements, WORKSPACE_REFERENCE_TIME),
     deriveWorkspaceQueues(oiaWorkspaceFixture.engagements, WORKSPACE_REFERENCE_TIME),
@@ -42,11 +43,17 @@ test("workspace fixture is synthetic and deterministic", () => {
 });
 
 test("Northline retains the existing identity and only detailed summary href", () => {
-  const northline = oiaWorkspaceFixture.engagements.find((item) => item.identity.organization === "Northline Field Services");
+  const northline = oiaWorkspaceFixture.engagements.find((item) => item.identity.organization === "Northline Field Services") as WorkspaceEngagementSummary | undefined;
   assert.ok(northline);
   assert.equal(northline.identity.engagementId, oiaDemoEngagement.identity.engagementId);
   assert.equal(northline.identity.label, oiaDemoEngagement.identity.label);
   assert.equal(northline.identity.detailHref, "/workspace/engagements/demo");
+  assert.equal(northline.provenance.kind, "CONTRACT_VALIDATED_READ_MODEL_FIXTURE");
+  assert.equal(northline.readModel?.name, "OIAEngagementProgressView");
+  assert.equal(northline.assessmentState, "FINDINGS_DELIVERED");
+  assert.equal(northline.assessmentAccess?.state, "CLOSED");
+  assert.equal(northline.assessmentAccess?.usable, false);
+  assert.equal(northline.readModel?.nextRequiredAction.code, "RECORD_CONVERSION_DECISION");
   assert.equal(oiaWorkspaceFixture.engagements.filter((item) => item.identity.detailHref).length, 1);
 });
 
@@ -123,7 +130,7 @@ test("findings awaiting finalization requires a draft finding count", () => {
   assert.deepEqual(queue.engagements.map((item) => item.identity.engagementId), ["draft"]);
 });
 
-test("awaiting conversion requires delivered findings and the synthetic presentation condition", () => {
+test("awaiting conversion accepts a bounded read model action or explicit presentation condition", () => {
   const qualifying = summary({
     identity: { engagementId: "delivered-awaiting", organization: "Awaiting Company", label: "Test" },
     assessmentState: "FINDINGS_DELIVERED",
@@ -142,6 +149,21 @@ test("awaiting conversion requires delivered findings and the synthetic presenta
   });
   const queue = getWorkspaceQueue(deriveWorkspaceQueues([qualifying, conditionOnly, technicalStateOnly]), "awaiting-conversion-decision");
   assert.deepEqual(queue.engagements.map((item) => item.identity.engagementId), ["delivered-awaiting"]);
-  assert.match(queue.purpose, /synthetic presentation condition/i);
+  assert.match(queue.purpose, /bounded read model/i);
   assert.equal(queue.authoritative, false);
+});
+test("assessed Northline uses read model next action without a synthetic conversion condition", () => {
+  const northline = oiaWorkspaceFixture.engagements.find((item) => item.identity.organization === "Northline Field Services") as WorkspaceEngagementSummary | undefined;
+  assert.ok(northline);
+  assert.equal(northline.presentationConversionCondition, undefined);
+  const queue = getWorkspaceQueue(workspaceQueues, "awaiting-conversion-decision");
+  assert.ok(queue.engagements.some((item) => item.identity.engagementId === northline.identity.engagementId));
+});
+
+test("pre assessment portfolio entries remain presentation only", () => {
+  const emberline = oiaWorkspaceFixture.engagements.find((item) => item.identity.engagementId === "synthetic-emberline-intake") as WorkspaceEngagementSummary | undefined;
+  assert.ok(emberline);
+  assert.equal(emberline.provenance.kind, "SYNTHETIC_FIXTURE");
+  assert.equal(emberline.readModel, undefined);
+  assert.equal(emberline.assessmentState, undefined);
 });

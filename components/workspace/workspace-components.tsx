@@ -82,6 +82,13 @@ export function LifecycleTimeline({ items }: { items: readonly LifecycleItem[] }
 
 export function AuthorityStatus({ authority }: { authority: { diagnosticAgreement: { label: string }; paymentCondition: { label: string }; assessmentAccessGrantApprovalMilestone: { technicalState: string; label: string }; currentAssessmentAccessGrant: { technicalState: string; label: string }; expiresAt: string; expiresLabel: string; implementationAuthority: boolean; deploymentAuthority: boolean } }) {
   const rows = [authority.diagnosticAgreement.label, authority.paymentCondition.label];
+  const accessIsActive = authority.currentAssessmentAccessGrant.technicalState === "ACTIVE";
+  const accessIsClosed = authority.currentAssessmentAccessGrant.technicalState === "CLOSED";
+  const accessExplanation = accessIsActive
+    ? "Verification is complete for approved diagnostic actions only."
+    : accessIsClosed
+      ? "Assessment access is no longer usable. Findings delivery closed the diagnostic access boundary."
+      : "Assessment access is not currently active.";
   return <section aria-labelledby="authority-heading" className="rounded-[var(--radius-card)] border border-[var(--line)] bg-white p-6">
     <SectionHeading id="authority-heading" eyebrow="Authority" title="Approved boundaries remain separate" compact />
     <ul className="mt-5 space-y-3">{rows.map((label) => <li key={label} className="flex items-center gap-3 text-sm font-bold"><span aria-hidden="true" className="h-2.5 w-2.5 rounded-full bg-[var(--success)]" />{label}</li>)}</ul>
@@ -90,11 +97,11 @@ export function AuthorityStatus({ authority }: { authority: { diagnosticAgreemen
         <p className="text-xs font-bold uppercase tracking-[.12em]">Approval state</p><p className="mt-2 font-bold">{authority.assessmentAccessGrantApprovalMilestone.label}</p><code className="mt-2 block text-xs">{authority.assessmentAccessGrantApprovalMilestone.technicalState}</code><p className="mt-2 text-sm text-[var(--ink-muted)]">The boundary is approved. Approval alone does not make access active.</p>
       </div>
       <div className="rounded-xl border border-[var(--accent)] bg-[var(--accent)] p-4 text-[var(--brand-deep)]">
-        <p className="text-xs font-bold uppercase tracking-[.12em]">Technical state</p><p className="mt-2 font-bold">{authority.currentAssessmentAccessGrant.label}</p><code className="mt-2 block text-xs">{authority.currentAssessmentAccessGrant.technicalState}</code><p className="mt-2 text-sm">Verification is complete for approved diagnostic actions only.</p>
+        <p className="text-xs font-bold uppercase tracking-[.12em]">Technical state</p><p className="mt-2 font-bold">{authority.currentAssessmentAccessGrant.label}</p><code className="mt-2 block text-xs">{authority.currentAssessmentAccessGrant.technicalState}</code><p className="mt-2 text-sm">{accessExplanation}</p>
       </div>
     </div>
-    <p className="mt-4 text-sm text-[var(--ink-muted)]">Access expires <time dateTime={authority.expiresAt}>{authority.expiresLabel}</time>.</p>
-    <div className="mt-5 rounded-xl border border-[#a6533d] bg-[#fff4ef] p-4 text-sm text-[#702f20]"><strong>No implementation or deployment authority.</strong> Active assessment access permits inspection only. It does not permit system changes.</div>
+    <p className="mt-4 text-sm text-[var(--ink-muted)]">{accessIsActive ? <>Access expires <time dateTime={authority.expiresAt}>{authority.expiresLabel}</time>.</> : <>The approved access window had a scheduled end of <time dateTime={authority.expiresAt}>{authority.expiresLabel}</time>. Access is already closed.</>}</p>
+    <div className="mt-5 rounded-xl border border-[#a6533d] bg-[#fff4ef] p-4 text-sm text-[#702f20]"><strong>No implementation or deployment authority.</strong> Assessment access permits inspection only while active. It never permits system changes.</div>
   </section>;
 }
 
