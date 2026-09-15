@@ -222,6 +222,12 @@ class OIAEvidencePostgresRepository(_DocumentRepository):
         row = self._one("select record from public.sekinfra_oia_evidence_items where tenant_id=%s and oia_evidence_id=%s", (tenant_id, evidence_id))
         return _record(row) if row else None
 
+    def list_by_assessment(self, tenant_id, assessment_id):
+        return self._records(
+            "select record from public.sekinfra_oia_evidence_items where tenant_id=%s and oia_assessment_id=%s order by oia_evidence_id",
+            (tenant_id, assessment_id),
+        )
+
     def create(self, evidence):
         self.uow.failpoint("AUTHORITATIVE_WRITE")
         cur = self.uow.connection.execute(

@@ -214,6 +214,9 @@ class OIAEvidenceMemoryRepository(_TenantRepo):
     def __init__(self,u):super().__init__(u,"oia_evidence_items")
     def get(self,tenant_id,oia_evidence_id):
         record=self.data.get((tenant_id,oia_evidence_id));return copy.deepcopy(record) if record else None
+    def list_by_assessment(self,tenant_id,oia_assessment_id):
+        values=[copy.deepcopy(value) for (record_tenant,_),value in self.data.items() if record_tenant==tenant_id and value.get("oia_assessment_id")==oia_assessment_id]
+        return tuple(sorted(values,key=lambda value:value["oia_evidence_id"]))
     def create(self,evidence):
         key=(evidence["tenant_id"],evidence["oia_evidence_id"])
         if key in self.data:raise ValueError("OIA evidence identity already exists")

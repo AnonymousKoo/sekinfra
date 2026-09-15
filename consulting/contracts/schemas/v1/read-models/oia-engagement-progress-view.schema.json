@@ -1,0 +1,570 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:sekinfra:schema:contracts:read-models:oia-engagement-progress-view:v1",
+  "title": "OIA Engagement Progress View v1",
+  "description": "Derived tenant-scoped composition of exact authoritative engagement, assessment, authority, evidence, finding, delivery, conversion, and ongoing-service facts. It is never a source of authority, never authorizes implementation or deployment, and does not invent an assessment conclusion or a no-findings completion path.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "tenant_id",
+    "engagement_id",
+    "oia_assessment_id",
+    "engagement_state",
+    "assessment_state",
+    "assessment_record_version",
+    "diagnostic_scope",
+    "assessment_access",
+    "inspection_coverage",
+    "evidence_progress",
+    "findings",
+    "delivery",
+    "phase5c_progression",
+    "next_required_action",
+    "implementation_authorized",
+    "deployment_authorized",
+    "generated_at",
+    "read_model_version"
+  ],
+  "properties": {
+    "tenant_id": {
+      "$ref": "urn:sekinfra:schema:contracts:common:identifiers:v1#/$defs/tenantId"
+    },
+    "engagement_id": {
+      "$ref": "urn:sekinfra:schema:contracts:common:identifiers:v1#/$defs/engagementId"
+    },
+    "oia_assessment_id": {
+      "$ref": "urn:sekinfra:schema:contracts:common:identifiers:v1#/$defs/oiaAssessmentId"
+    },
+    "engagement_state": {
+      "$ref": "urn:sekinfra:schema:contracts:domain:engagement:v1#/properties/engagement_state"
+    },
+    "assessment_state": {
+      "$ref": "urn:sekinfra:schema:contracts:domain:oia-common:v1#/$defs/assessmentState"
+    },
+    "assessment_record_version": {
+      "$ref": "urn:sekinfra:schema:contracts:domain:oia-common:v1#/$defs/positiveVersion"
+    },
+    "diagnostic_scope": {
+      "$ref": "#/$defs/diagnosticScope"
+    },
+    "assessment_access": {
+      "$ref": "#/$defs/assessmentAccess"
+    },
+    "assessment_plan": {
+      "$ref": "#/$defs/assessmentPlan"
+    },
+    "inspection_coverage": {
+      "$ref": "#/$defs/inspectionCoverage"
+    },
+    "evidence_progress": {
+      "$ref": "#/$defs/evidenceProgress"
+    },
+    "findings": {
+      "$ref": "#/$defs/findings"
+    },
+    "delivery": {
+      "$ref": "#/$defs/delivery"
+    },
+    "conversion": {
+      "$ref": "#/$defs/conversion"
+    },
+    "phase5c_progression": {
+      "$ref": "urn:sekinfra:schema:contracts:read-models:phase5c-authority-progression-view:v1"
+    },
+    "next_required_action": {
+      "$ref": "#/$defs/nextRequiredAction"
+    },
+    "implementation_authorized": {
+      "type": "boolean",
+      "const": false
+    },
+    "deployment_authorized": {
+      "type": "boolean",
+      "const": false
+    },
+    "generated_at": {
+      "$ref": "urn:sekinfra:schema:contracts:common:timestamps:v1#/$defs/utcTimestamp"
+    },
+    "read_model_version": {
+      "type": "integer",
+      "const": 1
+    }
+  },
+  "$defs": {
+    "diagnosticScope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "diagnostic_scope_id",
+        "scope_version",
+        "status"
+      ],
+      "properties": {
+        "diagnostic_scope_id": {
+          "$ref": "urn:sekinfra:schema:contracts:common:identifiers:v1#/$defs/scopeId"
+        },
+        "scope_version": {
+          "$ref": "urn:sekinfra:schema:contracts:domain:oia-common:v1#/$defs/positiveVersion"
+        },
+        "status": {
+          "$ref": "urn:sekinfra:schema:contracts:domain:diagnostic-scope:v1#/properties/status"
+        }
+      }
+    },
+    "assessmentAccess": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "assessment_access_grant_id",
+        "state",
+        "usable"
+      ],
+      "properties": {
+        "assessment_access_grant_id": {
+          "$ref": "urn:sekinfra:schema:contracts:common:identifiers:v1#/$defs/assessmentAccessGrantId"
+        },
+        "state": {
+          "$ref": "urn:sekinfra:schema:contracts:domain:assessment-access-grant:v1#/properties/status"
+        },
+        "usable": {
+          "type": "boolean"
+        },
+        "reason": {
+          "type": "string",
+          "enum": [
+            "GRANT_NOT_FOUND",
+            "GRANT_NOT_ACTIVE",
+            "ACCESS_NOT_YET_ACTIVE",
+            "ACCESS_EXPIRED",
+            "AUTHORITY_BINDING_MISMATCH",
+            "COMMERCIAL_AUTHORITY_INVALID"
+          ]
+        },
+        "expires_at": {
+          "$ref": "urn:sekinfra:schema:contracts:common:timestamps:v1#/$defs/utcTimestamp"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "usable": {
+                "const": false
+              }
+            },
+            "required": [
+              "usable"
+            ]
+          },
+          "then": {
+            "required": [
+              "reason"
+            ]
+          }
+        }
+      ]
+    },
+    "assessmentPlan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "oia_assessment_plan_id",
+        "plan_version",
+        "state"
+      ],
+      "properties": {
+        "oia_assessment_plan_id": {
+          "$ref": "urn:sekinfra:schema:contracts:common:identifiers:v1#/$defs/oiaAssessmentPlanId"
+        },
+        "plan_version": {
+          "$ref": "urn:sekinfra:schema:contracts:domain:oia-common:v1#/$defs/positiveVersion"
+        },
+        "state": {
+          "$ref": "urn:sekinfra:schema:contracts:domain:oia-assessment-plan:v1#/properties/state"
+        }
+      }
+    },
+    "coverageCounts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "NOT_STARTED",
+        "IN_PROGRESS",
+        "PARTIALLY_EVIDENCED",
+        "SUFFICIENTLY_EVIDENCED",
+        "BLOCKED",
+        "NOT_APPLICABLE"
+      ],
+      "properties": {
+        "NOT_STARTED": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2147483647
+        },
+        "IN_PROGRESS": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2147483647
+        },
+        "PARTIALLY_EVIDENCED": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2147483647
+        },
+        "SUFFICIENTLY_EVIDENCED": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2147483647
+        },
+        "BLOCKED": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2147483647
+        },
+        "NOT_APPLICABLE": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2147483647
+        }
+      }
+    },
+    "inspectionCoverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "available"
+      ],
+      "properties": {
+        "available": {
+          "type": "boolean"
+        },
+        "total_items": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2147483647
+        },
+        "counts": {
+          "$ref": "#/$defs/coverageCounts"
+        },
+        "ready_for_observation_analysis": {
+          "type": "boolean"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "available": {
+                "const": true
+              }
+            },
+            "required": [
+              "available"
+            ]
+          },
+          "then": {
+            "required": [
+              "total_items",
+              "counts",
+              "ready_for_observation_analysis"
+            ]
+          }
+        }
+      ]
+    },
+    "countByEvidenceType": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "evidence_type",
+        "count"
+      ],
+      "properties": {
+        "evidence_type": {
+          "$ref": "urn:sekinfra:schema:contracts:domain:oia-common:v1#/$defs/evidenceType"
+        },
+        "count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2147483647
+        }
+      }
+    },
+    "countBySourceSystem": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_system_reference",
+        "count"
+      ],
+      "properties": {
+        "source_system_reference": {
+          "$ref": "urn:sekinfra:schema:contracts:common:identifiers:v1#/$defs/opaqueReferenceId"
+        },
+        "count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2147483647
+        }
+      }
+    },
+    "evidenceProgress": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "evidence_count",
+        "counts_by_type",
+        "counts_by_source_system"
+      ],
+      "properties": {
+        "evidence_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2147483647
+        },
+        "counts_by_type": {
+          "type": "array",
+          "maxItems": 11,
+          "items": {
+            "$ref": "#/$defs/countByEvidenceType"
+          }
+        },
+        "counts_by_source_system": {
+          "type": "array",
+          "maxItems": 100,
+          "items": {
+            "$ref": "#/$defs/countBySourceSystem"
+          }
+        }
+      }
+    },
+    "priorityCount": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "priority",
+        "count"
+      ],
+      "properties": {
+        "priority": {
+          "$ref": "urn:sekinfra:schema:contracts:domain:oia-common:v1#/$defs/priority"
+        },
+        "count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2147483647
+        }
+      }
+    },
+    "findingSetReadiness": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "readiness",
+        "reason_codes"
+      ],
+      "properties": {
+        "readiness": {
+          "type": "string",
+          "enum": [
+            "READY",
+            "NOT_READY"
+          ]
+        },
+        "reason_codes": {
+          "type": "array",
+          "uniqueItems": true,
+          "maxItems": 5,
+          "items": {
+            "type": "string",
+            "enum": [
+              "ASSESSMENT_NOT_ANALYTICALLY_OPEN",
+              "DIAGNOSTIC_INVESTIGATION_UNRESOLVED",
+              "NO_FINDINGS",
+              "UNRESOLVED_FINDING_REVISION",
+              "FINDING_SUPPORT_INVALID"
+            ]
+          }
+        }
+      }
+    },
+    "findings": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "current_finding_count",
+        "draft_finding_count",
+        "final_finding_count",
+        "priority_counts"
+      ],
+      "properties": {
+        "current_finding_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2147483647
+        },
+        "draft_finding_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2147483647
+        },
+        "final_finding_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2147483647
+        },
+        "priority_counts": {
+          "type": "array",
+          "minItems": 4,
+          "maxItems": 4,
+          "items": {
+            "$ref": "#/$defs/priorityCount"
+          }
+        },
+        "finding_set_readiness": {
+          "$ref": "#/$defs/findingSetReadiness"
+        }
+      }
+    },
+    "delivery": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "delivery_count"
+      ],
+      "properties": {
+        "delivery_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2147483647
+        },
+        "latest_delivery_id": {
+          "$ref": "urn:sekinfra:schema:contracts:common:identifiers:v1#/$defs/oiaFindingsDeliveryId"
+        },
+        "latest_delivery_sequence": {
+          "$ref": "urn:sekinfra:schema:contracts:domain:oia-common:v1#/$defs/positiveVersion"
+        },
+        "latest_delivered_at": {
+          "$ref": "urn:sekinfra:schema:contracts:common:timestamps:v1#/$defs/utcTimestamp"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "delivery_count": {
+                "minimum": 1
+              }
+            },
+            "required": [
+              "delivery_count"
+            ]
+          },
+          "then": {
+            "required": [
+              "latest_delivery_id",
+              "latest_delivery_sequence",
+              "latest_delivered_at"
+            ]
+          }
+        }
+      ]
+    },
+    "conversion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "oia_conversion_decision_id",
+        "decision_version",
+        "oia_findings_delivery_id",
+        "decision",
+        "state"
+      ],
+      "properties": {
+        "oia_conversion_decision_id": {
+          "$ref": "urn:sekinfra:schema:contracts:common:identifiers:v1#/$defs/oiaConversionDecisionId"
+        },
+        "decision_version": {
+          "$ref": "urn:sekinfra:schema:contracts:domain:oia-common:v1#/$defs/positiveVersion"
+        },
+        "oia_findings_delivery_id": {
+          "$ref": "urn:sekinfra:schema:contracts:common:identifiers:v1#/$defs/oiaFindingsDeliveryId"
+        },
+        "decision": {
+          "type": "string",
+          "enum": [
+            "PROCEED",
+            "DECLINE"
+          ]
+        },
+        "state": {
+          "type": "string",
+          "enum": [
+            "PENDING_SEKINFRA",
+            "ACCEPTED",
+            "DECLINED"
+          ]
+        }
+      }
+    },
+    "nextRequiredAction": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "code",
+        "reason_codes"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "enum": [
+            "CREATE_ASSESSMENT_PLAN",
+            "REVIEW_ASSESSMENT_PLAN",
+            "APPROVE_ASSESSMENT_PLAN",
+            "CONTINUE_DIAGNOSTIC_INVESTIGATION",
+            "RESOLVE_FINDING_SET",
+            "MARK_ASSESSMENT_READY_FOR_DELIVERY",
+            "DELIVER_FINDINGS",
+            "RECORD_CONVERSION_DECISION",
+            "RESOLVE_CONVERSION_DECISION",
+            "ESTABLISH_ONGOING_AGREEMENT",
+            "ESTABLISH_ONGOING_COMMERCIAL_AUTHORITY",
+            "ESTABLISH_ONGOING_ACCESS",
+            "DOMAIN_GAP_REQUIRES_DECISION",
+            "NO_REQUIRED_OIA_ACTION"
+          ]
+        },
+        "reason_codes": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 8,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "enum": [
+              "PLAN_MISSING",
+              "PLAN_DRAFT",
+              "PLAN_REVIEWED",
+              "DIAGNOSTIC_INVESTIGATION_UNRESOLVED",
+              "NO_FINDINGS",
+              "UNRESOLVED_FINDING_REVISION",
+              "FINDING_SUPPORT_INVALID",
+              "FINDING_SET_READY",
+              "ASSESSMENT_READY_FOR_DELIVERY",
+              "CONVERSION_MISSING",
+              "CONVERSION_PENDING_SEKINFRA",
+              "CONVERSION_DECLINED",
+              "CONVERSION_ACCEPTED",
+              "CONVERSION_BINDING_MISMATCH",
+              "ONGOING_AGREEMENT_INACTIVE",
+              "ONGOING_COMMERCIAL_INVALID",
+              "ONGOING_ACCESS_UNUSABLE",
+              "ONGOING_AUTHORITY_READY",
+              "ASSESSMENT_CLOSED"
+            ]
+          }
+        }
+      }
+    }
+  }
+}
