@@ -300,11 +300,31 @@ n8n may later invoke bounded commands only.
 
 Minimum read models are tenant-filtered projections of:
 
-- assessment state, conclusion, and next required action;
-- evidence count/progress by evidence type and target, without object locations;
+- assessment state and a bounded next required action;
+- evidence count/progress by evidence type and source-system target, without object locations;
 - finding count by status and priority;
 - latest immutable delivery status/sequence; and
 - whether access is currently usable, supplied only by the Phase 5A evaluator.
+
+`OIAEngagementProgressView v1` composes those facts for one exact
+`engagement_id` + `oia_assessment_id`. It is a derived read model, never an
+authority source. It reuses assessment-access usability, Finding-set readiness,
+and Phase 5C progression evaluators rather than duplicating their rules. The view
+contains no credential, secure evidence-object location, implementation authority,
+or deployment authority.
+
+The view deliberately does not select a "current" assessment, DiagnosticScope, or
+AssessmentAccessGrant for an arbitrary engagement. The domain does not currently
+define a safe current-resource selection invariant for those pre-assessment states.
+Operator queues covering those states remain presentation-only until that invariant
+is explicitly modeled. Once an assessment exists, its exact Scope and access Grant
+bindings are unambiguous and are used by the projection.
+
+There is also no canonical assessment-conclusion field or governed no-material-findings
+completion path today. The read model therefore does not invent a conclusion. When
+Finding readiness is otherwise satisfied but returns `NO_FINDINGS`, the next-action
+projection surfaces `DOMAIN_GAP_REQUIRES_DECISION` instead of pretending the
+assessment can advance.
 
 ## M. PostgreSQL durable-resource plan
 

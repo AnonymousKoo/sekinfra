@@ -10,6 +10,7 @@ from sekinfra_consulting.in_memory import UnitOfWork
 from sekinfra_consulting.phase5c import (
     PHASE5C_CAPABILITIES, PHASE5C_COMMANDS, PHASE5C_EVENTS, Phase5CReadService,
 )
+from sekinfra_consulting.oia_read_models import OIAEngagementProgressReadService
 from sekinfra_consulting.schema_registry import SchemaRegistry
 from tests.runtime.test_phase5c_runtime import Phase5CRuntimeTests
 
@@ -118,6 +119,8 @@ def main():
         ('ongoing-offboarding-status-view', reads.offboarding_status(phase5c.tenant, phase5c.offboarding_id, phase5c.now)),
         ('ongoing-engagement-eligibility-view', reads.eligibility(phase5c.tenant, phase5c.engagement_id, phase5c.now)),
         ('phase5c-authority-progression-view', reads.progression(phase5c.tenant, phase5c.engagement_id, phase5c.now)),
+        ('oia-engagement-progress-view', OIAEngagementProgressReadService(uow).progress(
+            phase5c.tenant, phase5c.engagement_id, phase5c.assessment_id, phase5c.now)),
     )
     for slug, value in read_values:
         schema = registry.expanded(f'urn:sekinfra:schema:contracts:read-models:{slug}:v1')
