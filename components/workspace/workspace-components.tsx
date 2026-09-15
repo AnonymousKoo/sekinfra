@@ -18,26 +18,83 @@ const statusStyles = {
 type StatusKind = keyof typeof statusStyles;
 
 const operatorNavigation = [
-  { href: "/workspace", label: "Overview" },
-  { href: "/workspace/engagements", label: "Engagements" },
-  { href: "/workspace/engagements/demo", label: "Demo engagement" },
+  { href: "/workspace", label: "Overview", index: "01", detail: "Attention and operating pulse" },
+  { href: "/workspace/engagements", label: "Engagements", index: "02", detail: "Client portfolio and stage" },
+  { href: "/workspace/engagements/demo", label: "Northline", index: "03", detail: "Detailed engagement view" },
 ] as const;
 
+function OperatorNavigation({ currentPath }: { currentPath?: string }) {
+  return <nav aria-label="Operator workspace" className="space-y-2">
+    {operatorNavigation.map((item) => {
+      const active = currentPath === item.href;
+      return <Link key={item.href} href={item.href} aria-current={active ? "page" : undefined} className={"group flex min-h-14 items-center gap-3 rounded-xl border px-3 py-2.5 transition-colors " + (active ? "border-[var(--accent)] bg-white/10 text-white" : "border-transparent text-[#b9cec5] hover:border-white/15 hover:bg-white/5 hover:text-white")}>
+        <span className={"flex h-8 w-8 shrink-0 items-center justify-center rounded-lg font-mono text-[.68rem] font-bold " + (active ? "bg-[var(--accent)] text-[var(--brand-deep)]" : "bg-white/8 text-[#9eb9ad]")}>{item.index}</span>
+        <span className="min-w-0">
+          <span className="block text-sm font-bold">{item.label}</span>
+          <span className="mt-0.5 block truncate text-[.68rem] text-[#8eaaa0] group-hover:text-[#b9cec5]">{item.detail}</span>
+        </span>
+      </Link>;
+    })}
+  </nav>;
+}
+
 export function WorkspaceShell({ perspective, alternateHref, alternateLabel, currentPath, children }: { perspective: "Operator" | "Client"; alternateHref?: string; alternateLabel?: string; currentPath?: string; children: ReactNode }) {
+  if (perspective === "Operator") {
+    return <div className="min-h-screen bg-[var(--background)] lg:grid lg:grid-cols-[17rem_minmax(0,1fr)]">
+      <a href="#workspace-content" className="fixed left-4 top-4 z-50 -translate-y-24 rounded-md bg-[var(--accent)] px-4 py-3 font-bold text-[var(--brand-deep)] transition-transform focus:translate-y-0">Skip to content</a>
+
+      <aside className="hidden min-h-screen flex-col border-r border-white/10 bg-[var(--brand-deep)] px-4 py-5 text-white lg:sticky lg:top-0 lg:flex lg:h-screen">
+        <div className="px-2">
+          <Link href="/workspace" className="flex min-h-11 items-center gap-3">
+            <span aria-hidden="true" className="h-3 w-3 rounded-[3px] bg-[var(--accent)] shadow-[0_0_0_5px_rgb(213_227_108/.10)]" />
+            <span className="text-lg font-bold tracking-tight">SekInfra</span>
+          </Link>
+          <p className="mt-2 text-[.68rem] font-bold uppercase tracking-[.16em] text-[#88a89b]">Operator command center</p>
+        </div>
+
+        <div className="mt-8 flex-1">
+          <OperatorNavigation currentPath={currentPath} />
+        </div>
+
+        <div className="space-y-3 border-t border-white/10 pt-4">
+          {alternateHref && alternateLabel ? <Link href={alternateHref} className="flex min-h-11 items-center justify-between rounded-xl border border-white/15 px-3 text-sm font-bold text-[#dbe8e1] hover:border-[var(--accent)] hover:text-[var(--accent)]"><span>{alternateLabel}</span><span aria-hidden="true">↗</span></Link> : null}
+          <Link href="/" className="flex min-h-11 items-center justify-between rounded-xl px-3 text-sm font-bold text-[#9eb9ad] hover:bg-white/5 hover:text-white"><span>Public site</span><span aria-hidden="true">↗</span></Link>
+          <div className="rounded-xl border border-white/10 bg-black/10 p-3">
+            <div className="flex items-center gap-2 text-xs font-bold text-[#dbe8e1]"><span aria-hidden="true" className="h-2 w-2 rounded-full bg-[var(--accent)]" />Preview environment</div>
+            <p className="mt-1 text-[.68rem] leading-5 text-[#88a89b]">Synthetic data only. No production actions.</p>
+          </div>
+        </div>
+      </aside>
+
+      <div className="min-w-0">
+        <header className="border-b border-white/10 bg-[var(--brand-deep)] text-white lg:hidden">
+          <div className="flex items-center justify-between gap-3 px-5 py-4">
+            <Link href="/workspace" className="flex min-h-11 items-center gap-2 font-bold"><span aria-hidden="true" className="h-2.5 w-2.5 rounded-[3px] bg-[var(--accent)]" />SekInfra</Link>
+            <span className="text-[.68rem] font-bold uppercase tracking-[.14em] text-[#9eb9ad]">Operator</span>
+          </div>
+          <div className="overflow-x-auto px-5 pb-3">
+            <div className="flex min-w-max gap-2">{operatorNavigation.map((item) => <Link key={item.href} href={item.href} aria-current={currentPath === item.href ? "page" : undefined} className="min-h-10 content-center rounded-lg border border-white/15 px-3 text-xs font-bold text-[#c8dbd2] aria-[current=page]:border-[var(--accent)] aria-[current=page]:text-[var(--accent)]">{item.label}</Link>)}</div>
+          </div>
+        </header>
+        <main id="workspace-content" className="mx-auto w-full max-w-[92rem] px-4 py-5 sm:px-6 sm:py-7 xl:px-8">{children}</main>
+        <footer className="border-t border-[var(--line)] px-5 py-5 text-center text-xs text-[var(--ink-muted)]">SekInfra operator preview. Read only synthetic data. No production actions.</footer>
+      </div>
+    </div>;
+  }
+
   return <div className="min-h-screen bg-[var(--background)]">
     <a href="#workspace-content" className="fixed left-4 top-4 z-50 -translate-y-24 rounded-md bg-[var(--accent)] px-4 py-3 font-bold text-[var(--brand-deep)] transition-transform focus:translate-y-0">Skip to content</a>
     <header className="border-b border-white/15 bg-[var(--brand-deep)] text-white">
       <div className="mx-auto flex w-full max-w-[76rem] flex-wrap items-center justify-between gap-4 px-5 py-4 sm:px-8">
         <Link href="/" className="min-h-11 content-center text-lg font-bold tracking-tight">SekInfra</Link>
-        <nav aria-label={perspective === "Operator" ? "Operator prototype" : "Prototype views"} className="flex max-w-full flex-wrap items-center gap-2 sm:gap-3">
-          <span className="rounded-full border border-white/20 px-3 py-1.5 text-xs font-bold uppercase tracking-[.14em] text-[#c8dbd2]">{perspective} view</span>
-          {perspective === "Operator" ? operatorNavigation.map((item) => <Link key={item.href} href={item.href} aria-current={currentPath === item.href ? "page" : undefined} className="min-h-11 content-center rounded-md border border-white/25 px-3 text-sm font-bold hover:border-[var(--accent)] hover:text-[var(--accent)] aria-[current=page]:border-[var(--accent)] aria-[current=page]:text-[var(--accent)]">{item.label}</Link>) : null}
+        <nav aria-label="Prototype views" className="flex max-w-full flex-wrap items-center gap-2 sm:gap-3">
+          <span className="rounded-full border border-white/20 px-3 py-1.5 text-xs font-bold uppercase tracking-[.14em] text-[#c8dbd2]">Client view</span>
           {alternateHref && alternateLabel ? <Link href={alternateHref} className="min-h-11 content-center rounded-md border border-white/25 px-3 text-sm font-bold hover:border-[var(--accent)] hover:text-[var(--accent)]">{alternateLabel}</Link> : null}
         </nav>
       </div>
     </header>
     <main id="workspace-content" className="mx-auto w-full max-w-[76rem] px-5 py-8 sm:px-8 sm:py-12">{children}</main>
-    <footer className="border-t border-[var(--line)] px-5 py-8 text-center text-sm text-[var(--ink-muted)]">Read only SekInfra OIA experience prototype. No account, authority action, or production connection exists.</footer>
+    <footer className="border-t border-[var(--line)] px-5 py-8 text-center text-sm text-[var(--ink-muted)]">Read only SekInfra client experience preview. No account or production action exists.</footer>
   </div>;
 }
 
