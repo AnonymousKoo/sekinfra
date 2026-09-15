@@ -2,7 +2,7 @@ import { operatorDemoEngagement as engagement } from "@/fixtures/oia-demo-engage
 import { AuthorityStatus, DeliveryHistory, EngagementHeader, EvidenceSummaryCard, FindingCard, InspectionCoverageSummary, LifecycleTimeline, LimitationNotice, NextActionCard, ObservationSummary, RootCauseSummary, SectionHeading, StatusPill, SyntheticDemoBanner, WorkspaceShell } from "@/components/workspace/workspace-components";
 
 export function OperatorEngagementView() {
-  return <WorkspaceShell perspective="Operator" alternateHref="/client/engagements/demo" alternateLabel="View client perspective">
+  return <WorkspaceShell perspective="Operator" alternateHref="/client/engagements/demo" alternateLabel="Client view" currentPath="/workspace/engagements/demo">
     <SyntheticDemoBanner notice={engagement.provenance.notice} />
     <div className="space-y-8">
       <EngagementHeader organization={engagement.identity.organization} label={engagement.identity.label} stage={engagement.presentation.stage} status={engagement.assessment.label + ". Access " + engagement.authority.currentAssessmentAccessGrant.technicalState.toLowerCase() + "."} eyebrow="Operator engagement" />

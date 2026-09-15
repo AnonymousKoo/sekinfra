@@ -17,15 +17,22 @@ const statusStyles = {
 
 type StatusKind = keyof typeof statusStyles;
 
-export function WorkspaceShell({ perspective, alternateHref, alternateLabel, children }: { perspective: "Operator" | "Client"; alternateHref: string; alternateLabel: string; children: ReactNode }) {
+const operatorNavigation = [
+  { href: "/workspace", label: "Overview" },
+  { href: "/workspace/engagements", label: "Engagements" },
+  { href: "/workspace/engagements/demo", label: "Demo engagement" },
+] as const;
+
+export function WorkspaceShell({ perspective, alternateHref, alternateLabel, currentPath, children }: { perspective: "Operator" | "Client"; alternateHref?: string; alternateLabel?: string; currentPath?: string; children: ReactNode }) {
   return <div className="min-h-screen bg-[var(--background)]">
-    <a href="#workspace-content" className="fixed left-4 top-4 z-50 -translate-y-24 rounded-md bg-[var(--accent)] px-4 py-3 font-bold text-[var(--brand-deep)] transition-transform focus:translate-y-0">Skip to engagement</a>
+    <a href="#workspace-content" className="fixed left-4 top-4 z-50 -translate-y-24 rounded-md bg-[var(--accent)] px-4 py-3 font-bold text-[var(--brand-deep)] transition-transform focus:translate-y-0">Skip to content</a>
     <header className="border-b border-white/15 bg-[var(--brand-deep)] text-white">
       <div className="mx-auto flex w-full max-w-[76rem] flex-wrap items-center justify-between gap-4 px-5 py-4 sm:px-8">
         <Link href="/" className="min-h-11 content-center text-lg font-bold tracking-tight">SekInfra</Link>
-        <nav aria-label="Prototype views" className="flex items-center gap-3">
+        <nav aria-label={perspective === "Operator" ? "Operator prototype" : "Prototype views"} className="flex max-w-full flex-wrap items-center gap-2 sm:gap-3">
           <span className="rounded-full border border-white/20 px-3 py-1.5 text-xs font-bold uppercase tracking-[.14em] text-[#c8dbd2]">{perspective} view</span>
-          <Link href={alternateHref} className="min-h-11 content-center rounded-md border border-white/25 px-4 text-sm font-bold hover:border-[var(--accent)] hover:text-[var(--accent)]">{alternateLabel}</Link>
+          {perspective === "Operator" ? operatorNavigation.map((item) => <Link key={item.href} href={item.href} aria-current={currentPath === item.href ? "page" : undefined} className="min-h-11 content-center rounded-md border border-white/25 px-3 text-sm font-bold hover:border-[var(--accent)] hover:text-[var(--accent)] aria-[current=page]:border-[var(--accent)] aria-[current=page]:text-[var(--accent)]">{item.label}</Link>) : null}
+          {alternateHref && alternateLabel ? <Link href={alternateHref} className="min-h-11 content-center rounded-md border border-white/25 px-3 text-sm font-bold hover:border-[var(--accent)] hover:text-[var(--accent)]">{alternateLabel}</Link> : null}
         </nav>
       </div>
     </header>
