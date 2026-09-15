@@ -2,7 +2,7 @@
 
 ## Brand and purpose
 
-This repository (`avuhz-website`) is the public website for **Sekinfra** at `https://www.sekinfra.com`. The website is an inbound sales experience: it helps an owner or operator recognize operational friction, understand Sekinfra's diagnostic-led work, assess relevance, and begin a diagnostic.
+This repository (`sekinfra`) is the public website for **Sekinfra** at `https://www.sekinfra.com`. The website is an inbound sales experience: it helps an owner or operator recognize operational friction, understand Sekinfra's diagnostic-led work, assess relevance, and begin a diagnostic.
 
 Sekinfra is the client-facing company. Avuhz is proprietary operating infrastructure used by Sekinfra to govern diagnostics, scope, authority, implementation, and change; it is not a public SaaS product or primary website brand.
 
@@ -10,7 +10,7 @@ Sekinfra is the client-facing company. Avuhz is proprietary operating infrastruc
 
 Primary positioning: **Business infrastructure built around how your operation actually works.** Sekinfra identifies where operations leak time, money, visibility, or accountability, then designs and builds systems to fix it.
 
-The journey is: problem recognition → relevance → understanding → trust → self-qualification → start diagnostic. The homepage follows that narrative: hero, operational signals, an interactive problem selector, the distinction between software and a system, process, outcome areas, controlled delivery, and final diagnostic CTA.
+The journey is: problem recognition → relevance → assessment understanding → tangible outcome → trust → controlled next step → start diagnostic. The homepage follows that narrative through the hero, operational signals, contextual selector, Operational Infrastructure Assessment introduction, client deliverables, illustrative evidence path, technology decision, authority boundaries, outcome areas, implementation decision, and final diagnostic CTA.
 
 ## Routes and CTA architecture
 
@@ -76,4 +76,16 @@ The typed analytics boundary adds local no-op event vocabulary for personalizati
 
 The Avuhz boundary is unchanged: `sekinfra.com → future bounded acquisition layer → governed Avuhz handoff`. Phase 3 creates no acquisition record, engagement, scope, authority state, or Avuhz connection. Website Phase 4—actual intake, qualification, booking where appropriate, bounded server integration, and consent for submitted data—is explicitly not implemented. Website Phase 5 remains production analytics, experiments, SEO/performance, hardening, and deployment refinement.
 
-After Phase 3, website development pauses: **WEBSITE_CORE_PAUSED_AFTER_PHASE_3**. The next engineering priority is **Avuhz Core Phase 5**.
+## Landing Page UX 1
+
+Landing Page UX 1 extends the homepage sales narrative without adding an intake backend or application infrastructure. The sequence now moves from operational recognition and contextual relevance into a plain language introduction to the Operational Infrastructure Assessment, the client deliverables, an illustrative evidence path, controlled authority, outcomes, and the separately authorized implementation decision.
+
+The new static homepage sections live in `components/landing/oia-story.tsx`. They remain React Server Components and use the existing CSS, HTML, and SVG led visual system. The only browser state remains the existing session scoped operational focus.
+
+The public authority promise is explicit:
+
+- assessment scope is agreed before inspection;
+- diagnostic access is limited and temporary;
+- assessment access does not authorize system changes;
+- findings delivery does not authorize implementation;
+- implementation, deployment, and ongoing access remain separate decisions.
