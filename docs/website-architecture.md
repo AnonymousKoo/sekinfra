@@ -89,3 +89,11 @@ The public authority promise is explicit:
 - assessment access does not authorize system changes;
 - findings delivery does not authorize implementation;
 - implementation, deployment, and ongoing access remain separate decisions.
+
+## OIA Workspace UX 1
+
+Two directly addressable, non-production prototype routes demonstrate one synthetic OIA engagement from operator and client perspectives: `/workspace/engagements/demo` and `/client/engagements/demo`. Both are server rendered from one fixture and explicitly identify themselves as synthetic demonstrations.
+
+The operator projection includes plan detail, inspection coverage, provenance summaries, internal observations, root cause confidence, draft and final findings, and delivery readiness. The client projection is intentionally narrower: approved scope, access boundaries, high level progress, final delivered findings, immutable delivery history, and explanatory next phase options. It excludes internal observations, hypotheses, draft findings, secure evidence references, assessor notes, and raw audit metadata.
+
+These routes provide no authentication, API, persistence, client action, authority facade, database access, or Avuhz integration. Cross lifecycle stage and next action labels are prototype presentation summaries because the current domain does not provide unified canonical read models for them.
