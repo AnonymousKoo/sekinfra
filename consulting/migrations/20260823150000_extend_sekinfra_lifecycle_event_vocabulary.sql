@@ -1,0 +1,16 @@
+-- Forward-only, additive vocabulary extension for a recorded trusted human approval.
+-- Existing lifecycle event meanings and legacy tables remain unchanged.
+
+alter table public.sekinfra_lifecycle_events
+  drop constraint sekinfra_lifecycle_events_event_type_check;
+
+alter table public.sekinfra_lifecycle_events
+  add constraint sekinfra_lifecycle_events_event_type_check
+  check (event_type in (
+    'engagement.handoff.accepted',
+    'engagement.opened',
+    'diagnostic_scope.submitted',
+    'diagnostic_scope.approved',
+    'diagnostic_scope.rejected',
+    'human_approval.recorded'
+  ));

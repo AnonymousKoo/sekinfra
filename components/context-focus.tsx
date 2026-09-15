@@ -1,0 +1,3 @@
+"use client";
+import{usePersonalization}from"@/components/personalization-provider";
+export function ContextFocus(){const{profile,reset}=usePersonalization();if(!profile)return null;return <div className="border-b border-[var(--line)] bg-[var(--brand-wash)]"><div className="mx-auto flex max-w-[var(--page-width)] items-center justify-between gap-3 px-5 py-2 text-sm lg:px-8"><p><span className="font-semibold">Viewing for:</span> {profile.label}<span className="hidden text-[var(--ink-muted)] sm:inline"> — based only on your selection in this browsing session.</span></p><button onClick={reset} className="shrink-0 font-semibold text-[var(--brand)] underline underline-offset-4 hover:text-[var(--brand-deep)]">Reset focus</button></div></div>}
