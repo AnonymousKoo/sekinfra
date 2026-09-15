@@ -5,7 +5,7 @@ export function OperatorEngagementView() {
   return <WorkspaceShell perspective="Operator" alternateHref="/client/engagements/demo" alternateLabel="View client perspective">
     <SyntheticDemoBanner notice={engagement.provenance.notice} />
     <div className="space-y-8">
-      <EngagementHeader organization={engagement.identity.organization} label={engagement.identity.label} stage={engagement.presentation.stage} status={engagement.assessment.label + ". Access " + engagement.authority.assessmentAccess.technicalState.toLowerCase() + "."} eyebrow="Operator engagement" />
+      <EngagementHeader organization={engagement.identity.organization} label={engagement.identity.label} stage={engagement.presentation.stage} status={engagement.assessment.label + ". Access " + engagement.authority.currentAssessmentAccessGrant.technicalState.toLowerCase() + "."} eyebrow="Operator engagement" />
       <NextActionCard audience="Operator" action={engagement.presentation.operatorNextAction} />
       <LifecycleTimeline items={engagement.presentation.lifecycle} />
 

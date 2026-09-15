@@ -73,17 +73,17 @@ export function LifecycleTimeline({ items }: { items: readonly LifecycleItem[] }
   </section>;
 }
 
-export function AuthorityStatus({ authority }: { authority: { diagnosticAgreement: { label: string }; paymentCondition: { label: string }; accessApproval: { technicalState: string; label: string }; assessmentAccess: { technicalState: string; label: string }; expiresAt: string; expiresLabel: string; implementationAuthority: boolean; deploymentAuthority: boolean } }) {
+export function AuthorityStatus({ authority }: { authority: { diagnosticAgreement: { label: string }; paymentCondition: { label: string }; assessmentAccessGrantApprovalMilestone: { technicalState: string; label: string }; currentAssessmentAccessGrant: { technicalState: string; label: string }; expiresAt: string; expiresLabel: string; implementationAuthority: boolean; deploymentAuthority: boolean } }) {
   const rows = [authority.diagnosticAgreement.label, authority.paymentCondition.label];
   return <section aria-labelledby="authority-heading" className="rounded-[var(--radius-card)] border border-[var(--line)] bg-white p-6">
     <SectionHeading id="authority-heading" eyebrow="Authority" title="Approved boundaries remain separate" compact />
     <ul className="mt-5 space-y-3">{rows.map((label) => <li key={label} className="flex items-center gap-3 text-sm font-bold"><span aria-hidden="true" className="h-2.5 w-2.5 rounded-full bg-[var(--success)]" />{label}</li>)}</ul>
     <div className="mt-5 grid gap-3 sm:grid-cols-2">
       <div className="rounded-xl border border-[var(--line-strong)] bg-[var(--brand-wash)] p-4">
-        <p className="text-xs font-bold uppercase tracking-[.12em]">Approval state</p><p className="mt-2 font-bold">{authority.accessApproval.label}</p><code className="mt-2 block text-xs">{authority.accessApproval.technicalState}</code><p className="mt-2 text-sm text-[var(--ink-muted)]">The boundary is approved. Approval alone does not make access active.</p>
+        <p className="text-xs font-bold uppercase tracking-[.12em]">Approval state</p><p className="mt-2 font-bold">{authority.assessmentAccessGrantApprovalMilestone.label}</p><code className="mt-2 block text-xs">{authority.assessmentAccessGrantApprovalMilestone.technicalState}</code><p className="mt-2 text-sm text-[var(--ink-muted)]">The boundary is approved. Approval alone does not make access active.</p>
       </div>
       <div className="rounded-xl border border-[var(--accent)] bg-[var(--accent)] p-4 text-[var(--brand-deep)]">
-        <p className="text-xs font-bold uppercase tracking-[.12em]">Technical state</p><p className="mt-2 font-bold">{authority.assessmentAccess.label}</p><code className="mt-2 block text-xs">{authority.assessmentAccess.technicalState}</code><p className="mt-2 text-sm">Verification is complete for approved diagnostic actions only.</p>
+        <p className="text-xs font-bold uppercase tracking-[.12em]">Technical state</p><p className="mt-2 font-bold">{authority.currentAssessmentAccessGrant.label}</p><code className="mt-2 block text-xs">{authority.currentAssessmentAccessGrant.technicalState}</code><p className="mt-2 text-sm">Verification is complete for approved diagnostic actions only.</p>
       </div>
     </div>
     <p className="mt-4 text-sm text-[var(--ink-muted)]">Access expires <time dateTime={authority.expiresAt}>{authority.expiresLabel}</time>.</p>

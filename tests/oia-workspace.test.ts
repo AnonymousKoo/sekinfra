@@ -1,6 +1,8 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import { clientDemoEngagement, oiaDemoEngagement, operatorDemoEngagement, projectClientEngagement, SYNTHETIC_DEMO_NOTICE } from "../fixtures/oia-demo-engagement.ts";
+import { isPrototypeRouteBlocked } from "../lib/prototype-route.ts";
 
 test("fixture is explicitly synthetic and internally coherent", () => {
   assert.equal(oiaDemoEngagement.provenance.authoritative, false);
@@ -42,12 +44,26 @@ test("client projection includes only final findings preserved in a delivery", (
 });
 
 test("access approval is distinct from active access and grants no change authority", () => {
-  assert.equal(oiaDemoEngagement.authority.accessApproval.technicalState, "APPROVED");
-  assert.equal(oiaDemoEngagement.authority.assessmentAccess.technicalState, "ACTIVE");
-  assert.notEqual(oiaDemoEngagement.authority.accessApproval.label, oiaDemoEngagement.authority.assessmentAccess.label);
+  assert.equal(oiaDemoEngagement.authority.assessmentAccessGrantApprovalMilestone.technicalState, "APPROVED");
+  assert.equal(oiaDemoEngagement.authority.currentAssessmentAccessGrant.technicalState, "ACTIVE");
+  assert.notEqual(oiaDemoEngagement.authority.assessmentAccessGrantApprovalMilestone.label, oiaDemoEngagement.authority.currentAssessmentAccessGrant.label);
   assert.equal(oiaDemoEngagement.authority.implementationAuthority, false);
   assert.equal(oiaDemoEngagement.authority.deploymentAuthority, false);
   assert.ok(oiaDemoEngagement.scope.prohibitedActions.includes("Modify system configuration"));
+});
+
+test("diagnostic agreement state matches the closed contract vocabulary", () => {
+  const schema = JSON.parse(readFileSync(new URL("../consulting/contracts/schemas/v1/domain/diagnostic-agreement-authority.schema.json", import.meta.url), "utf8"));
+  assert.deepEqual(schema.properties.status.enum, ["VERIFIED_ACTIVE", "EXPIRED", "REVOKED", "SUPERSEDED"]);
+  assert.equal(oiaDemoEngagement.authority.diagnosticAgreement.technicalState, "VERIFIED_ACTIVE");
+  assert.ok(schema.properties.status.enum.includes(oiaDemoEngagement.authority.diagnosticAgreement.technicalState));
+});
+
+test("prototype routes are blocked only in the Vercel production environment", () => {
+  assert.equal(isPrototypeRouteBlocked("production"), true);
+  assert.equal(isPrototypeRouteBlocked("preview"), false);
+  assert.equal(isPrototypeRouteBlocked("development"), false);
+  assert.equal(isPrototypeRouteBlocked(undefined), false);
 });
 
 test("priority remains categorical with no numerical score", () => {

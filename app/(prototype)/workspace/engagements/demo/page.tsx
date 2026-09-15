@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import { OperatorEngagementView } from "@/components/workspace/operator-engagement-view";
+import { isPrototypeRouteBlocked } from "@/lib/prototype-route";
 
 export const metadata: Metadata = {
   title: "Synthetic OIA operator engagement",
@@ -8,5 +10,6 @@ export const metadata: Metadata = {
 };
 
 export default function OperatorDemoPage() {
+  if (isPrototypeRouteBlocked()) notFound();
   return <OperatorEngagementView />;
 }

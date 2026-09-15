@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import { ClientEngagementView } from "@/components/workspace/client-engagement-view";
+import { isPrototypeRouteBlocked } from "@/lib/prototype-route";
 
 export const metadata: Metadata = {
   title: "Synthetic OIA client engagement",
@@ -8,5 +10,6 @@ export const metadata: Metadata = {
 };
 
 export default function ClientDemoPage() {
+  if (isPrototypeRouteBlocked()) notFound();
   return <ClientEngagementView />;
 }
