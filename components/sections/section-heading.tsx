@@ -1,0 +1,2 @@
+import type { ReactNode } from "react";
+export function SectionHeading({eyebrow,title,children}:{eyebrow:string;title:ReactNode;children?:ReactNode}) { return <div className="max-w-3xl"><p className="mb-4 text-xs font-bold uppercase tracking-[.15em] text-[var(--brand)]">{eyebrow}</p><h2 className="text-3xl font-semibold tracking-[-.045em] sm:text-4xl lg:text-5xl">{title}</h2>{children&&<div className="mt-5 text-lg leading-8 text-[var(--ink-muted)]">{children}</div>}</div>; }

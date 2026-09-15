@@ -12,6 +12,14 @@ dist
 dist-ssr
 *.local
 
+# Next.js
+.next/
+out/
+build/
+
+# Test coverage
+coverage/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
@@ -27,6 +35,21 @@ dist-ssr
 .env
 .env.*
 !.env.example
+
+# Vercel local metadata
+.vercel/
+
+# TypeScript generated state
+*.tsbuildinfo
+next-env.d.ts
+
+# Private credentials
+secrets/
+credentials/
+*.pem
+*.key
+
+# Python generated state
 __pycache__/
 *.py[cod]
 .pytest_cache/

@@ -1,0 +1,2 @@
+"use client";import{ButtonLink}from"@/components/ui/button-link";import{usePersonalization}from"@/components/personalization-provider";
+export function ContextualAboutCta(){const{profile}=usePersonalization();return <div>{profile&&<p className="mb-4 text-[var(--ink-muted)]">Your selected focus is <strong className="text-[var(--foreground)]">{profile.label}</strong>. {profile.cta}</p>}<ButtonLink href="/start">Start a Diagnostic</ButtonLink></div>}
