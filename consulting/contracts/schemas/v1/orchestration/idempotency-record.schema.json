@@ -86,7 +86,11 @@
         "CloseOngoingAccess",
         "InitiateOngoingOffboarding",
         "VerifyOngoingAccessRevocation",
-        "CompleteOngoingOffboarding"
+        "CompleteOngoingOffboarding",
+        "CreateImplementationOutcome",
+        "RecordImplementationOutcomeApproval",
+        "ApproveImplementationOutcome",
+        "RevokeImplementationOutcome"
       ]
     },
     "subject_reference": {

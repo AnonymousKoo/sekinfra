@@ -20,12 +20,13 @@ from .oia_observation import OIAObservationHandler
 from .oia_root_cause import OIARootCauseHandler
 from .oia_finding import OIAFindingHandler
 from .oia_findings_delivery import OIAFindingsLifecycleHandler
+from .implementation_outcome import ImplementationOutcomeHandler
 
 from .phase5c import PHASE5C_COMMANDS, PHASE5C_EVENTS, Phase5CHandler
 class CanonicalScopeDigestConflict(ValueError): pass
 from .runtime import prepare_and_guard_command
 
-COMMAND_SCOPED_IDEMPOTENCY_COMMANDS=frozenset(("CreateAssessmentAccessProposal","RecordAssessmentAccessApproval","IssueAssessmentAccessGrant","VerifyAssessmentAccess","ExpireAssessmentAccess","RevokeAssessmentAccess","CloseAssessmentAccessForAgreementEnd","RecordDiagnosticAgreementAuthority","RecordDiagnosticPaymentVerification","InvalidateDiagnosticPaymentVerification","OpenOIAAssessment","RecordOIAEvidence","RecordOIAObservation","SupersedeOIAObservation","RecordOIARootCause","CreateOIAFinding","UpdateOIAFindingAnalysis","FinalizeOIAFinding","MarkOIAAssessmentReadyForDelivery","DeliverOIAFindings","ReviseDeliveredOIAFinding","CloseOIAAssessment","CreateOIAAssessmentPlan","ReviseOIAAssessmentPlan","ReviewOIAAssessmentPlan","ApproveOIAAssessmentPlan","CreateOIAInspectionItem","UpdateOIAInspectionItem","MarkOIAInspectionItemBlocked",*PHASE5C_COMMANDS))
+COMMAND_SCOPED_IDEMPOTENCY_COMMANDS=frozenset(("CreateAssessmentAccessProposal","RecordAssessmentAccessApproval","IssueAssessmentAccessGrant","VerifyAssessmentAccess","ExpireAssessmentAccess","RevokeAssessmentAccess","CloseAssessmentAccessForAgreementEnd","RecordDiagnosticAgreementAuthority","RecordDiagnosticPaymentVerification","InvalidateDiagnosticPaymentVerification","OpenOIAAssessment","RecordOIAEvidence","RecordOIAObservation","SupersedeOIAObservation","RecordOIARootCause","CreateOIAFinding","UpdateOIAFindingAnalysis","FinalizeOIAFinding","MarkOIAAssessmentReadyForDelivery","DeliverOIAFindings","ReviseDeliveredOIAFinding","CloseOIAAssessment","CreateOIAAssessmentPlan","ReviseOIAAssessmentPlan","ReviewOIAAssessmentPlan","ApproveOIAAssessmentPlan","CreateOIAInspectionItem","UpdateOIAInspectionItem","MarkOIAInspectionItemBlocked","CreateImplementationOutcome","RecordImplementationOutcomeApproval","ApproveImplementationOutcome","RevokeImplementationOutcome",*PHASE5C_COMMANDS))
 def idempotency_scope(command): return "COMMAND" if command.command_type in COMMAND_SCOPED_IDEMPOTENCY_COMMANDS else "SUBJECT:"+command.subject_id
 
 def fingerprint(command):
@@ -60,6 +61,9 @@ class MemoryStore:
     def _current_finding(self,tenant_id,finding_id):
         candidates=[value for (record_tenant,record_finding_id,_),value in self.oia_findings.items() if record_tenant==tenant_id and record_finding_id==finding_id and value.get("state")!="SUPERSEDED"]
         return copy.deepcopy(max(candidates,key=lambda value:value["finding_revision"])) if candidates else None
+    def _current_implementation_outcome(self,tenant_id,outcome_id):
+        candidates=[value for (record_tenant,record_outcome_id,_),value in self.implementation_outcomes.items() if record_tenant==tenant_id and record_outcome_id==outcome_id and value.get("state")!="SUPERSEDED"]
+        return copy.deepcopy(max(candidates,key=lambda value:value["outcome_version"])) if candidates else None
     def _phase5c_snapshot_record(self,command):
         tenant=command.tenant_id;identity=command.subject_id
         if command.subject_type=="OIA_CONVERSION_DECISION":
@@ -75,7 +79,7 @@ class MemoryStore:
         return None
     def snapshot(self,command,trusted_context=None):
         records={"ACQUISITION_HANDOFF":self.handoffs,"ENGAGEMENT":self.engagements,"DIAGNOSTIC_SCOPE":self.scopes,"DIAGNOSTIC_AGREEMENT_AUTHORITY":self.agreements,"DIAGNOSTIC_PAYMENT_VERIFICATION":self.payments}.get(command.subject_type)
-        r=self.proposals.get((command.tenant_id,command.subject_id)) if command.subject_type=="ASSESSMENT_ACCESS_PROPOSAL" else self.grants.get((command.tenant_id,command.subject_id)) if command.subject_type=="ASSESSMENT_ACCESS_GRANT" else self.oia_assessments.get((command.tenant_id,command.subject_id)) if command.subject_type=="OIA_ASSESSMENT" else self.oia_evidence_items.get((command.tenant_id,command.subject_id)) if command.subject_type=="OIA_EVIDENCE_ITEM" else self._current_plan(command.tenant_id,command.subject_id) if command.subject_type=="OIA_ASSESSMENT_PLAN" else self.oia_inspection_items.get((command.tenant_id,command.subject_id)) if command.subject_type=="OIA_INSPECTION_ITEM" else self.oia_observations.get((command.tenant_id,command.subject_id)) if command.subject_type=="OIA_OBSERVATION" else self.oia_root_causes.get((command.tenant_id,command.subject_id)) if command.subject_type=="OIA_ROOT_CAUSE" else self._current_finding(command.tenant_id,command.subject_id) if command.subject_type=="OIA_FINDING" else self.oia_findings_deliveries.get((command.tenant_id,command.subject_id)) or self.oia_assessments.get((command.tenant_id,command.payload.get("oia_assessment_id"))) if command.subject_type=="OIA_FINDINGS_DELIVERY" else self._phase5c_snapshot_record(command) if command.subject_type in {"OIA_CONVERSION_DECISION","ONGOING_AGREEMENT_AUTHORITY","ONGOING_PAYMENT_VERIFICATION","ONGOING_ACCESS_GRANT","ONGOING_ACCESS_REVOCATION_VERIFICATION","ONGOING_OFFBOARDING"} else (records or {}).get(command.subject_id)
+        r=self.proposals.get((command.tenant_id,command.subject_id)) if command.subject_type=="ASSESSMENT_ACCESS_PROPOSAL" else self.grants.get((command.tenant_id,command.subject_id)) if command.subject_type=="ASSESSMENT_ACCESS_GRANT" else self.oia_assessments.get((command.tenant_id,command.subject_id)) if command.subject_type=="OIA_ASSESSMENT" else self.oia_evidence_items.get((command.tenant_id,command.subject_id)) if command.subject_type=="OIA_EVIDENCE_ITEM" else self._current_plan(command.tenant_id,command.subject_id) if command.subject_type=="OIA_ASSESSMENT_PLAN" else self.oia_inspection_items.get((command.tenant_id,command.subject_id)) if command.subject_type=="OIA_INSPECTION_ITEM" else self.oia_observations.get((command.tenant_id,command.subject_id)) if command.subject_type=="OIA_OBSERVATION" else self.oia_root_causes.get((command.tenant_id,command.subject_id)) if command.subject_type=="OIA_ROOT_CAUSE" else self._current_finding(command.tenant_id,command.subject_id) if command.subject_type=="OIA_FINDING" else self.oia_findings_deliveries.get((command.tenant_id,command.subject_id)) or self.oia_assessments.get((command.tenant_id,command.payload.get("oia_assessment_id"))) if command.subject_type=="OIA_FINDINGS_DELIVERY" else self._current_implementation_outcome(command.tenant_id,command.subject_id) if command.subject_type=="IMPLEMENTATION_OUTCOME" else self._phase5c_snapshot_record(command) if command.subject_type in {"OIA_CONVERSION_DECISION","ONGOING_AGREEMENT_AUTHORITY","ONGOING_PAYMENT_VERIFICATION","ONGOING_ACCESS_GRANT","ONGOING_ACCESS_REVOCATION_VERIFICATION","ONGOING_OFFBOARDING"} else (records or {}).get(command.subject_id)
         engagement_id=r.get("engagement_id") if r else None
         if r and command.subject_type=="OIA_EVIDENCE_ITEM":
             assessment=self.oia_assessments.get((command.tenant_id,r["oia_assessment_id"]));engagement_id=(assessment or {}).get("engagement_id")
@@ -603,7 +607,7 @@ class Executor:
         if prior:getattr(u,"rollback",lambda:None)();getattr(u,"close",lambda:None)();return {"result":"DUPLICATE","reason_code":"DUPLICATE_REQUEST","prior_result_reference":prior["command_id"]} if prior["fingerprint"]==fp else {"result":"CONFLICT","reason_code":"IDEMPOTENCY_SEMANTIC_MISMATCH"}
         guarded=prepare_and_guard_command(self.validator,self.pipeline,raw,context,self.store.snapshot(p,context),self.clock())
         if not hasattr(guarded,"guarded"):getattr(u,"rollback",lambda:None)();getattr(u,"close",lambda:None)();return {"result":"REJECTED","reason_code":guarded.reason.value}
-        if p.command_type in ("RecordHumanApproval","RecordAssessmentAccessApproval"):
+        if p.command_type in ("RecordHumanApproval","RecordAssessmentAccessApproval","RecordImplementationOutcomeApproval"):
             authority=self.pipeline.human_approval_authority(context,p.payload["authority_role"])
             if authority:
                 getattr(u,"rollback",lambda:None)();getattr(u,"close",lambda:None)();return {"result":"REJECTED","reason_code":authority.reason.value}
@@ -624,6 +628,17 @@ class Executor:
         return {"result":"ACCEPTED","reason_code":"COMMAND_ACCEPTED","authoritative_record_reference":p.subject_id}
     def _handle(self,u,p,raw,raw_context=None):
         now=self.clock(); payload=p.payload
+        if p.command_type in ("CreateImplementationOutcome","RecordImplementationOutcomeApproval","ApproveImplementationOutcome","RevokeImplementationOutcome"):
+            handler=ImplementationOutcomeHandler(u)
+            if p.command_type=="CreateImplementationOutcome":return handler.create_draft(raw_context,payload,now)
+            if p.command_type=="RecordImplementationOutcomeApproval":
+                enriched=copy.deepcopy(payload);enriched.update(approval_id=p.command_id,correlation_id=p.correlation_id,idempotency_key=p.idempotency_key)
+                return handler.record_approval(raw_context,enriched,now)
+            if p.command_type=="ApproveImplementationOutcome":
+                enriched=copy.deepcopy(payload);enriched["expected_record_version"]=p.expected_record_version
+                return handler.approve(raw_context,enriched,now)
+            enriched=copy.deepcopy(payload);enriched["expected_record_version"]=p.expected_record_version
+            return handler.revoke(raw_context,enriched,now)
         if p.command_type in PHASE5C_COMMANDS:
             return Phase5CHandler(u,self.ongoing_access_verifier,self.ongoing_revocation_verifier).execute(p.command_type,p,raw_context,now,p.command_id)
         if p.command_type=="AcceptAcquisitionHandoff":
@@ -741,7 +756,17 @@ class Executor:
             "visibility":"TENANT_OPERATIONAL","sanitized_metadata":metadata,
         }
 
+    def _implementation_outcome_event(self,p,u):
+        record=u.implementation_outcomes.get_version(p.tenant_id,p.payload["implementation_outcome_id"],p.payload["outcome_version"])
+        if not record:raise ValueError("implementation outcome event subject is missing")
+        event_type={"CreateImplementationOutcome":"implementation_outcome.draft_created","RecordImplementationOutcomeApproval":"implementation_outcome.approval_recorded","ApproveImplementationOutcome":"implementation_outcome.approved","RevokeImplementationOutcome":"implementation_outcome.revoked"}[p.command_type]
+        metadata={"authority_stage":"IMPLEMENTATION_OUTCOME","implementation_outcome_id":record["implementation_outcome_id"],"outcome_version":record["outcome_version"],"state":record["state"]}
+        if p.command_type=="RecordImplementationOutcomeApproval":metadata.update(approval_id=p.command_id,authority_role=p.payload["authority_role"])
+        return {"event_id":self.ids(),"event_type":event_type,"event_schema_version":1,"tenant_id":p.tenant_id,"engagement_id":record["engagement_id"],"authoritative_subject_reference":{"reference_type":"IMPLEMENTATION_OUTCOME","reference_id":record["implementation_outcome_id"]},"authoritative_subject_version":record["record_version"],"occurred_at":self.clock(),"producer_reference":"command.service-01","correlation_id":p.correlation_id,"command_id":p.command_id,"subject_id":p.subject_id,"idempotency_key":p.idempotency_key,"visibility":"TENANT_OPERATIONAL","sanitized_metadata":metadata}
+
     def _event(self,p,u=None):
+        if p.command_type in ("CreateImplementationOutcome","RecordImplementationOutcomeApproval","ApproveImplementationOutcome","RevokeImplementationOutcome"):
+            return self._implementation_outcome_event(p,u)
         if p.command_type in PHASE5C_COMMANDS:
             return self._phase5c_event(p,u)
         typ={"AcceptAcquisitionHandoff":"engagement.handoff.accepted","OpenEngagement":"engagement.opened","SubmitDiagnosticScope":"diagnostic_scope.submitted","RecordHumanApproval":"human_approval.recorded","ApproveDiagnosticScope":"diagnostic_scope.approved","CanonicalizeDiagnosticScope":"diagnostic_scope.canonicalized","CreateAssessmentAccessProposal":"assessment_access.proposal_created","RecordAssessmentAccessApproval":"assessment_access.approval_recorded","IssueAssessmentAccessGrant":"assessment_access.grant_issued","VerifyAssessmentAccess":"assessment_access.verified_and_activated","ExpireAssessmentAccess":"assessment_access.expired","RevokeAssessmentAccess":"assessment_access.revoked","CloseAssessmentAccessForAgreementEnd":"assessment_access.closed","RecordDiagnosticAgreementAuthority":"diagnostic_agreement.authority_recorded","RecordDiagnosticPaymentVerification":"diagnostic_payment.verified","InvalidateDiagnosticPaymentVerification":"diagnostic_payment.invalidated","OpenOIAAssessment":"oia.assessment_opened","RecordOIAEvidence":"oia.evidence_recorded","RecordOIAObservation":"oia.observation_recorded","SupersedeOIAObservation":"oia.observation_superseded","RecordOIARootCause":"oia.root_cause_recorded","CreateOIAFinding":"oia.finding_created","UpdateOIAFindingAnalysis":"oia.finding_updated","FinalizeOIAFinding":"oia.finding_finalized","MarkOIAAssessmentReadyForDelivery":"oia.assessment_ready_for_delivery","DeliverOIAFindings":"oia.findings_delivered","ReviseDeliveredOIAFinding":"oia.finding_revision_opened","CloseOIAAssessment":"oia.assessment_closed","CreateOIAAssessmentPlan":"oia.assessment_plan_created","ReviseOIAAssessmentPlan":"oia.assessment_plan_revised","ReviewOIAAssessmentPlan":"oia.assessment_plan_reviewed","ApproveOIAAssessmentPlan":"oia.assessment_plan_approved","CreateOIAInspectionItem":"oia.inspection_item_created","UpdateOIAInspectionItem":"oia.inspection_item_progressed","MarkOIAInspectionItemBlocked":"oia.inspection_item_blocked"}[p.command_type]

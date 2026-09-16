@@ -789,6 +789,82 @@
             "properties": {
               "command_type": {
                 "enum": [
+                  "CreateImplementationOutcome",
+                  "RecordImplementationOutcomeApproval",
+                  "ApproveImplementationOutcome",
+                  "RevokeImplementationOutcome"
+                ]
+              }
+            },
+            "required": [
+              "command_type"
+            ]
+          },
+          "then": {
+            "required": [
+              "engagement_id"
+            ],
+            "properties": {
+              "subject_type": {
+                "const": "IMPLEMENTATION_OUTCOME"
+              },
+              "caller_type": {
+                "enum": [
+                  "HUMAN",
+                  "INTERNAL_SERVICE"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "command_type": {
+                "enum": [
+                  "RecordImplementationOutcomeApproval",
+                  "RevokeImplementationOutcome"
+                ]
+              }
+            },
+            "required": [
+              "command_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "caller_type": {
+                "const": "HUMAN"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "command_type": {
+                "enum": [
+                  "RecordImplementationOutcomeApproval",
+                  "ApproveImplementationOutcome",
+                  "RevokeImplementationOutcome"
+                ]
+              }
+            },
+            "required": [
+              "command_type"
+            ]
+          },
+          "then": {
+            "required": [
+              "expected_record_version"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "command_type": {
+                "enum": [
                   "RecordOIAConversionDecision",
                   "AcceptOIAConversion"
                 ]
@@ -1093,7 +1169,11 @@
         "CloseOngoingAccess",
         "InitiateOngoingOffboarding",
         "VerifyOngoingAccessRevocation",
-        "CompleteOngoingOffboarding"
+        "CompleteOngoingOffboarding",
+        "CreateImplementationOutcome",
+        "RecordImplementationOutcomeApproval",
+        "ApproveImplementationOutcome",
+        "RevokeImplementationOutcome"
       ]
     },
     "subjectType": {
@@ -1121,7 +1201,8 @@
         "ONGOING_PAYMENT_VERIFICATION",
         "ONGOING_ACCESS_GRANT",
         "ONGOING_ACCESS_REVOCATION_VERIFICATION",
-        "ONGOING_OFFBOARDING"
+        "ONGOING_OFFBOARDING",
+        "IMPLEMENTATION_OUTCOME"
       ]
     },
     "schemaVersion": {
