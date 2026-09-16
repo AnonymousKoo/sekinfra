@@ -1,6 +1,6 @@
 # Phase 5D — Implementation Outcome authority
 
-Status: implemented domain/application core with strict local contract and in-memory authoritative repository
+Status: implemented domain/application core with strict local contract, in-memory repository, and locally certified PostgreSQL durability/RLS adapter
 
 ## Purpose
 
@@ -83,6 +83,10 @@ Implemented now:
 - `HumanApproval` binding for implementation outcomes;
 - `ImplementationOutcomeRepository` port;
 - in-memory versioned authoritative repository;
+- PostgreSQL versioned authoritative repository adapter;
+- additive Phase 5D migration for `sekinfra_implementation_outcomes`;
+- tenant-scoped RLS restricted to `sekinfra_consulting_service`;
+- durable exact `IMPLEMENTATION_OUTCOME` human-approval binding;
 - `ImplementationOutcomeHandler.create_draft`;
 - `ImplementationOutcomeHandler.record_approval`;
 - `ImplementationOutcomeHandler.approve`;
@@ -101,7 +105,7 @@ Implemented now:
 
 This slice deliberately does not add:
 
-- PostgreSQL tables, migrations, or RLS policies;
+- remote/production application of the Phase 5D migration;
 - HTTP/API endpoints;
 - browser or client-side write paths;
 - n8n workflow authority;
@@ -109,4 +113,4 @@ This slice deliberately does not add:
 - implementation execution authority; or
 - deployment authority.
 
-Those remain separate future slices. A database resource is not complete until tenant-scoped RLS is designed and verified. Avuhz must consume only the public handoff contract, never Sekinfra private OIA repositories or analysis records.
+The PostgreSQL representation is locally certified on disposable PostgreSQL: the full migration chain replays, Phase 5D durability survives fresh unit-of-work instances, tenant-scoped RLS denies cross-tenant reads, and `anon`/`authenticated` have no direct table privileges. Remote Supabase application remains separately authorized work. Avuhz must consume only the public handoff contract, never Sekinfra private OIA repositories or analysis records.

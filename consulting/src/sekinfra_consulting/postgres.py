@@ -14,6 +14,7 @@ from .postgres_oia import (
     OIAObservationPostgresRepository,
     OIARootCausePostgresRepository,
 )
+from .postgres_implementation_outcome import ImplementationOutcomePostgresRepository
 from .postgres_phase5c import (
     OIAConversionDecisionPostgresRepository,
     OngoingAccessGrantPostgresRepository,
@@ -52,6 +53,7 @@ class PostgresStore:
             "OIA_ROOT_CAUSE": ("select r.tenant_id,r.record_version,a.engagement_id,r.confidence as state from public.sekinfra_oia_root_causes r join public.sekinfra_oia_assessments a using (tenant_id,oia_assessment_id) where r.tenant_id=%s and r.oia_root_cause_id=%s", "state"),
             "OIA_FINDING": ("select f.tenant_id,f.finding_revision as record_version,a.engagement_id,f.state from public.sekinfra_oia_findings f join public.sekinfra_oia_assessments a using (tenant_id,oia_assessment_id) where f.tenant_id=%s and f.oia_finding_id=%s and f.state<>'SUPERSEDED' order by f.finding_revision desc limit 1", "state"),
             "OIA_CONVERSION_DECISION": ("select tenant_id,record_version,engagement_id,state from public.sekinfra_oia_conversion_decisions where tenant_id=%s and oia_conversion_decision_id=%s order by decision_version desc limit 1", "state"),
+            "IMPLEMENTATION_OUTCOME": ("select tenant_id,record_version,engagement_id,state from public.sekinfra_implementation_outcomes where tenant_id=%s and implementation_outcome_id=%s and state<>'SUPERSEDED' order by outcome_version desc limit 1", "state"),
             "ONGOING_AGREEMENT_AUTHORITY": ("select tenant_id,record_version,engagement_id,state from public.sekinfra_ongoing_agreement_authorities where tenant_id=%s and ongoing_agreement_authority_id=%s and state<>'SUPERSEDED' order by agreement_version desc limit 1", "state"),
             "ONGOING_PAYMENT_VERIFICATION": ("select tenant_id,record_version,engagement_id,status as state from public.sekinfra_ongoing_payment_verifications where tenant_id=%s and ongoing_payment_verification_id=%s", "state"),
             "ONGOING_ACCESS_GRANT": ("select tenant_id,record_version,engagement_id,state from public.sekinfra_ongoing_access_grants where tenant_id=%s and ongoing_access_grant_id=%s", "state"),
@@ -139,6 +141,8 @@ class HumanApprovalPostgresRepository(_TenantRepository):
             "OIA_CONVERSION_DECISION", "ONGOING_AGREEMENT_AUTHORITY", "ONGOING_ACCESS_GRANT"
         }:
             return self._phase5c(row)
+        if row.get("subject_type") == "IMPLEMENTATION_OUTCOME":
+            return self._implementation_outcome(row)
         if row.get("subject_type") == "ASSESSMENT_ACCESS_PROPOSAL":
             return self._assessment(row)
         return self.map_row(row)
@@ -182,6 +186,20 @@ class HumanApprovalPostgresRepository(_TenantRepository):
             ),
         )
         if not cur.fetchone():raise ValueError("duplicate active Phase 5C authority")
+        return copy.deepcopy(record)
+
+    def _implementation_outcome(self,r):
+        return {"approval_id":str(r["approval_id"]),"tenant_id":str(r["tenant_id"]),"engagement_id":str(r["engagement_id"]),"subject_type":r["subject_type"],"subject_id":str(r["subject_id"]),"subject_version":r["subject_version"],"approval_category":r["approval_category"],"authority_category":r["authority_category"],"actor_identity":r["actor_identity"],"actor_organization":r["actor_organization"],"actor_role":r["actor_role"],"decision":r["decision"],"implementation_outcome_authority":{"subject_id":str(r["subject_id"]),"authority_digest":r["implementation_outcome_authority_digest"]},"conditions":_load(r["conditions"]) or [],"effective_at":_time(r["effective_at"]),"evidence_reference":_load(r["evidence_reference"]),"status":r["status"],"correlation_id":str(r["correlation_id"]),"idempotency_key":r["idempotency_key"],"created_at":_time(r["created_at"])}
+    def find_active_implementation_outcome_binding(self,tenant_id,outcome_id,outcome_version,digest,authority_role):
+        row=self.uow.connection.execute("select * from public.sekinfra_human_approvals where tenant_id=%s and subject_type='IMPLEMENTATION_OUTCOME' and subject_id=%s and subject_version=%s and implementation_outcome_authority_digest=%s and actor_role=%s and status='ACTIVE'",(tenant_id,outcome_id,outcome_version,digest,authority_role)).fetchone()
+        return self._implementation_outcome(row) if row else None
+    def record_implementation_outcome(self,record):
+        self.uow.failpoint("AUTHORITATIVE_WRITE")
+        cur=self.uow.connection.execute(
+            "insert into public.sekinfra_human_approvals (approval_id,tenant_id,engagement_id,approval_role,authority_category,approving_principal_reference,approving_organization_reference,decision,status,conditions,effective_at,evidence_reference,correlation_id,idempotency_key,subject_type,subject_id,subject_version,approval_category,actor_identity,actor_organization,actor_role,implementation_outcome_authority_digest,created_at) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s::jsonb,%s,%s,%s,%s,'IMPLEMENTATION_OUTCOME',%s,%s,'IMPLEMENTATION_OUTCOME',%s,%s,%s,%s,%s) on conflict do nothing returning approval_id",
+            (record["approval_id"],record["tenant_id"],record["engagement_id"],record["actor_role"],record["authority_category"],record["actor_identity"],record["actor_organization"],record["decision"],record["status"],_json(record["conditions"]),record["effective_at"],_json(record["evidence_reference"]),record["correlation_id"],record["idempotency_key"],record["subject_id"],record["subject_version"],record["actor_identity"],record["actor_organization"],record["actor_role"],record["implementation_outcome_authority"]["authority_digest"],record["created_at"]),
+        )
+        if not cur.fetchone():raise ValueError("duplicate active implementation outcome authority")
         return copy.deepcopy(record)
 
 def _time(v):return v.isoformat().replace("+00:00","Z") if hasattr(v,"isoformat") else v
@@ -330,7 +348,7 @@ class PostgresUnitOfWork:
             except Exception:
                 self.connection.close()
                 raise
-        self.handoffs=AcquisitionHandoffPostgresRepository(self); self.engagements=EngagementPostgresRepository(self); self.diagnostic_scopes=DiagnosticScopePostgresRepository(self); self.diagnostic_agreement_authorities=DiagnosticAgreementAuthorityPostgresRepository(self); self.diagnostic_payment_verifications=DiagnosticPaymentVerificationPostgresRepository(self); self.assessment_access_proposals=AssessmentAccessProposalPostgresRepository(self); self.assessment_access_grants=AssessmentAccessGrantPostgresRepository(self); self.oia_assessments=OIAAssessmentPostgresRepository(self); self.oia_evidence_items=OIAEvidencePostgresRepository(self); self.oia_assessment_plans=OIAAssessmentPlanPostgresRepository(self); self.oia_inspection_items=OIAInspectionItemPostgresRepository(self); self.oia_observations=OIAObservationPostgresRepository(self); self.oia_root_causes=OIARootCausePostgresRepository(self); self.oia_findings=OIAFindingPostgresRepository(self); self.oia_findings_deliveries=OIAFindingsDeliveryPostgresRepository(self); self.oia_conversion_decisions=OIAConversionDecisionPostgresRepository(self); self.ongoing_agreement_authorities=OngoingAgreementAuthorityPostgresRepository(self); self.ongoing_payment_verifications=OngoingPaymentVerificationPostgresRepository(self); self.ongoing_access_grants=OngoingAccessGrantPostgresRepository(self); self.ongoing_access_revocation_verifications=OngoingAccessRevocationVerificationPostgresRepository(self); self.ongoing_offboardings=OngoingOffboardingPostgresRepository(self); self.human_approvals=HumanApprovalPostgresRepository(self); self.idempotency=IdempotencyPostgresRepository(self); self.lifecycle_events=LifecycleEventPostgresRepository(self); self.outbox=OutboxPostgresRepository(self)
+        self.handoffs=AcquisitionHandoffPostgresRepository(self); self.engagements=EngagementPostgresRepository(self); self.diagnostic_scopes=DiagnosticScopePostgresRepository(self); self.diagnostic_agreement_authorities=DiagnosticAgreementAuthorityPostgresRepository(self); self.diagnostic_payment_verifications=DiagnosticPaymentVerificationPostgresRepository(self); self.assessment_access_proposals=AssessmentAccessProposalPostgresRepository(self); self.assessment_access_grants=AssessmentAccessGrantPostgresRepository(self); self.oia_assessments=OIAAssessmentPostgresRepository(self); self.oia_evidence_items=OIAEvidencePostgresRepository(self); self.oia_assessment_plans=OIAAssessmentPlanPostgresRepository(self); self.oia_inspection_items=OIAInspectionItemPostgresRepository(self); self.oia_observations=OIAObservationPostgresRepository(self); self.oia_root_causes=OIARootCausePostgresRepository(self); self.oia_findings=OIAFindingPostgresRepository(self); self.oia_findings_deliveries=OIAFindingsDeliveryPostgresRepository(self); self.oia_conversion_decisions=OIAConversionDecisionPostgresRepository(self); self.implementation_outcomes=ImplementationOutcomePostgresRepository(self); self.ongoing_agreement_authorities=OngoingAgreementAuthorityPostgresRepository(self); self.ongoing_payment_verifications=OngoingPaymentVerificationPostgresRepository(self); self.ongoing_access_grants=OngoingAccessGrantPostgresRepository(self); self.ongoing_access_revocation_verifications=OngoingAccessRevocationVerificationPostgresRepository(self); self.ongoing_offboardings=OngoingOffboardingPostgresRepository(self); self.human_approvals=HumanApprovalPostgresRepository(self); self.idempotency=IdempotencyPostgresRepository(self); self.lifecycle_events=LifecycleEventPostgresRepository(self); self.outbox=OutboxPostgresRepository(self)
     def bind_trusted_context(self,context):
         if not getattr(context,"authenticated",False) or not getattr(context,"tenant_id",None):raise ValueError("trusted tenant context is required")
         tenant=str(uuid.UUID(str(context.tenant_id)))
