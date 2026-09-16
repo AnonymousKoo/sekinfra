@@ -15,7 +15,7 @@ The journey is: problem recognition → relevance → assessment understanding �
 ## Routes and CTA architecture
 
 - `/` — complete sales narrative and interactive selector
-- `/outcomes` — outcome examples, explicitly not fixed packages
+- `/outcomes` — operating transformation, outcome families, illustrative proof path, and controlled improvement
 - `/how-it-works` — Diagnose → Design → Build → Validate → Improve
 - `/about` — company philosophy and delivery orientation
 - `/start` — diagnostic-entry interface; intentionally non-submitting in Phase 1
@@ -113,3 +113,24 @@ This slice connects the operator prototype to the public `OIAEngagementProgressV
 The snapshot is not production data and is never described as authoritative stored state. Organization labels, lifecycle display labels, and attention ownership remain presentation data. Other pre assessment portfolio entries remain synthetic until the domain defines an unambiguous current-resource invariant.
 
 The operator workspace contains no browser database access, API adapter, Python subprocess, authentication, Supabase connection, or Avuhz runtime call. The production route guard remains unchanged. `OIAEngagementProgressView v1` explicitly keeps implementation and deployment authority false, and the frontend adapter fails closed if either value is true.
+
+## Outcomes Page 2
+
+Outcomes Page 2 turns `/outcomes` from a flat outcome catalog into a transformation-led sales experience. The route remains public, read only, and website only. It adds no acquisition record, API, authentication, database access, billing, automation, production authority, or Avuhz runtime connection.
+
+The page now follows this sequence: outcome promise, before-to-controlled-state transformations, business outcome families, an explicitly synthetic evidence-to-outcome example, outcome-versus-feature comparisons, the SekInfra improvement path, authority boundaries, and the final diagnostic transition. The purpose is to make the desired operating state tangible without fabricating ROI, performance percentages, client results, or case-study claims.
+
+`lib/outcomes.ts` is the single source of truth for outcome families, transformation examples, the synthetic scenario, feature-versus-outcome comparisons, and deterministic personalization ordering. The existing five-value personalization vocabulary can move the most relevant outcome family to the front, but it never hides the complete operating picture or creates a server-side profile.
+
+The visual implementation lives in `components/outcomes/outcomes-experience.tsx` and reuses the existing SekInfra design system, `SystemDiagram`, CTA components, and session-scoped personalization. The analytics boundary remains vendor free and side effect free. The authority statement remains explicit: a verified outcome creates a decision, not implementation or deployment authority.
+
+
+## Outcomes Page UX 2
+
+Outcomes Page UX 2 turns `/outcomes` from a flat outcome catalog into a transformation led commercial narrative. The route now moves from an operating outcome promise into before and controlled state comparisons, four business outcome families, one explicitly synthetic proof path, outcome versus feature examples, the Sekinfra improvement sequence, the authority boundary, and the diagnostic call to action.
+
+The outcome catalog is centralized in `lib/outcomes.ts`. It preserves the existing public outcome vocabulary while grouping it into response and customer momentum, control and accountability, visibility and decisions, and capacity and coordination. The visitor's existing session scoped operational focus only changes which family appears first. It never hides the complete outcome picture or creates a server side profile.
+
+The illustrative operating scenario is explicitly labeled synthetic and is not presented as a client case study, testimonial, ROI claim, or measured performance result. The page intentionally contains no fabricated percentages, revenue lifts, time savings, or customer proof. Future evidence may replace synthetic proof only after it is approved for public use.
+
+The controlled improvement section preserves the public authority boundary: a verified outcome does not authorize implementation, access does not authorize change, and findings do not authorize deployment. This UI slice adds no API, intake submission, authentication, database access, analytics vendor, Supabase connection, n8n automation, or Avuhz runtime call.
