@@ -52,7 +52,7 @@ def fingerprint(command):
     return "fpv1:"+hashlib.sha256(json.dumps(value,sort_keys=True,separators=(",",":"),ensure_ascii=True).encode()).hexdigest()
 @dataclass
 class MemoryStore:
-    handoffs:dict=field(default_factory=dict); engagements:dict=field(default_factory=dict); scopes:dict=field(default_factory=dict); approvals:dict=field(default_factory=dict); proposals:dict=field(default_factory=dict); grants:dict=field(default_factory=dict); agreements:dict=field(default_factory=dict); payments:dict=field(default_factory=dict); oia_assessments:dict=field(default_factory=dict); oia_evidence_items:dict=field(default_factory=dict); oia_assessment_plans:dict=field(default_factory=dict); oia_inspection_items:dict=field(default_factory=dict); oia_observations:dict=field(default_factory=dict); oia_root_causes:dict=field(default_factory=dict); oia_findings:dict=field(default_factory=dict); oia_findings_deliveries:dict=field(default_factory=dict); oia_conversion_decisions:dict=field(default_factory=dict); ongoing_agreement_authorities:dict=field(default_factory=dict); ongoing_payment_verifications:dict=field(default_factory=dict); ongoing_access_grants:dict=field(default_factory=dict); ongoing_access_revocation_verifications:dict=field(default_factory=dict); ongoing_offboardings:dict=field(default_factory=dict); idempotency:dict=field(default_factory=dict); events:list=field(default_factory=list); outbox:list=field(default_factory=list)
+    handoffs:dict=field(default_factory=dict); engagements:dict=field(default_factory=dict); scopes:dict=field(default_factory=dict); approvals:dict=field(default_factory=dict); proposals:dict=field(default_factory=dict); grants:dict=field(default_factory=dict); agreements:dict=field(default_factory=dict); payments:dict=field(default_factory=dict); oia_assessments:dict=field(default_factory=dict); oia_evidence_items:dict=field(default_factory=dict); oia_assessment_plans:dict=field(default_factory=dict); oia_inspection_items:dict=field(default_factory=dict); oia_observations:dict=field(default_factory=dict); oia_root_causes:dict=field(default_factory=dict); oia_findings:dict=field(default_factory=dict); oia_findings_deliveries:dict=field(default_factory=dict); oia_conversion_decisions:dict=field(default_factory=dict); implementation_outcomes:dict=field(default_factory=dict); ongoing_agreement_authorities:dict=field(default_factory=dict); ongoing_payment_verifications:dict=field(default_factory=dict); ongoing_access_grants:dict=field(default_factory=dict); ongoing_access_revocation_verifications:dict=field(default_factory=dict); ongoing_offboardings:dict=field(default_factory=dict); idempotency:dict=field(default_factory=dict); events:list=field(default_factory=list); outbox:list=field(default_factory=list)
     fail_stage:str|None=None
     def _current_plan(self,tenant_id,plan_id):
         candidates=[value for (record_tenant,record_plan_id,_),value in self.oia_assessment_plans.items() if record_tenant==tenant_id and record_plan_id==plan_id and value.get("state")!="SUPERSEDED"]
@@ -403,6 +403,35 @@ class OIAConversionDecisionMemoryRepository(_TenantRepo):
         updated=copy.deepcopy(stored);updated.update(state="ACCEPTED",sekinfra_approval_reference=copy.deepcopy(sekinfra_approval_reference),accepted_at=accepted_at,record_version=stored["record_version"]+1,updated_at=accepted_at)
         self.u.failpoint("AUTHORITATIVE_WRITE");self.data[key]=updated;return copy.deepcopy(updated)
 
+
+class ImplementationOutcomeMemoryRepository(_TenantRepo):
+    def __init__(self,u):super().__init__(u,"implementation_outcomes")
+    def get_version(self,tenant_id,outcome_id,outcome_version):
+        value=self.data.get((tenant_id,outcome_id,outcome_version));return copy.deepcopy(value) if value else None
+    def get_current(self,tenant_id,outcome_id):
+        values=[v for (t,i,_),v in self.data.items() if t==tenant_id and i==outcome_id and v.get("state")!="SUPERSEDED"]
+        return copy.deepcopy(max(values,key=lambda v:v["outcome_version"])) if values else None
+    def create(self,record):
+        key=(record["tenant_id"],record["implementation_outcome_id"],record["outcome_version"])
+        if key in self.data:raise ValueError("implementation outcome version already exists")
+        current=self.get_current(record["tenant_id"],record["implementation_outcome_id"])
+        if record["outcome_version"]>1 and (not current or current["outcome_version"]+1!=record["outcome_version"]):raise ValueError("implementation outcome version gap")
+        self.u.failpoint("AUTHORITATIVE_WRITE");self.data[key]=copy.deepcopy(record);return copy.deepcopy(record)
+    def approve(self,current,upstream_approval_references,approved_at):
+        key=(current["tenant_id"],current["implementation_outcome_id"],current["outcome_version"]);stored=self.data.get(key)
+        if stored!=current or stored.get("state")!="DRAFT":raise ValueError("implementation outcome approval conflict")
+        updated=copy.deepcopy(stored);updated.update(state="APPROVED",upstream_approval_references=copy.deepcopy(upstream_approval_references),approved_at=approved_at,record_version=stored["record_version"]+1,updated_at=approved_at)
+        if updated.get("supersedes_outcome_reference"):
+            ref=updated["supersedes_outcome_reference"];prior_key=(current["tenant_id"],ref["reference_id"],ref["reference_version"]);prior=self.data.get(prior_key)
+            if not prior or prior.get("state")!="APPROVED" or prior.get("outcome_authority_digest")!=ref.get("reference_digest"):raise ValueError("superseded approved implementation outcome is required")
+            superseded=copy.deepcopy(prior);superseded.update(state="SUPERSEDED",terminal_at=approved_at,terminal_reason="SUPERSEDED_BY_NEW_VERSION",record_version=prior["record_version"]+1,updated_at=approved_at);self.data[prior_key]=superseded
+        self.u.failpoint("AUTHORITATIVE_WRITE");self.data[key]=updated;return copy.deepcopy(updated)
+    def revoke(self,current,reason,revoked_at):
+        key=(current["tenant_id"],current["implementation_outcome_id"],current["outcome_version"]);stored=self.data.get(key)
+        if stored!=current or stored.get("state")!="APPROVED":raise ValueError("implementation outcome revocation conflict")
+        updated=copy.deepcopy(stored);updated.update(state="REVOKED",terminal_at=revoked_at,terminal_reason=reason,record_version=stored["record_version"]+1,updated_at=revoked_at)
+        self.u.failpoint("AUTHORITATIVE_WRITE");self.data[key]=updated;return copy.deepcopy(updated)
+
 class OngoingAgreementAuthorityMemoryRepository(_TenantRepo):
     def __init__(self,u):super().__init__(u,"ongoing_agreement_authorities")
     def get_version(self,tenant_id,agreement_id,agreement_version):
@@ -527,6 +556,13 @@ class HumanApprovalMemoryRepository(_TenantRepo):
             raise ValueError("duplicate active Phase 5C authority")
         self.save(copy.deepcopy(record))
 
+    def find_active_implementation_outcome_binding(self,tenant_id,outcome_id,outcome_version,digest,authority_role):
+        return next((copy.deepcopy(a) for a in self.data.values() if a.get("tenant_id")==tenant_id and a.get("subject_type")=="IMPLEMENTATION_OUTCOME" and a.get("subject_id")==outcome_id and a.get("subject_version")==outcome_version and a.get("implementation_outcome_authority",{}).get("authority_digest")==digest and a.get("actor_role")==authority_role and a.get("status")=="ACTIVE"),None)
+    def record_implementation_outcome(self,record):
+        binding=record["implementation_outcome_authority"]
+        if self.find_active_implementation_outcome_binding(record["tenant_id"],record["subject_id"],record["subject_version"],binding["authority_digest"],record["actor_role"]):raise ValueError("duplicate active implementation outcome authority")
+        self.save(copy.deepcopy(record))
+
 class IdempotencyMemoryRepository:
     def __init__(self,u):self.u=u;self.data=u.working.idempotency
     def get(self,key):return self.data.get(key)
@@ -543,7 +579,7 @@ class OutboxMemoryRepository:
 class UnitOfWork:
     def __init__(self,store):
         self.store=store;self.working=copy.deepcopy(store)
-        self.handoffs=AcquisitionHandoffMemoryRepository(self);self.engagements=EngagementMemoryRepository(self);self.diagnostic_scopes=DiagnosticScopeMemoryRepository(self);self.diagnostic_agreement_authorities=DiagnosticAgreementAuthorityMemoryRepository(self);self.diagnostic_payment_verifications=DiagnosticPaymentVerificationMemoryRepository(self);self.assessment_access_proposals=AssessmentAccessProposalMemoryRepository(self);self.assessment_access_grants=AssessmentAccessGrantMemoryRepository(self);self.oia_assessments=OIAAssessmentMemoryRepository(self);self.oia_evidence_items=OIAEvidenceMemoryRepository(self);self.oia_assessment_plans=OIAAssessmentPlanMemoryRepository(self);self.oia_inspection_items=OIAInspectionItemMemoryRepository(self);self.oia_observations=OIAObservationMemoryRepository(self);self.oia_root_causes=OIARootCauseMemoryRepository(self);self.oia_findings=OIAFindingMemoryRepository(self);self.oia_findings_deliveries=OIAFindingsDeliveryMemoryRepository(self);self.oia_conversion_decisions=OIAConversionDecisionMemoryRepository(self);self.ongoing_agreement_authorities=OngoingAgreementAuthorityMemoryRepository(self);self.ongoing_payment_verifications=OngoingPaymentVerificationMemoryRepository(self);self.ongoing_access_grants=OngoingAccessGrantMemoryRepository(self);self.ongoing_access_revocation_verifications=OngoingAccessRevocationVerificationMemoryRepository(self);self.ongoing_offboardings=OngoingOffboardingMemoryRepository(self);self.human_approvals=HumanApprovalMemoryRepository(self);self.idempotency=IdempotencyMemoryRepository(self);self.lifecycle_events=LifecycleEventMemoryRepository(self);self.outbox=OutboxMemoryRepository(self)
+        self.handoffs=AcquisitionHandoffMemoryRepository(self);self.engagements=EngagementMemoryRepository(self);self.diagnostic_scopes=DiagnosticScopeMemoryRepository(self);self.diagnostic_agreement_authorities=DiagnosticAgreementAuthorityMemoryRepository(self);self.diagnostic_payment_verifications=DiagnosticPaymentVerificationMemoryRepository(self);self.assessment_access_proposals=AssessmentAccessProposalMemoryRepository(self);self.assessment_access_grants=AssessmentAccessGrantMemoryRepository(self);self.oia_assessments=OIAAssessmentMemoryRepository(self);self.oia_evidence_items=OIAEvidenceMemoryRepository(self);self.oia_assessment_plans=OIAAssessmentPlanMemoryRepository(self);self.oia_inspection_items=OIAInspectionItemMemoryRepository(self);self.oia_observations=OIAObservationMemoryRepository(self);self.oia_root_causes=OIARootCauseMemoryRepository(self);self.oia_findings=OIAFindingMemoryRepository(self);self.oia_findings_deliveries=OIAFindingsDeliveryMemoryRepository(self);self.oia_conversion_decisions=OIAConversionDecisionMemoryRepository(self);self.implementation_outcomes=ImplementationOutcomeMemoryRepository(self);self.ongoing_agreement_authorities=OngoingAgreementAuthorityMemoryRepository(self);self.ongoing_payment_verifications=OngoingPaymentVerificationMemoryRepository(self);self.ongoing_access_grants=OngoingAccessGrantMemoryRepository(self);self.ongoing_access_revocation_verifications=OngoingAccessRevocationVerificationMemoryRepository(self);self.ongoing_offboardings=OngoingOffboardingMemoryRepository(self);self.human_approvals=HumanApprovalMemoryRepository(self);self.idempotency=IdempotencyMemoryRepository(self);self.lifecycle_events=LifecycleEventMemoryRepository(self);self.outbox=OutboxMemoryRepository(self)
     def failpoint(self,name):
         if self.working.fail_stage==name: raise RuntimeError("injected failpoint")
     def commit(self):
