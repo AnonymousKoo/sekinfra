@@ -43,12 +43,13 @@ test("client projection includes only final findings preserved in a delivery", (
   assert.equal(JSON.stringify(client).includes("Reporting visibility requires further review"), false);
 });
 
-test("access approval is distinct from active access and grants no change authority", () => {
+test("access approval is distinct from lifecycle closed access and grants no change authority", () => {
   assert.equal(oiaDemoEngagement.authority.assessmentAccessGrantApprovalMilestone.technicalState, "APPROVED");
-  assert.equal(oiaDemoEngagement.authority.currentAssessmentAccessGrant.technicalState, "ACTIVE");
+  assert.equal(oiaDemoEngagement.authority.currentAssessmentAccessGrant.technicalState, "CLOSED");
   assert.notEqual(oiaDemoEngagement.authority.assessmentAccessGrantApprovalMilestone.label, oiaDemoEngagement.authority.currentAssessmentAccessGrant.label);
   assert.equal(oiaDemoEngagement.authority.implementationAuthority, false);
   assert.equal(oiaDemoEngagement.authority.deploymentAuthority, false);
+  assert.equal(oiaDemoEngagement.assessment.technicalState, "FINDINGS_DELIVERED");
   assert.ok(oiaDemoEngagement.scope.prohibitedActions.includes("Modify system configuration"));
 });
 
