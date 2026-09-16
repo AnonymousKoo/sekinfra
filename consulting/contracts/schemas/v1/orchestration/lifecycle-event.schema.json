@@ -79,7 +79,11 @@
         "ongoing_access.closed",
         "offboarding.initiated",
         "ongoing_access.revocation_verified",
-        "offboarding.completed"
+        "offboarding.completed",
+        "implementation_outcome.draft_created",
+        "implementation_outcome.approval_recorded",
+        "implementation_outcome.approved",
+        "implementation_outcome.revoked"
       ]
     },
     "event_schema_version": {
@@ -448,6 +452,50 @@
         },
         "external_revocation_verified": {
           "type": "boolean"
+        }
+      }
+    },
+    "implementationOutcomeMetadata": {
+      "description": "Sanitized ImplementationOutcome authority state only; no outcome body, finding content, credentials, or implementation design.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "authority_stage",
+        "implementation_outcome_id",
+        "outcome_version",
+        "state"
+      ],
+      "properties": {
+        "authority_stage": {
+          "type": "string",
+          "const": "IMPLEMENTATION_OUTCOME"
+        },
+        "implementation_outcome_id": {
+          "$ref": "urn:sekinfra:schema:contracts:common:identifiers:v1#/$defs/canonicalUuid"
+        },
+        "outcome_version": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 2147483647
+        },
+        "state": {
+          "type": "string",
+          "enum": [
+            "DRAFT",
+            "APPROVED",
+            "SUPERSEDED",
+            "REVOKED"
+          ]
+        },
+        "approval_id": {
+          "$ref": "urn:sekinfra:schema:contracts:common:identifiers:v1#/$defs/approvalId"
+        },
+        "authority_role": {
+          "type": "string",
+          "enum": [
+            "CLIENT_DECISION_AUTHORITY",
+            "SEKINFRA_ENGAGEMENT_AUTHORITY"
+          ]
         }
       }
     }
@@ -1428,6 +1476,63 @@
             "required": [
               "authority_stage",
               "ongoing_offboarding_id"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "event_type": {
+            "enum": [
+              "implementation_outcome.draft_created",
+              "implementation_outcome.approval_recorded",
+              "implementation_outcome.approved",
+              "implementation_outcome.revoked"
+            ]
+          }
+        },
+        "required": [
+          "event_type"
+        ]
+      },
+      "then": {
+        "required": [
+          "engagement_id"
+        ],
+        "properties": {
+          "authoritative_subject_reference": {
+            "properties": {
+              "reference_type": {
+                "const": "IMPLEMENTATION_OUTCOME"
+              }
+            }
+          },
+          "sanitized_metadata": {
+            "$ref": "#/$defs/implementationOutcomeMetadata"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "event_type": {
+            "const": "implementation_outcome.approval_recorded"
+          }
+        },
+        "required": [
+          "event_type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "sanitized_metadata": {
+            "$ref": "#/$defs/implementationOutcomeMetadata",
+            "required": [
+              "approval_id",
+              "authority_role"
             ]
           }
         }

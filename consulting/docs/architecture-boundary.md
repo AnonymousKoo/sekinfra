@@ -31,4 +31,4 @@ production, or deployment authority.
 
 `ImplementationOutcome v1` is now implemented as a strict Sekinfra domain/application resource with an in-memory authoritative repository, exact accepted-conversion and selected-Finding binding, dual client/Sekinfra approval, versioned supersession, revocation, secret rejection, and deterministic public handoff production. It creates no implementation or deployment authority.
 
-PostgreSQL persistence/RLS, generic command-envelope wiring, an API surface, and Avuhz intake remain separate future work.
+PostgreSQL persistence/RLS, an API surface, and Avuhz intake remain separate future work. The governed `ImplementationOutcome` create, approval-recording, approve, and revoke operations are now wired through SekInfra’s existing command envelope, guards, idempotency, lifecycle-event, outbox, and `Executor` path.

@@ -89,7 +89,12 @@ Implemented now:
 - `ImplementationOutcomeHandler.revoke`;
 - `ImplementationOutcomeHandler.build_handoff`;
 - exact source freshness revalidation;
-- versioned supersession; and
+- versioned supersession;
+- strict command-envelope schemas for create, approval recording, approval, and revocation;
+- closed command-registry and capability wiring;
+- optimistic-version and trusted-human guards;
+- command-scoped idempotency;
+- sanitized lifecycle events and outbox emission through the existing `Executor`; and
 - deterministic compatibility with public `ImplementationHandoff v1`.
 
 ## Not implemented in this slice
@@ -97,7 +102,6 @@ Implemented now:
 This slice deliberately does not add:
 
 - PostgreSQL tables, migrations, or RLS policies;
-- generic command-envelope schemas or `Executor` command-registry wiring;
 - HTTP/API endpoints;
 - browser or client-side write paths;
 - n8n workflow authority;
