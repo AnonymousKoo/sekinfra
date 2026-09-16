@@ -13,7 +13,8 @@ repositories, handlers, aggregates, persistence, or migrations.
 The dependency direction is one-way:
 
 ```text
-Sekinfra approved consulting outcome
+Sekinfra accepted conversion + selected delivered Findings
+  -> Sekinfra ImplementationOutcome authority
   -> Sekinfra ImplementationHandoff producer
   -> Avuhz public ImplementationHandoff v1
   -> Avuhz implementation governance
@@ -24,3 +25,10 @@ evidence, observations, root causes, findings, deliveries, methodology,
 consulting agreements, and consulting payment/access records remain private
 to Sekinfra. An ImplementationHandoff grants no implementation, credential,
 production, or deployment authority.
+
+
+## Current implementation status
+
+`ImplementationOutcome v1` is now implemented as a strict Sekinfra domain/application resource with an in-memory authoritative repository, exact accepted-conversion and selected-Finding binding, dual client/Sekinfra approval, versioned supersession, revocation, secret rejection, and deterministic public handoff production. It creates no implementation or deployment authority.
+
+PostgreSQL persistence/RLS, generic command-envelope wiring, an API surface, and Avuhz intake remain separate future work.
