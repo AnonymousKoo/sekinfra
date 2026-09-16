@@ -84,17 +84,20 @@ export function WorkspaceShell({ perspective, alternateHref, alternateLabel, cur
 
   return <div className="min-h-screen bg-[var(--background)]">
     <a href="#workspace-content" className="fixed left-4 top-4 z-50 -translate-y-24 rounded-md bg-[var(--accent)] px-4 py-3 font-bold text-[var(--brand-deep)] transition-transform focus:translate-y-0">Skip to content</a>
-    <header className="border-b border-white/15 bg-[var(--brand-deep)] text-white">
-      <div className="mx-auto flex w-full max-w-[76rem] flex-wrap items-center justify-between gap-4 px-5 py-4 sm:px-8">
-        <Link href="/" className="min-h-11 content-center text-lg font-bold tracking-tight">SekInfra</Link>
-        <nav aria-label="Prototype views" className="flex max-w-full flex-wrap items-center gap-2 sm:gap-3">
-          <span className="rounded-full border border-white/20 px-3 py-1.5 text-xs font-bold uppercase tracking-[.14em] text-[#c8dbd2]">Client view</span>
-          {alternateHref && alternateLabel ? <Link href={alternateHref} className="min-h-11 content-center rounded-md border border-white/25 px-3 text-sm font-bold hover:border-[var(--accent)] hover:text-[var(--accent)]">{alternateLabel}</Link> : null}
+    <header className="border-b border-white/10 bg-[var(--brand-deep)] text-white">
+      <div className="mx-auto flex w-full max-w-[76rem] items-center justify-between gap-4 px-5 py-4 sm:px-8">
+        <div>
+          <Link href="/" className="flex min-h-11 items-center gap-3 font-bold tracking-tight"><span aria-hidden="true" className="h-2.5 w-2.5 rounded-[3px] bg-[var(--accent)]" />SekInfra</Link>
+          <p className="-mt-1 pl-5 text-[.68rem] font-bold uppercase tracking-[.14em] text-[#8eaaa0]">Client portal</p>
+        </div>
+        <nav aria-label="Client portal preview" className="flex items-center gap-2">
+          <span className="hidden rounded-full border border-white/15 px-3 py-1.5 text-[.68rem] font-bold uppercase tracking-[.12em] text-[#b9cec5] sm:inline-flex">Preview</span>
+          {alternateHref && alternateLabel ? <Link href={alternateHref} className="min-h-11 content-center rounded-lg border border-white/20 px-3 text-xs font-bold text-[#dbe8e1] hover:border-[var(--accent)] hover:text-[var(--accent)]">Operator preview</Link> : null}
         </nav>
       </div>
     </header>
-    <main id="workspace-content" className="mx-auto w-full max-w-[76rem] px-5 py-8 sm:px-8 sm:py-12">{children}</main>
-    <footer className="border-t border-[var(--line)] px-5 py-8 text-center text-sm text-[var(--ink-muted)]">Read only SekInfra client experience preview. No account or production action exists.</footer>
+    <main id="workspace-content" className="mx-auto w-full max-w-[76rem] px-4 py-5 sm:px-8 sm:py-8">{children}</main>
+    <footer className="border-t border-[var(--line)] px-5 py-6 text-center text-xs text-[var(--ink-muted)]">SekInfra client portal preview. Read only synthetic data. No account or production action exists.</footer>
   </div>;
 }
 

@@ -3,14 +3,7 @@ import Link from "next/link";
 import { operatorDemoEngagement as engagement } from "@/fixtures/oia-demo-engagement";
 import { AuthorityStatus, DeliveryHistory, EvidenceSummaryCard, FindingCard, InspectionCoverageSummary, LifecycleTimeline, LimitationNotice, NextActionCard, ObservationSummary, RootCauseSummary, SectionHeading, StatusPill, SyntheticDemoBanner, WorkspaceShell } from "@/components/workspace/workspace-components";
 
-const jumpLinks = [
-  { href: "#overview", label: "Overview" },
-  { href: "#scope-authority", label: "Scope & authority" },
-  { href: "#assessment", label: "Assessment" },
-  { href: "#analysis", label: "Evidence & analysis" },
-  { href: "#findings", label: "Findings" },
-  { href: "#delivery", label: "Delivery" },
-] as const;
+
 
 function FactCard({ label, value, note }: { label: string; value: string; note: string }) {
   return <div className="rounded-xl border border-[var(--line)] bg-[var(--surface)] p-4">
@@ -54,9 +47,19 @@ export function OperatorEngagementView() {
         </div>
       </header>
 
-      <nav aria-label="Engagement sections" className="overflow-x-auto rounded-xl border border-[var(--line)] bg-white p-2 shadow-[0_8px_24px_rgb(7_63_50/.04)]">
-        <div className="flex min-w-max gap-1">{jumpLinks.map((item) => <a key={item.href} href={item.href} className="min-h-10 content-center rounded-lg px-3 text-xs font-bold text-[var(--ink-muted)] hover:bg-[var(--surface-muted)] hover:text-[var(--brand-deep)]">{item.label}</a>)}</div>
-      </nav>
+      <section aria-labelledby="engagement-map-heading" className="rounded-2xl border border-[var(--line)] bg-[var(--surface-deep)] p-4 sm:p-5">
+        <div className="flex flex-wrap items-end justify-between gap-3">
+          <div><p className="eyebrow">Engagement map</p><h2 id="engagement-map-heading" className="mt-1 text-xl font-bold">Move through the work without losing the current decision.</h2></div>
+          <p className="text-xs font-bold text-[var(--ink-muted)]">Read only operating view</p>
+        </div>
+        <nav aria-label="Engagement work areas" className="mt-4 grid gap-2 sm:grid-cols-2 xl:grid-cols-5">
+          <a href="#scope-authority" className="rounded-xl border border-[var(--line)] bg-white p-3 hover:border-[var(--brand)]"><span className="text-[.68rem] font-bold uppercase tracking-[.12em] text-[var(--ink-faint)]">Scope & authority</span><span className="mt-2 block font-bold text-[var(--brand-deep)]">Approved boundary</span><span className="mt-1 block text-xs text-[var(--ink-muted)]">Access closed after delivery</span></a>
+          <a href="#assessment" className="rounded-xl border border-[var(--line)] bg-white p-3 hover:border-[var(--brand)]"><span className="text-[.68rem] font-bold uppercase tracking-[.12em] text-[var(--ink-faint)]">Assessment</span><span className="mt-2 block font-bold text-[var(--brand-deep)]">Findings delivered</span><span className="mt-1 block text-xs text-[var(--ink-muted)]">Plan v{engagement.assessment.plan.version} approved</span></a>
+          <a href="#analysis" className="rounded-xl border border-[var(--line)] bg-white p-3 hover:border-[var(--brand)]"><span className="text-[.68rem] font-bold uppercase tracking-[.12em] text-[var(--ink-faint)]">Evidence & analysis</span><span className="mt-2 block font-bold text-[var(--brand-deep)]">Evidence retained</span><span className="mt-1 block text-xs text-[var(--ink-muted)]">One material limitation remains</span></a>
+          <a href="#findings" className="rounded-xl border border-[var(--line)] bg-white p-3 hover:border-[var(--brand)]"><span className="text-[.68rem] font-bold uppercase tracking-[.12em] text-[var(--ink-faint)]">Findings</span><span className="mt-2 block font-bold text-[var(--brand-deep)]">{finalDelivered} final · {draftFindings} draft</span><span className="mt-1 block text-xs text-[var(--ink-muted)]">Delivered truth stays fixed</span></a>
+          <a href="#delivery" className="rounded-xl border border-[var(--line)] bg-white p-3 hover:border-[var(--brand)]"><span className="text-[.68rem] font-bold uppercase tracking-[.12em] text-[var(--ink-faint)]">Delivery</span><span className="mt-2 block font-bold text-[var(--brand-deep)]">{engagement.deliveries[0].label}</span><span className="mt-1 block text-xs text-[var(--ink-muted)]">Client decision pending</span></a>
+        </nav>
+      </section>
 
       <section id="overview" className="scroll-mt-4 space-y-5">
         <NextActionCard audience="Operator" action={engagement.presentation.operatorNextAction} />
