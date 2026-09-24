@@ -23,7 +23,7 @@ export function OutcomesExperience() {
           <h1 className="text-balance mt-6 max-w-3xl text-5xl font-semibold leading-[.96] tracking-[-.07em] sm:text-6xl lg:text-7xl">An operation that is easier to run, easier to see, and easier to trust.</h1>
           <p className="mt-7 max-w-xl text-lg leading-8 text-[var(--ink-muted)]">{profile ? `${profile.outcome} SekInfra starts with the operating condition that should change, then establishes what is actually happening before deciding what should be built.` : "The outcome is not more technology. It is clearer ownership, useful visibility, dependable movement, and less preventable friction across the work that matters."}</p>
           <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-            <ButtonLink href="/start">Start a Diagnostic</ButtonLink>
+            <ButtonLink href="/start">Tell us what&apos;s happening</ButtonLink>
             <ButtonLink href="/how-it-works" variant="secondary">See How It Works</ButtonLink>
           </div>
         </div>
@@ -154,7 +154,7 @@ export function OutcomesExperience() {
         <h2 className="text-balance mt-5 text-4xl font-semibold tracking-[-.06em] sm:text-5xl">You do not need to know what software you need before you start.</h2>
         <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-[var(--ink-muted)]">Start by identifying what should become different in the operation. SekInfra can establish what is happening, what matters, and what outcome is worth moving toward.</p>
         <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
-          <ButtonLink href="/start">Start a Diagnostic</ButtonLink>
+          <ButtonLink href="/start">Tell us what&apos;s happening</ButtonLink>
           <ButtonLink href="/how-it-works" variant="secondary">See How It Works</ButtonLink>
         </div>
       </div>
