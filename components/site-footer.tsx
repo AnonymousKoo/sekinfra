@@ -6,7 +6,7 @@ export function SiteFooter(){
     <div className="mx-auto flex max-w-[var(--page-width)] flex-col gap-8 px-5 py-10 text-sm md:flex-row md:items-end md:justify-between lg:px-8">
       <div>
         <Link href="/" className="inline-flex" aria-label="Sekinfra home">
-          <Image src="/brand/sekinfra-wordmark.webp" alt="Sekinfra" width={600} height={155} className="h-11 w-auto mix-blend-multiply"/>
+          <Image src="/brand/sekinfra-wordmark.webp" alt="Sekinfra" width={600} height={155} className="h-11 w-auto mix-blend-multiply" style={{filter:"hue-rotate(13deg) saturate(1.2) brightness(1.35)"}}/>
         </Link>
         <p className="mt-3 max-w-md text-[var(--ink-muted)]">We build and fix the systems businesses run on—across operations, automation, cloud, network, security, and business systems.</p>
       </div>
