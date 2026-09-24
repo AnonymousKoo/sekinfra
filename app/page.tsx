@@ -5,6 +5,7 @@ import { ProblemSelector } from "@/components/problem-selector";
 import { SectionHeading } from "@/components/sections/section-heading";
 import { SiteShell } from "@/components/site-shell";
 import { ButtonLink } from "@/components/ui/button-link";
+import { DiagnosticPaths } from "@/components/diagnostic-paths";
 
 export const metadata: Metadata = { alternates: { canonical: "/" } };
 
@@ -106,6 +107,8 @@ export default function Home() {
         </div>
       </section>
 
+      <DiagnosticPaths cta />
+
       <OiaIntroduction />
 
       <section className="section-rule bg-white py-18 sm:py-28">
@@ -144,7 +147,7 @@ export default function Home() {
             You do not need to know what kind of system is broken before you start.
           </h2>
           <p className="mx-auto mt-6 max-w-2xl text-lg text-[var(--ink-muted)]">
-            Tell SekInfra what is happening. We will establish what deserves attention before recommending what should be built, repaired, connected, secured, or automated.
+            Tell SekInfra what is happening. We will triage the problem, choose the right diagnostic depth, and establish what deserves attention before recommending what should be built, repaired, connected, secured, or automated.
           </p>
           <ButtonLink href="/start" className="mt-8">
             Tell us what&apos;s happening
