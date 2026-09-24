@@ -10,21 +10,21 @@ export function ContextualHero(){
   const{profile}=usePersonalization();
   const copy=profile?profile.hero:"From broken workflows and disconnected tools to cloud, network, security, and automation problems, SekInfra finds the real failure point and builds the right solution.";
 
-  return <section className="relative overflow-hidden">
+  return <section className="relative overflow-hidden bg-[var(--brand-deep)] text-white"><div aria-hidden="true" className="pointer-events-none absolute inset-0 opacity-90" style={{background:"radial-gradient(circle at 18% 28%, rgba(15,159,152,.18), transparent 34%), radial-gradient(circle at 78% 24%, rgba(185,239,112,.07), transparent 28%)"}}/>
     <div className="mx-auto grid max-w-[var(--page-width)] gap-12 px-5 py-20 sm:py-28 lg:grid-cols-[1.02fr_.98fr] lg:px-8 lg:py-32">
       <div className="relative z-10">
-        <p className="eyebrow">{profile?`Operational focus: ${profile.label}`:"Business + technology infrastructure"}</p>
+        <p className="eyebrow text-[var(--accent)]">{profile?`Operational focus: ${profile.label}`:"Business + technology infrastructure"}</p>
         <h1 className="text-balance mt-6 max-w-3xl text-5xl font-semibold leading-[.96] tracking-[-.07em] sm:text-6xl lg:text-7xl">We build and fix the systems your business runs on.</h1>
-        <p className="mt-7 max-w-xl text-lg leading-8 text-[var(--ink-muted)]">{copy}</p>
+        <p className="mt-7 max-w-xl text-lg leading-8 text-white/70">{copy}</p>
         <div className="mt-9 flex flex-col gap-3 sm:flex-row">
           <ButtonLink href="/start">Tell us what&apos;s happening</ButtonLink>
           <ButtonLink href="/how-it-works" variant="secondary">See how SekInfra works</ButtonLink>
         </div>
         <ul className="mt-10 flex max-w-2xl flex-wrap gap-2" aria-label="SekInfra capability areas">
-          {capabilities.map(capability=><li className="rounded-full border border-[var(--line)] bg-white px-3.5 py-2 text-xs font-semibold text-[var(--ink-muted)]" key={capability}>{capability}</li>)}
+          {capabilities.map(capability=><li className="rounded-full border border-white/15 bg-white/5 px-3.5 py-2 text-xs font-semibold text-white/70" key={capability}>{capability}</li>)}
         </ul>
-        <div className="mt-8 flex items-center gap-3 text-sm font-semibold text-[var(--ink-muted)]">
-          <span className="h-2.5 w-2.5 rounded-full bg-[var(--success)] shadow-[0_0_0_5px_var(--brand-wash)]"/>
+        <div className="mt-8 flex items-center gap-3 text-sm font-semibold text-white/65">
+          <span className="h-2.5 w-2.5 rounded-full bg-[var(--accent)] shadow-[0_0_0_5px_rgba(185,239,112,.12)]"/>
           {profile?profile.cta:"Diagnose first. Build only what the operation needs."}
         </div>
       </div>
