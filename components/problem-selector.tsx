@@ -16,7 +16,7 @@ const labels:Record<Pressure,string>={
 };
 
 const neutral={
-  label:"Problem path",
+  label:"Problem",
   recognition:"You can see the symptom, but the real failure point may sit somewhere else in the operation or technology stack.",
   consequence:"Fixing the visible symptom alone can create another workaround without solving the underlying condition.",
   outcome:"The actual failure point is established before SekInfra recommends what should be repaired, connected, secured, automated, or redesigned.",
