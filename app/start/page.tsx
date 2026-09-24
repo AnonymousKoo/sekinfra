@@ -5,7 +5,7 @@ import { DiagnosticPreview } from "@/components/contextual-route";
 import { ButtonLink } from "@/components/ui/button-link";
 
 export const metadata: Metadata = {
-  title: "Start a diagnostic",
+  title: "Start with the problem",
   description: "Start with what is happening. SekInfra establishes whether the real problem is operational, technical, or both before recommending a solution.",
   alternates: { canonical: "/start" },
 };
