@@ -19,11 +19,11 @@ export function OutcomesExperience() {
     <section className="relative overflow-hidden">
       <div className="mx-auto grid max-w-[var(--page-width)] gap-12 px-5 py-20 sm:py-28 lg:grid-cols-[1.04fr_.96fr] lg:px-8 lg:py-32">
         <div className="relative z-10">
-          <p className="eyebrow">{profile ? `Outcome focus: ${profile.label}` : "Operational outcomes"}</p>
-          <h1 className="text-balance mt-6 max-w-3xl text-5xl font-semibold leading-[.96] tracking-[-.07em] sm:text-6xl lg:text-7xl">An operation that is easier to run, easier to see, and easier to trust.</h1>
-          <p className="mt-7 max-w-xl text-lg leading-8 text-[var(--ink-muted)]">{profile ? `${profile.outcome} SekInfra starts with the operating condition that should change, then establishes what is actually happening before deciding what should be built.` : "The outcome is not more technology. It is clearer ownership, useful visibility, dependable movement, and less preventable friction across the work that matters."}</p>
+          <p className="eyebrow">{profile ? `Outcome focus: ${profile.label}` : "Business outcomes"}</p>
+          <h1 className="text-balance mt-6 max-w-3xl text-5xl font-semibold leading-[.96] tracking-[-.07em] sm:text-6xl lg:text-7xl">Systems that are easier to run, easier to see, and easier to trust.</h1>
+          <p className="mt-7 max-w-xl text-lg leading-8 text-[var(--ink-muted)]">{profile ? `${profile.outcome} SekInfra starts with the operating condition that should change, then establishes what is actually happening before deciding what should be built.` : "The outcome is not more technology. It is dependable movement, clear ownership, useful visibility, controlled access, and infrastructure the business can rely on."}</p>
           <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-            <ButtonLink href="/start">Start a Diagnostic</ButtonLink>
+            <ButtonLink href="/start">Tell us what&apos;s happening</ButtonLink>
             <ButtonLink href="/how-it-works" variant="secondary">See How It Works</ButtonLink>
           </div>
         </div>
@@ -35,8 +35,8 @@ export function OutcomesExperience() {
       <div className="mx-auto max-w-[var(--page-width)] px-5 lg:px-8">
         <p className="eyebrow text-[var(--accent)]">Before and controlled state</p>
         <div className="mt-4 grid gap-6 lg:grid-cols-[.82fr_1.18fr] lg:items-end">
-          <h2 className="text-balance text-4xl font-semibold tracking-[-.055em] sm:text-5xl">The value is visible in how the operation behaves differently.</h2>
-          <p className="max-w-2xl text-lg leading-8 text-white/65">SekInfra is not trying to make a tool look impressive. The goal is to change the operating condition that creates delay, uncertainty, rework, or lost accountability.</p>
+          <h2 className="text-balance text-4xl font-semibold tracking-[-.055em] sm:text-5xl">The value is visible in how the business and its systems behave differently.</h2>
+          <p className="max-w-2xl text-lg leading-8 text-white/65">SekInfra is not trying to make a tool look impressive. The goal is to change the condition that creates delay, uncertainty, rework, lost accountability, weak access control, or unreliable infrastructure.</p>
         </div>
         <div className="mt-12 grid gap-px overflow-hidden rounded-[var(--radius-card)] border border-white/10 bg-white/10 md:grid-cols-2">
           {transformations.map((item, index) => <article className="bg-[var(--brand-deep)] p-6 sm:p-7" key={item.label}>
@@ -56,10 +56,10 @@ export function OutcomesExperience() {
         <div className="grid gap-6 lg:grid-cols-[.8fr_1.2fr] lg:items-end">
           <div>
             <p className="eyebrow">Business outcome families</p>
-            <h2 className="mt-4 text-balance text-4xl font-semibold tracking-[-.055em] sm:text-5xl">Different pressure points. Four ways the operation should become stronger.</h2>
+            <h2 className="mt-4 text-balance text-4xl font-semibold tracking-[-.055em] sm:text-5xl">Different pressure points. Five ways the business should become stronger.</h2>
           </div>
           <div>
-            <p className="max-w-2xl text-lg leading-8 text-[var(--ink-muted)]">{profile ? `Your focus on ${profile.label} moves the most relevant outcome family to the front. The complete operating picture stays visible.` : "These are not fixed packages. They are business states that become possible when the right operating path, ownership, visibility, and controls are in place."}</p>
+            <p className="max-w-2xl text-lg leading-8 text-[var(--ink-muted)]">{profile ? `Your focus on ${profile.label} moves the most relevant outcome family to the front. The complete operating picture stays visible.` : "These are not fixed packages. They are business states that become possible when the right operating path, ownership, visibility, capacity, and technical controls are in place."}</p>
           </div>
         </div>
         <div className="mt-12 grid gap-5 lg:grid-cols-2">
@@ -150,11 +150,11 @@ export function OutcomesExperience() {
 
     <section className="section-rule bg-white py-22 sm:py-30">
       <div className="mx-auto max-w-4xl px-5 text-center">
-        <p className="eyebrow">Begin with the operating condition</p>
-        <h2 className="text-balance mt-5 text-4xl font-semibold tracking-[-.06em] sm:text-5xl">You do not need to know what software you need before you start.</h2>
-        <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-[var(--ink-muted)]">Start by identifying what should become different in the operation. SekInfra can establish what is happening, what matters, and what outcome is worth moving toward.</p>
+        <p className="eyebrow">Begin with the condition</p>
+        <h2 className="text-balance mt-5 text-4xl font-semibold tracking-[-.06em] sm:text-5xl">You do not need to know what kind of system needs to change before you start.</h2>
+        <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-[var(--ink-muted)]">Start by identifying what should become different in the business. SekInfra can establish what is happening, where the failure sits, and what outcome is worth moving toward.</p>
         <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
-          <ButtonLink href="/start">Start a Diagnostic</ButtonLink>
+          <ButtonLink href="/start">Tell us what&apos;s happening</ButtonLink>
           <ButtonLink href="/how-it-works" variant="secondary">See How It Works</ButtonLink>
         </div>
       </div>
