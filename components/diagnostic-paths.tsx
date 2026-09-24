@@ -21,7 +21,8 @@ const flow=[
   ["03","Diagnose","Use a Focused Diagnostic or the full Operational Infrastructure Assessment."],
   ["04","Findings","Separate evidence, supported conclusions, priorities, and remaining uncertainty."],
   ["05","Authorize","You decide whether a specific recommendation should move into implementation."],
-  ["06","Validate","Confirm the approved change solved the problem it was meant to solve."]
+  ["06","Implement","SekInfra makes only the change that was explicitly approved."],
+  ["07","Validate","Confirm the approved change solved the problem it was meant to solve."]
 ]as const;
 
 export function DiagnosticPaths({cta=false}:{cta?:boolean}){
@@ -53,7 +54,7 @@ export function DiagnosticPaths({cta=false}:{cta?:boolean}){
         </article>)}
       </div>
 
-      <ol className="mt-12 grid gap-px overflow-hidden rounded-[var(--radius-card)] border border-[var(--line)] bg-[var(--line)] sm:grid-cols-2 lg:grid-cols-6">
+      <ol className="mt-12 grid gap-px overflow-hidden rounded-[var(--radius-card)] border border-[var(--line)] bg-[var(--line)] sm:grid-cols-2 lg:grid-cols-7">
         {flow.map(([number,title,body])=><li className="bg-[var(--surface)] p-5" key={title}>
           <span className="font-mono text-xs text-[var(--brand)]">{number}</span>
           <h3 className="mt-6 text-lg font-semibold">{title}</h3>
