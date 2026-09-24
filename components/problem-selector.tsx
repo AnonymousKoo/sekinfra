@@ -9,6 +9,10 @@ const labels:Record<Pressure,string>={
   accountability:"No clear owner",
   visibility:"Can’t see what’s happening",
   "customer-follow-up":"Follow-up keeps slipping",
+  systems:"Systems don’t talk",
+  "cloud-network":"Network or cloud issue",
+  "security-reliability":"Security or access concern",
+  "not-sure":"I’m not sure",
 };
 
 const neutral={
@@ -34,7 +38,7 @@ export function ProblemSelector(){
           <div className="mt-8 flex flex-wrap gap-2" role="group" aria-label="Example business pressure points">
             {PRESSURES.map(id=>{
               const item=profiles[id];
-              return <button key={id} aria-pressed={pressure===id} onClick={()=>setPressure(id as Pressure)} className={`min-h-11 rounded-full border px-4 text-sm font-bold transition ${pressure===id?"border-[var(--brand)] bg-[var(--brand)] text-white shadow-sm":"border-[var(--line)] bg-white hover:border-[var(--brand)] hover:bg-[var(--brand-wash)]"}`}>
+              return <button key={id} aria-pressed={pressure===id} onClick={()=>setPressure(id)} className={`min-h-11 rounded-full border px-4 text-sm font-bold transition ${pressure===id?"border-[var(--brand)] bg-[var(--brand)] text-white shadow-sm":"border-[var(--line)] bg-white hover:border-[var(--brand)] hover:bg-[var(--brand-wash)]"}`}>
                 {labels[item.id]}
               </button>
             })}
