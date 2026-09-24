@@ -32,7 +32,7 @@ export const outcomeFamilies: OutcomeFamily[] = [
     whatChanges: "Critical handoffs stop relying on assumptions about who will notice or recover the work.",
     whatBecomesVisible: "The current owner, unresolved exception, escalation path, and accountable next action.",
     goodLooksLike: "Important work cannot disappear between people without becoming visible.",
-    pressures: ["accountability"],
+    pressures: ["accountability", "cloud-network", "security-reliability"],
   },
   {
     id: "visibility",
@@ -42,7 +42,7 @@ export const outcomeFamilies: OutcomeFamily[] = [
     whatChanges: "Operational state is normalized into a view designed around decisions instead of status chasing.",
     whatBecomesVisible: "What is moving, what is stalled, where risk exists, and which decisions need attention.",
     goodLooksLike: "The right people can understand operational state without assembling it manually.",
-    pressures: ["visibility"],
+    pressures: ["visibility", "systems", "not-sure"],
   },
   {
     id: "capacity",
