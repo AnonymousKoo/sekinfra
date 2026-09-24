@@ -1,6 +1,6 @@
 import type { Pressure } from "./personalization";
 
-export type OutcomeFamilyId = "response" | "control" | "visibility" | "capacity";
+export type OutcomeFamilyId = "response" | "control" | "visibility" | "capacity" | "reliability";
 
 export type OutcomeFamily = {
   id: OutcomeFamilyId;
@@ -32,14 +32,14 @@ export const outcomeFamilies: OutcomeFamily[] = [
     whatChanges: "Critical handoffs stop relying on assumptions about who will notice or recover the work.",
     whatBecomesVisible: "The current owner, unresolved exception, escalation path, and accountable next action.",
     goodLooksLike: "Important work cannot disappear between people without becoming visible.",
-    pressures: ["accountability", "cloud-network", "security-reliability"],
+    pressures: ["accountability"],
   },
   {
     id: "visibility",
     title: "Visibility and decisions",
     summary: "Turn scattered activity into an operating picture that helps leaders see work, risk, and next action.",
-    outcomes: ["Workflow visibility", "Reporting"],
-    whatChanges: "Operational state is normalized into a view designed around decisions instead of status chasing.",
+    outcomes: ["Workflow visibility", "Reporting", "System state"],
+    whatChanges: "Operational and system state is normalized into a view designed around decisions instead of status chasing.",
     whatBecomesVisible: "What is moving, what is stalled, where risk exists, and which decisions need attention.",
     goodLooksLike: "The right people can understand operational state without assembling it manually.",
     pressures: ["visibility", "systems", "not-sure"],
@@ -54,7 +54,18 @@ export const outcomeFamilies: OutcomeFamily[] = [
     goodLooksLike: "Routine coordination consumes less attention because the operating path carries more of the load.",
     pressures: ["operations"],
   },
+  {
+    id: "reliability",
+    title: "Infrastructure, security, and reliability",
+    summary: "Make the technical foundation dependable enough for the business to trust the work running on top of it.",
+    outcomes: ["Service availability", "Controlled access", "Infrastructure visibility", "Recovery readiness"],
+    whatChanges: "Connectivity, access, observability, and recovery paths are designed around the services and work the business actually depends on.",
+    whatBecomesVisible: "Which dependency failed, who or what is affected, what control is active, and what recovery path exists.",
+    goodLooksLike: "Required services are reachable, access is intentional, failures become visible, and recovery does not depend on guesswork.",
+    pressures: ["cloud-network", "security-reliability"],
+  },
 ];
+
 export const transformations = [
   {
     label: "Response",
@@ -76,6 +87,11 @@ export const transformations = [
     before: "Routine work depends on memory and manual follow through.",
     controlled: "Sequence, exception path, and completion state are defined.",
   },
+  {
+    label: "Reliability",
+    before: "A service fails and the business has to guess whether the issue is device, network, cloud, access, or application.",
+    controlled: "Dependencies, service state, access boundaries, and the recovery path are visible enough to act deliberately.",
+  },
 ] as const;
 
 export const illustrativeOutcome = {
@@ -89,9 +105,11 @@ export const illustrativeOutcome = {
     ["Desired state", "Every qualified request has an accountable owner, response window, visible state, and exception path."],
   ],
 } as const;
+
 export const outcomeVsFeature = [
   ["Feature", "A CRM is installed.", "Outcome", "Every qualified inquiry has a visible owner and next action."],
   ["Feature", "A dashboard exists.", "Outcome", "Leaders can see stalled work without chasing updates."],
+  ["Feature", "Monitoring is installed.", "Outcome", "A critical service problem becomes visible with enough context to act before troubleshooting turns into guesswork."],
 ] as const;
 
 export const outcomeProcess = [
