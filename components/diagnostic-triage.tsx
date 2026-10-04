@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { DiagnosticIntake } from "@/components/diagnostic-intake";
 import { usePersonalization } from "@/components/personalization-provider";
 import { SystemDiagram } from "@/components/visuals/system-diagram";
 import { trackEvent } from "@/lib/analytics";
@@ -92,6 +93,7 @@ export function DiagnosticTriage() {
   const [step, setStep] = useState(0);
   const [showResult, setShowResult] = useState(false);
   const [copyStatus, setCopyStatus] = useState("");
+  const [showIntake, setShowIntake] = useState(false);
 
   const completeInput = useMemo<TriageInput | null>(() => {
     if (!pressure || !scope || !frequency || !impact || !spread) return null;
@@ -147,6 +149,7 @@ export function DiagnosticTriage() {
     setDesiredOutcome("");
     setStep(0);
     setShowResult(false);
+    setShowIntake(false);
     setCopyStatus("");
   };
 
@@ -154,6 +157,16 @@ export function DiagnosticTriage() {
     setPressure(value);
     setCopyStatus("");
   };
+
+  if (showIntake && completeInput && result) {
+    return (
+      <DiagnosticIntake
+        triageInput={completeInput}
+        triageResult={result}
+        onBack={() => setShowIntake(false)}
+      />
+    );
+  }
 
   if (showResult && completeInput && result) {
     const selectedProfile = profiles[completeInput.pressure];
@@ -218,11 +231,18 @@ export function DiagnosticTriage() {
             <p className="mt-3 font-semibold leading-7">{result.nextAction}</p>
           </div>
 
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+            <button
+              type="button"
+              onClick={() => setShowIntake(true)}
+              className="inline-flex min-h-12 items-center justify-center rounded-[var(--radius-button)] bg-[var(--brand)] px-5 text-sm font-semibold text-white transition hover:bg-[var(--brand-deep)]"
+            >
+              Start My Diagnostic
+            </button>
             <button
               type="button"
               onClick={copyBrief}
-              className="inline-flex min-h-12 items-center justify-center rounded-[var(--radius-button)] bg-[var(--brand)] px-5 text-sm font-semibold text-white transition hover:bg-[var(--brand-deep)]"
+              className="inline-flex min-h-12 items-center justify-center rounded-[var(--radius-button)] border border-[var(--line)] bg-white px-5 text-sm font-semibold transition hover:border-[var(--brand)] hover:bg-[var(--surface-muted)]"
             >
               Copy triage brief
             </button>
