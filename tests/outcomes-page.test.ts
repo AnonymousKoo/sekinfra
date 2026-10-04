@@ -16,15 +16,20 @@ const expectedOutcomes = [
   "Workforce reliability",
   "Workflow visibility",
   "Reporting",
+  "System state",
   "Scheduling and coordination",
   "Administrative reduction",
   "Marketing operations",
+  "Service availability",
+  "Controlled access",
+  "Infrastructure visibility",
+  "Recovery readiness",
 ];
 
 test("outcome catalog is complete and unique", () => {
   assert.deepEqual(allOutcomeLabels(), expectedOutcomes);
   assert.equal(new Set(allOutcomeLabels()).size, expectedOutcomes.length);
-  assert.equal(outcomeFamilies.length, 4);
+  assert.equal(outcomeFamilies.length, 5);
 });
 
 test("personalization moves only the relevant family to the front", () => {
@@ -54,7 +59,7 @@ test("outcome copy avoids fabricated performance claims", () => {
 });
 
 test("transformation field covers distinct operating conditions", () => {
-  assert.deepEqual(transformations.map((item) => item.label), ["Response", "Accountability", "Visibility", "Coordination"]);
+  assert.deepEqual(transformations.map((item) => item.label), ["Response", "Accountability", "Visibility", "Coordination", "Reliability"]);
   for (const item of transformations) {
     assert.ok(item.before.length > 10);
     assert.ok(item.controlled.length > 10);
