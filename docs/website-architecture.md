@@ -134,3 +134,15 @@ The outcome catalog is centralized in `lib/outcomes.ts`. It preserves the existi
 The illustrative operating scenario is explicitly labeled synthetic and is not presented as a client case study, testimonial, ROI claim, or measured performance result. The page intentionally contains no fabricated percentages, revenue lifts, time savings, or customer proof. Future evidence may replace synthetic proof only after it is approved for public use.
 
 The controlled improvement section preserves the public authority boundary: a verified outcome does not authorize implementation, access does not authorize change, and findings do not authorize deployment. This UI slice adds no API, intake submission, authentication, database access, analytics vendor, Supabase connection, n8n automation, or Avuhz runtime call.
+
+## Website Diagnostic Intake Boundary v1
+
+The `/start` experience now carries a completed browser-only triage into a bounded client-start form. This is a website transport boundary, not an Acquisition System domain record and not a consulting engagement.
+
+`lib/diagnostic-intake.ts` defines `sekinfra.website-diagnostic-intake.v1`. The contract contains only the minimum organization/contact fields needed to continue a diagnostic conversation plus the existing triage result. It explicitly carries false authority flags for diagnosis, system access, implementation, and deployment. A website intake candidate must never be treated as a canonical Acquisition `Account`, `AcquisitionOpportunity`, `AcquisitionHandoff`, Sekinfra consulting `Engagement`, or OIA state.
+
+`components/diagnostic-intake.tsx` keeps organization/contact values in React state only. It performs local validation and can prepare a copyable intake candidate for development review. It makes no network request and persists no contact data in cookies, localStorage, sessionStorage, analytics, or application storage.
+
+`/api/diagnostic-intake` is a deliberate fail-closed server boundary. `GET` reports that governed intake is not connected. `POST` returns `503 INTAKE_NOT_CONNECTED` without parsing the request body. No real prospect intake, acquisition persistence, external provider write, or Avuhz/consulting runtime call is authorized by this route.
+
+Activation requires a separately approved acquisition adapter and explicit confirmation that the Sekinfra Acquisition System is authorized to process/store real prospect data. That future adapter must translate the website transport candidate into approved acquisition-domain operations rather than persisting the website payload as a parallel canonical record.
