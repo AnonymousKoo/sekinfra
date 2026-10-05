@@ -273,7 +273,7 @@ export function DiagnosticTriage() {
           </details>
 
           <p className="mt-6 border-l-2 border-[var(--brand)] pl-4 text-sm leading-6 text-[var(--ink-muted)]">
-            Online intake is not connected yet. Nothing you entered here was sent to Sekinfra, Avuhz, or anyone else.
+            Online intake is not connected yet. Nothing you entered here was sent to Sekinfra systems or anyone else.
           </p>
         </section>
       </div>
