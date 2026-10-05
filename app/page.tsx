@@ -152,7 +152,7 @@ export default function Home() {
         </div>
       </section>
 
-      <DiagnosticPaths cta />
+      <DiagnosticPaths cta showFlow={false} />
 
       <section className="section-rule bg-[var(--surface-muted)] py-16 sm:py-24">
         <div className="mx-auto grid max-w-[var(--page-width)] gap-10 px-5 lg:grid-cols-[.75fr_1.25fr] lg:px-8">
