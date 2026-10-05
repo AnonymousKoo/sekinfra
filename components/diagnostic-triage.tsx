@@ -23,10 +23,10 @@ import { PRESSURES, profiles, type Pressure } from "@/lib/personalization";
 const steps = ["Pressure", "Scope", "Pattern", "Impact", "Spread", "Outcome"] as const;
 
 const scopeDescriptions: Record<TriageScope, string> = {
-  contained: "The failure appears to live inside one workflow, tool, or bounded operating area.",
-  "multi-step": "Several connected steps are involved, but the operating path is still recognizable.",
-  "cross-team": "The issue crosses teams, functions, locations, or ownership boundaries.",
-  unclear: "You can see the symptom, but the real operating boundary is not obvious yet.",
+  contained: "The problem seems to stay inside one workflow, tool, or part of the business.",
+  "multi-step": "Several connected steps are involved, but the path is still fairly clear.",
+  "cross-team": "The problem touches more than one team, location, or owner.",
+  unclear: "You can see the problem, but you cannot yet tell where it starts or stops.",
 };
 
 const frequencyDescriptions: Record<TriageFrequency, string> = {
@@ -43,14 +43,14 @@ const impactDescriptions: Record<TriageImpact, string> = {
   customer: "Customers feel delays, uncertainty, inconsistency, or poor follow-up.",
   revenue: "The issue can affect opportunities, conversion, billing, or retained revenue.",
   delivery: "The issue can affect whether work is completed reliably and on time.",
-  risk: "The issue involves access, security, compliance, control, or another material business risk.",
+  risk: "The problem involves access, security, compliance, or another serious business risk.",
 };
 
 const spreadDescriptions: Record<TriageSpread, string> = {
   one: "There is one main system, team, or operating owner in the path.",
   few: "A small number of systems or teams exchange context or responsibility.",
-  many: "The problem spans a wider operating chain with several handoffs.",
-  unknown: "The involved systems or teams have not been mapped clearly enough yet.",
+  many: "The problem moves across several teams or systems.",
+  unknown: "We still do not know all the systems or teams involved.",
 };
 
 function OptionButton({
@@ -183,8 +183,7 @@ export function DiagnosticTriage() {
           <div className="rounded-[var(--radius-card)] border border-[var(--line)] bg-[var(--surface-muted)] p-5">
             <p className="eyebrow">What this means</p>
             <p className="mt-3 text-sm leading-6 text-[var(--ink-muted)]">
-              This readout chooses a diagnostic depth from the signals you selected. It does not determine root cause,
-              approve work, or authorize access or implementation.
+              This result only chooses what kind of review may fit. It does not find the root cause, approve work, or give Sekinfra permission to change anything.
             </p>
           </div>
         </div>
@@ -194,7 +193,7 @@ export function DiagnosticTriage() {
           className="rounded-[var(--radius-card)] border border-[var(--line)] bg-white p-6 shadow-[0_24px_65px_rgba(16,37,31,.08)] sm:p-8"
         >
           <div className="flex flex-wrap items-center justify-between gap-3">
-            <p className="eyebrow">Initial readout</p>
+            <p className="eyebrow">Your result</p>
             <span className="rounded-full bg-[var(--brand-wash)] px-3 py-1 font-mono text-[11px] font-bold uppercase tracking-[.12em] text-[var(--brand)]">
               Triage · not diagnosis
             </span>
@@ -209,13 +208,13 @@ export function DiagnosticTriage() {
               <p className="mt-2 text-sm leading-6 text-white/70">{selectedProfile.recognition}</p>
             </div>
             <div className="rounded-xl bg-[var(--surface-muted)] p-5">
-              <p className="text-xs font-bold uppercase tracking-[.14em] text-[var(--brand)]">Desired operating outcome</p>
+              <p className="text-xs font-bold uppercase tracking-[.14em] text-[var(--brand)]">What better should look like</p>
               <p className="mt-3 text-sm font-semibold leading-6">{result.desiredOutcome}</p>
             </div>
           </div>
 
           <div className="mt-8">
-            <p className="eyebrow">Why this route</p>
+            <p className="eyebrow">Why we picked this path</p>
             <ul className="mt-4 space-y-3">
               {result.reasons.map((reason, index) => (
                 <li className="flex gap-3 border-t border-[var(--line)] pt-3" key={reason}>
@@ -227,7 +226,7 @@ export function DiagnosticTriage() {
           </div>
 
           <div className="mt-8 rounded-xl border border-[var(--line)] p-5">
-            <p className="eyebrow">Next diagnostic action</p>
+            <p className="eyebrow">Next step</p>
             <p className="mt-3 font-semibold leading-7">{result.nextAction}</p>
           </div>
 
@@ -274,8 +273,7 @@ export function DiagnosticTriage() {
           </details>
 
           <p className="mt-6 border-l-2 border-[var(--brand)] pl-4 text-sm leading-6 text-[var(--ink-muted)]">
-            Governed online intake is not connected yet. Nothing you entered here was sent to Sekinfra, Avuhz, or any
-            third party.
+            Online intake is not connected yet. Nothing you entered here was sent to Sekinfra, Avuhz, or anyone else.
           </p>
         </section>
       </div>
@@ -292,7 +290,7 @@ export function DiagnosticTriage() {
         />
         <div className="rounded-[var(--radius-card)] border border-[var(--line)] bg-[var(--brand-deep)] p-5 text-white">
           <div className="flex items-center justify-between gap-4">
-            <p className="text-xs font-bold uppercase tracking-[.14em] text-[var(--accent)]">Operational triage</p>
+            <p className="text-xs font-bold uppercase tracking-[.14em] text-[var(--accent)]">Problem check</p>
             <span className="font-mono text-xs text-white/55">0{step + 1} / 0{steps.length}</span>
           </div>
           <div className="mt-4 h-1.5 overflow-hidden rounded-full bg-white/10">
@@ -302,8 +300,7 @@ export function DiagnosticTriage() {
             />
           </div>
           <p className="mt-5 text-sm leading-6 text-white/70">
-            We are only bounding the problem. No system access, evidence collection, diagnosis, or implementation authority
-            begins here.
+            We are only narrowing the problem. No system access, diagnosis, or permission to change anything begins here.
           </p>
         </div>
       </div>
@@ -314,10 +311,10 @@ export function DiagnosticTriage() {
             <p className="eyebrow">Step 0{step + 1}</p>
             <h2 className="mt-3 text-3xl font-semibold tracking-[-.045em] sm:text-4xl">
               {step === 0 && "Where is the pressure showing up?"}
-              {step === 1 && "How broad does the problem appear?"}
+              {step === 1 && "How far does the problem spread?"}
               {step === 2 && "How often does the pattern repeat?"}
-              {step === 3 && "What business consequence matters most?"}
-              {step === 4 && "How many systems or teams sit in the path?"}
+              {step === 3 && "What part of the business is hurt the most?"}
+              {step === 4 && "How many systems or teams are involved?"}
               {step === 5 && "What should be working better?"}
             </h2>
           </div>
@@ -398,10 +395,9 @@ export function DiagnosticTriage() {
 
         {step === 5 && (
           <div className="mt-7">
-            <label className="block text-sm font-semibold" htmlFor="desired-outcome">Desired operating outcome</label>
+            <label className="block text-sm font-semibold" htmlFor="desired-outcome">What better should look like</label>
             <p className="mt-2 max-w-2xl text-sm leading-6 text-[var(--ink-muted)]">
-              Describe the result you need—not a person, email address, phone number, customer name, or other sensitive
-              information. This text stays only in this page&apos;s React state.
+              Describe what you want to work better. Do not include names, email addresses, phone numbers, or other private information. This answer stays in your browser.
             </p>
             <textarea
               id="desired-outcome"
@@ -413,7 +409,7 @@ export function DiagnosticTriage() {
               className="mt-4 block w-full rounded-xl border border-[var(--line)] bg-white px-4 py-3 text-base outline-none transition placeholder:text-[var(--ink-faint)] focus:border-[var(--brand)]"
             />
             <div className="mt-2 flex items-center justify-between gap-4 text-xs text-[var(--ink-muted)]">
-              <span>Optional. If left blank, Sekinfra uses the selected pressure point&apos;s suggested outcome.</span>
+              <span>Optional. If you leave this blank, Sekinfra uses the suggested outcome for the problem you picked.</span>
               <span className="font-mono">{desiredOutcome.length}/240</span>
             </div>
           </div>
@@ -439,7 +435,7 @@ export function DiagnosticTriage() {
         </div>
 
         <p className="mt-4 text-xs leading-5 text-[var(--ink-muted)]">
-          This triage runs entirely in your browser. No answer is submitted, scored as a lead, or stored by this page.
+          This triage runs in your browser. Your answers are not sent or stored by this page.
         </p>
       </section>
     </div>

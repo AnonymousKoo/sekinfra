@@ -38,7 +38,7 @@ export function MobileNav(){
           {link.label}<span className="float-right text-[var(--brand)]">→</span>
         </Link>)}
         <Link href="/start" onClick={()=>setOpen(false)} className="mt-3 rounded-[var(--radius-button)] bg-[var(--brand)] px-4 py-4 text-center font-semibold text-white">
-          Tell us what&apos;s happening
+          Show us what&apos;s happening
         </Link>
       </nav>
     </div>}

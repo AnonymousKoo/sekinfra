@@ -1,70 +1,57 @@
 import type { Metadata } from "next";
-import { DiagnosticPaths } from "@/components/diagnostic-paths";
 import { DiagnosticTriage } from "@/components/diagnostic-triage";
 import { SiteShell } from "@/components/site-shell";
-import { ButtonLink } from "@/components/ui/button-link";
 import { SystemDiagram } from "@/components/visuals/system-diagram";
 
 export const metadata: Metadata = {
-  title: "Start with the problem",
+  title: "Show us what is happening",
   description:
-    "Tell Sekinfra what is happening. Sekinfra triages the problem and determines whether a focused diagnostic or the Operational Infrastructure Assessment is the right next step.",
+    "Tell Sekinfra what is going wrong. Answer a few simple questions and get the right diagnostic path without needing to know the cause first.",
   alternates: { canonical: "/start" },
 };
 
-const firstConversation = [
-  ["What is happening?", "Describe the symptom in plain language. You do not need to diagnose the cause."],
-  ["Who or what is affected?", "Identify the people, customers, systems, locations, or work that feel the impact."],
-  ["When does it happen?", "Note whether the problem is constant, intermittent, triggered by an event, or tied to a specific workflow."],
-  ["What is involved?", "List the systems, tools, network, cloud services, teams, or processes that may sit in the path."],
-  ["What should be better?", "Describe the outcome you need, even if you do not know what technology or process change should create it."],
+const nextSteps = [
+  ["We choose the right depth", "Sekinfra uses your answers to recommend a Focused Diagnostic or the Operational Infrastructure Assessment (OIA)."],
+  ["We keep the problem bounded", "A smaller problem stays focused. A bigger or unclear problem can go deeper only when the signals support it."],
+  ["You stay in control", "Triage does not give Sekinfra permission to inspect, change, or deploy anything in your systems."],
 ] as const;
 
 export default function Start() {
   return (
     <SiteShell>
       <section className="relative overflow-hidden bg-[var(--brand-deep)] text-white">
-        <div className="absolute inset-0 opacity-20 [background-image:linear-gradient(rgba(213,227,108,.28)_1px,transparent_1px),linear-gradient(90deg,rgba(213,227,108,.28)_1px,transparent_1px)] [background-size:52px_52px] [mask-image:linear-gradient(135deg,black,transparent_78%)]" />
-        <div className="relative mx-auto grid max-w-[var(--page-width)] gap-12 px-5 py-20 lg:grid-cols-[.95fr_1.05fr] lg:px-8 lg:py-28">
+        <div className="absolute inset-0 opacity-20 [background-image:linear-gradient(rgba(185,239,112,.22)_1px,transparent_1px),linear-gradient(90deg,rgba(185,239,112,.22)_1px,transparent_1px)] [background-size:52px_52px] [mask-image:linear-gradient(135deg,black,transparent_78%)]" />
+        <div className="relative mx-auto grid max-w-[var(--page-width)] gap-12 px-5 py-18 lg:grid-cols-[.9fr_1.1fr] lg:px-8 lg:py-24">
           <div>
-            <p className="eyebrow !text-[var(--accent)]">The front door</p>
+            <p className="eyebrow !text-[var(--accent)]">Start with the problem</p>
             <h1 className="text-balance mt-5 text-5xl font-semibold leading-[.96] tracking-[-.07em] sm:text-6xl lg:text-7xl">
-              Tell us what&apos;s happening. We&apos;ll determine how deep the diagnosis needs to go.
+              Show us what&apos;s happening.
             </h1>
-            <p className="mt-6 max-w-2xl text-lg leading-8 text-white/70">
-              You do not need to choose between operations, automation, cloud, networking, security, software, or the OIA.
-              Start with the symptom, the impact, and what should be working better.
+            <p className="mt-6 max-w-2xl text-lg leading-8 text-white/72">
+              You do not need to know the cause or choose a service. Answer a few simple questions about what is going
+              wrong, who it affects, and how often it happens.
             </p>
-            <ButtonLink href="/how-it-works" variant="secondary" className="mt-8 border-white/25 bg-white/5 text-white hover:bg-white/10">
-              See the full client journey
-            </ButtonLink>
+            <div className="mt-8 flex flex-wrap gap-2 text-xs font-semibold text-white/70">
+              {["Operations", "Automation", "Business Systems", "Cloud & Network", "Security"].map((item) => (
+                <span className="rounded-full border border-white/15 bg-white/5 px-3 py-2" key={item}>
+                  {item}
+                </span>
+              ))}
+            </div>
           </div>
 
           <div className="space-y-5">
             <SystemDiagram
               variant="selector"
-              activeLabel="Triage"
-              flow={["Symptom", "Impact", "Scope", "Diagnostic path", "Next decision"]}
+              activeLabel="Your problem"
+              flow={["What is wrong", "Impact", "People & systems", "Diagnostic path", "Next step"]}
             />
-            <div className="rounded-[var(--radius-card)] border border-white/15 bg-white/5 p-6 backdrop-blur-sm sm:p-8">
-              <p className="text-xs font-bold uppercase tracking-[.14em] text-[var(--accent)]">What triage decides</p>
-              <h2 className="mt-4 text-2xl font-semibold tracking-[-.04em]">
-                Focused Diagnostic or Operational Infrastructure Assessment?
-              </h2>
-              <p className="mt-4 leading-7 text-white/70">
-                Triage is not a diagnosis. It determines what should be examined, how broad the scope needs to be, and
-                which diagnostic path is appropriate before any inspection or system access begins.
+            <div className="rounded-[var(--radius-card)] border border-white/15 bg-white/5 p-5">
+              <p className="text-xs font-bold uppercase tracking-[.14em] text-[var(--accent)]">What this does</p>
+              <p className="mt-3 text-sm leading-6 text-white/70">
+                It helps choose the right level of diagnosis. It does not diagnose the root cause, ask for system access,
+                or approve any changes.
               </p>
-              <div className="mt-6 grid gap-3 sm:grid-cols-2">
-                <div className="rounded-lg border border-white/15 p-4">
-                  <p className="text-xs font-bold uppercase tracking-[.14em] text-[var(--accent)]">Focused</p>
-                  <p className="mt-2 text-sm leading-6 text-white/70">Contained technical or workflow issue with a clear boundary.</p>
-                </div>
-                <div className="rounded-lg border border-[var(--accent)]/45 bg-white/5 p-4">
-                  <p className="text-xs font-bold uppercase tracking-[.14em] text-[var(--accent)]">OIA</p>
-                  <p className="mt-2 text-sm leading-6 text-white/70">Broader, recurring, cross-system, or unclear operating problem.</p>
-                </div>
-              </div>
             </div>
           </div>
         </div>
@@ -73,53 +60,45 @@ export default function Start() {
       <section className="section-rule bg-[var(--background)] py-14 sm:py-20">
         <div className="mx-auto max-w-[var(--page-width)] px-5 lg:px-8">
           <div className="mb-9 max-w-3xl">
-            <p className="eyebrow">Live diagnostic lens</p>
+            <p className="eyebrow">Your first step</p>
             <h2 className="text-balance mt-4 text-4xl font-semibold tracking-[-.055em] sm:text-5xl">
-              Bound the problem before anyone prescribes a fix.
+              Answer six simple questions.
             </h2>
             <p className="mt-5 text-lg leading-8 text-[var(--ink-muted)]">
-              Work through the signals below. Sekinfra will show the smallest diagnostic path that fits what you describe.
+              Sekinfra will use your answers to show whether the problem looks contained or needs a deeper review.
             </p>
           </div>
           <DiagnosticTriage />
         </div>
       </section>
 
-      <DiagnosticPaths />
-
-      <section className="section-rule bg-[var(--surface-muted)] py-18 sm:py-28">
-        <div className="mx-auto grid max-w-[var(--page-width)] gap-10 px-5 lg:grid-cols-[.72fr_1.28fr] lg:px-8">
-          <div>
-            <p className="eyebrow">Prepare for the first conversation</p>
-            <h2 className="mt-4 text-balance text-4xl font-semibold tracking-[-.055em] sm:text-5xl">
-              Five things that help us understand the problem faster.
-            </h2>
-            <p className="mt-5 text-lg leading-8 text-[var(--ink-muted)]">
-              You do not need perfect documentation. These are simply the most useful starting signals for triage.
-            </p>
+      <section className="section-rule bg-white py-16 sm:py-22">
+        <div className="mx-auto max-w-[var(--page-width)] px-5 lg:px-8">
+          <div className="grid gap-8 lg:grid-cols-[.7fr_1.3fr] lg:items-start">
+            <div>
+              <p className="eyebrow">What happens next</p>
+              <h2 className="mt-4 text-balance text-3xl font-semibold tracking-[-.045em] sm:text-4xl">
+                A triage result is a next step, not permission to change anything.
+              </h2>
+            </div>
+            <div className="grid gap-4 sm:grid-cols-3">
+              {nextSteps.map(([title, body], index) => (
+                <article className="rounded-[var(--radius-card)] border border-[var(--line)] p-5" key={title}>
+                  <span className="font-mono text-xs text-[var(--brand)]">0{index + 1}</span>
+                  <h3 className="mt-5 text-lg font-semibold">{title}</h3>
+                  <p className="mt-2 text-sm leading-6 text-[var(--ink-muted)]">{body}</p>
+                </article>
+              ))}
+            </div>
           </div>
-          <ol className="rounded-[var(--radius-card)] border border-[var(--line)] bg-white p-6 sm:p-8">
-            {firstConversation.map(([title, body], index) => (
-              <li
-                className="flex gap-4 border-t border-[var(--line)] py-4 first:border-t-0 first:pt-0 last:pb-0"
-                key={title}
-              >
-                <span className="font-mono text-xs text-[var(--brand)]">0{index + 1}</span>
-                <div>
-                  <h3 className="font-semibold">{title}</h3>
-                  <p className="mt-1 text-sm leading-6 text-[var(--ink-muted)]">{body}</p>
-                </div>
-              </li>
-            ))}
-          </ol>
         </div>
       </section>
 
-      <section className="section-rule bg-white py-14">
+      <section className="section-rule bg-[var(--surface-muted)] py-10">
         <div className="mx-auto max-w-[var(--page-width)] px-5 lg:px-8">
           <p className="max-w-3xl border-l-2 border-[var(--brand)] pl-4 text-sm leading-6 text-[var(--ink-muted)]">
-            The interactive triage runs in your browser. Governed online intake is not connected yet, so the site does not
-            submit or persist diagnostic or contact information to Sekinfra, Avuhz, or a third party.
+            This triage runs in your browser. The governed Sekinfra intake connection is not live yet, so the site does
+            not send your diagnostic or contact information into Avuhz or the Sekinfra Acquisition System.
           </p>
         </div>
       </section>

@@ -97,17 +97,15 @@ export function DiagnosticIntake({
       <div className="flex flex-wrap items-center justify-between gap-3">
         <p className="eyebrow">Start your diagnostic</p>
         <span className="rounded-full bg-[var(--brand-wash)] px-3 py-1 font-mono text-[11px] font-bold uppercase tracking-[.12em] text-[var(--brand)]">
-          Development intake boundary
+          Secure handoff preview
         </span>
       </div>
 
       <h2 id="diagnostic-intake-title" className="mt-4 text-balance text-4xl font-semibold tracking-[-.055em]">
-        Carry your triage into the client-start process.
+        Start your Sekinfra request.
       </h2>
       <p className="mt-5 max-w-3xl text-lg leading-8 text-[var(--ink-muted)]">
-        Sekinfra already knows the operating pressure you selected. Add only the minimum business information needed to
-        continue. These fields remain in this browser; the Acquisition System is not yet approved to receive real
-        prospect data.
+        Sekinfra already has your triage result. Add only the business details needed to continue. These details stay in your browser for now because online intake is not connected yet.
       </p>
 
       <div className="mt-7 rounded-xl bg-[var(--brand-deep)] p-5 text-white">
@@ -282,11 +280,10 @@ export function DiagnosticIntake({
 
       {candidateText && (
         <div className="mt-8 rounded-[var(--radius-card)] border border-[var(--brand)] bg-[var(--brand-wash)] p-5 sm:p-6" aria-live="polite">
-          <p className="eyebrow">Request prepared</p>
-          <h3 className="mt-3 text-2xl font-semibold tracking-[-.04em]">Your client-start packet is ready.</h3>
+          <p className="eyebrow">Request ready</p>
+          <h3 className="mt-3 text-2xl font-semibold tracking-[-.04em]">Your request is ready.</h3>
           <p className="mt-3 max-w-2xl text-sm leading-6 text-[var(--ink-muted)]">
-            Secure online submission is intentionally disabled until the Sekinfra Acquisition System is authorized for
-            real prospect data. Nothing has left this browser.
+            Online submission is not live yet. Nothing has left this browser.
           </p>
           <div className="mt-5 flex flex-col gap-3 sm:flex-row">
             <button
@@ -306,8 +303,7 @@ export function DiagnosticIntake({
       )}
 
       <p className="mt-6 border-l-2 border-[var(--brand)] pl-4 text-sm leading-6 text-[var(--ink-muted)]">
-        This interface prepares a website intake candidate only. It does not create a canonical Acquisition Opportunity,
-        consulting engagement, OIA, agreement, payment state, or access grant.
+        Filling this out does not start an engagement, OIA, system access, implementation, or deployment.
       </p>
     </section>
   );

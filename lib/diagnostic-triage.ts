@@ -30,10 +30,10 @@ export type TriageResult = {
 };
 
 export const scopeLabels: Record<TriageScope, string> = {
-  contained: "One contained workflow or issue",
-  "multi-step": "Several steps in one operating path",
-  "cross-team": "Multiple teams, functions, or locations",
-  unclear: "The boundary is still unclear",
+  contained: "One workflow, tool, or issue",
+  "multi-step": "Several connected steps",
+  "cross-team": "More than one team, part of the business, or location",
+  unclear: "We still cannot tell how far the problem spreads",
 };
 
 export const frequencyLabels: Record<TriageFrequency, string> = {
@@ -41,20 +41,20 @@ export const frequencyLabels: Record<TriageFrequency, string> = {
   monthly: "A few times a month",
   weekly: "Every week",
   daily: "Every day",
-  constant: "It is part of normal operations",
+  constant: "It happens all the time",
 };
 
 export const impactLabels: Record<TriageImpact, string> = {
   friction: "Annoyance or extra effort",
-  capacity: "Staff time or operating capacity",
+  capacity: "Staff time or workload",
   customer: "Customer experience or response",
   revenue: "Revenue or opportunity",
   delivery: "Service delivery or reliability",
-  risk: "Security, access, compliance, or material risk",
+  risk: "Security, access, compliance, or business risk",
 };
 
 export const spreadLabels: Record<TriageSpread, string> = {
-  one: "One primary system or team",
+  one: "One system or team",
   few: "Two or three systems or teams",
   many: "Four or more systems or teams",
   unknown: "We cannot tell yet",
@@ -79,15 +79,15 @@ export function deriveTriage(input: TriageInput): TriageResult {
     (input.scope !== "contained" && repeatsFrequently && material);
 
   const reasons: string[] = [];
-  if (broadScope) reasons.push(input.scope === "unclear" ? "The true operating boundary is not yet clear." : "The issue crosses team or functional boundaries.");
-  if (broadSpread) reasons.push(input.spread === "unknown" ? "The systems and teams involved still need to be mapped." : "The issue spans several systems or teams.");
-  if (repeats) reasons.push(`The problem recurs ${frequencyLabels[input.frequency].toLowerCase()}.`);
-  if (material) reasons.push(`The reported impact reaches ${impactLabels[input.impact].toLowerCase()}.`);
+  if (broadScope) reasons.push(input.scope === "unclear" ? "We cannot yet tell where the problem starts and stops." : "The problem crosses more than one team or part of the business.");
+  if (broadSpread) reasons.push(input.spread === "unknown" ? "We still need to learn which systems and teams are involved." : "The problem touches several systems or teams.");
+  if (repeats) reasons.push(`The problem happens ${frequencyLabels[input.frequency].toLowerCase()}.`);
+  if (material) reasons.push(`The main impact is ${impactLabels[input.impact].toLowerCase()}.`);
 
   if (reasons.length === 0) {
-    reasons.push("The issue currently appears bounded, infrequent, and suitable for a focused investigation.");
+    reasons.push("The problem looks small enough for a focused review.");
   } else if (!oia && reasons.length === 1) {
-    reasons.push("The current scope still appears narrow enough to investigate without a full operating assessment.");
+    reasons.push("The problem still looks narrow enough to review without a full OIA.");
   }
 
   const profile = profiles[input.pressure];
@@ -97,17 +97,17 @@ export function deriveTriage(input: TriageInput): TriageResult {
     ? {
         route: "OPERATIONAL_INFRASTRUCTURE_ASSESSMENT",
         routeLabel: "Operational Infrastructure Assessment",
-        summary: "The signals point to a broader operating problem that should be mapped across its real boundaries before a fix is prescribed.",
+        summary: "The problem looks bigger or less clear, so Sekinfra should look across the teams and systems involved before recommending a fix.",
         reasons,
-        nextAction: "Use the OIA to establish the operating picture, evidence, failure points, priorities, and the controlled next decision.",
+        nextAction: "Use the OIA to show what is happening, what is causing it, what matters most, and what should happen next.",
         desiredOutcome,
       }
     : {
         route: "FOCUSED_DIAGNOSTIC",
         routeLabel: "Focused Diagnostic",
-        summary: "The signals appear contained enough to investigate the failure point without automatically expanding into a full OIA.",
+        summary: "The problem looks focused enough to find the failure point without starting a full OIA.",
         reasons,
-        nextAction: "Keep the diagnostic boundary tight: verify the failure point, business consequence, and smallest justified intervention.",
+        nextAction: "Keep the review focused: confirm the failure point, the business impact, and the smallest fix that makes sense.",
         desiredOutcome,
       };
 }
@@ -115,21 +115,21 @@ export function deriveTriage(input: TriageInput): TriageResult {
 export function buildTriageBrief(input: TriageInput, result = deriveTriage(input)): string {
   const profile = profiles[input.pressure];
   return [
-    "SEKINFRA OPERATIONAL TRIAGE BRIEF",
+    "SEKINFRA PROBLEM REVIEW",
     "",
-    `Initial route: ${result.routeLabel}`,
+    `Suggested path: ${result.routeLabel}`,
     `Pressure point: ${profile.label}`,
-    `Scope: ${scopeLabels[input.scope]}`,
+    `How far it spreads: ${scopeLabels[input.scope]}`,
     `Pattern: ${frequencyLabels[input.frequency]}`,
-    `Business impact: ${impactLabels[input.impact]}`,
+    `Main impact: ${impactLabels[input.impact]}`,
     `Systems / teams involved: ${spreadLabels[input.spread]}`,
-    `Desired outcome: ${result.desiredOutcome}`,
+    `What better should look like: ${result.desiredOutcome}`,
     "",
-    "Why this route:",
+    "Why we picked this path:",
     ...result.reasons.map((reason) => `- ${reason}`),
     "",
-    `Next diagnostic action: ${result.nextAction}`,
+    `Next step: ${result.nextAction}`,
     "",
-    "This is triage, not a diagnosis. No information in this brief is submitted to Sekinfra by this website, and governed online intake is not connected yet.",
+    "This is a first review, not a diagnosis. This website does not send the information in this brief to Sekinfra. Online intake is not connected yet.",
   ].join("\n");
 }
