@@ -10,11 +10,18 @@ export function SiteFooter(){
         </Link>
         <p className="mt-3 max-w-md text-[var(--ink-muted)]">We build and fix the systems businesses run on—across operations, automation, cloud, network, security, and business systems.</p>
       </div>
-      <div className="flex flex-wrap gap-x-5 gap-y-3 text-[var(--ink-muted)]">
-        <Link href="/outcomes">Outcomes</Link>
-        <Link href="/how-it-works">How it works</Link>
-        <Link href="/about">About</Link>
-        <Link href="/start">Show us what&apos;s happening</Link>
+      <div className="flex flex-col gap-5 md:items-end">
+        <div className="flex flex-col gap-1 text-[var(--ink-muted)] md:items-end">
+          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[var(--ink)]">Contact</p>
+          <a href="tel:+17722046950" className="transition-colors hover:text-[var(--ink)]">772-204-6950</a>
+          <a href="mailto:admin@sekinfra.com" className="transition-colors hover:text-[var(--ink)]">admin@sekinfra.com</a>
+        </div>
+        <div className="flex flex-wrap gap-x-5 gap-y-3 text-[var(--ink-muted)]">
+          <Link href="/outcomes">Outcomes</Link>
+          <Link href="/how-it-works">How it works</Link>
+          <Link href="/about">About</Link>
+          <Link href="/start">Show us what&apos;s happening</Link>
+        </div>
       </div>
     </div>
   </footer>
