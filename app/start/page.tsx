@@ -98,7 +98,7 @@ export default function Start() {
         <div className="mx-auto max-w-[var(--page-width)] px-5 lg:px-8">
           <p className="max-w-3xl border-l-2 border-[var(--brand)] pl-4 text-sm leading-6 text-[var(--ink-muted)]">
             This triage runs in your browser. The governed Sekinfra intake connection is not live yet, so the site does
-            not send your diagnostic or contact information into Avuhz or the Sekinfra Acquisition System.
+            not send your diagnostic or contact information into Sekinfra systems or the Sekinfra Acquisition System.
           </p>
         </div>
       </section>

@@ -3,7 +3,7 @@
 import { ButtonLink } from "@/components/ui/button-link";
 import { SystemDiagram } from "@/components/visuals/system-diagram";
 import { usePersonalization } from "@/components/personalization-provider";
-import { profiles, PRESSURES, type Pressure } from "@/lib/personalization";
+import { PRESSURES, type Pressure } from "@/lib/personalization";
 
 const labels: Record<Pressure, string> = {
   leads: "Leads are waiting",
