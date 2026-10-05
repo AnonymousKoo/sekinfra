@@ -14,7 +14,7 @@ test("contained rare issue routes to a Focused Diagnostic", () => {
   const result = deriveTriage(base);
   assert.equal(result.route, "FOCUSED_DIAGNOSTIC");
   assert.equal(result.routeLabel, "Focused Diagnostic");
-  assert.match(result.summary, /contained/i);
+  assert.match(result.summary, /focused enough/i);
 });
 
 test("cross-team recurring issue routes to the OIA", () => {
@@ -26,11 +26,11 @@ test("cross-team recurring issue routes to the OIA", () => {
     spread: "few",
   });
   assert.equal(result.route, "OPERATIONAL_INFRASTRUCTURE_ASSESSMENT");
-  assert.ok(result.reasons.some((reason) => /crosses team/i.test(reason)));
-  assert.ok(result.reasons.some((reason) => /recurs/i.test(reason)));
+  assert.ok(result.reasons.some((reason) => /more than one team/i.test(reason)));
+  assert.ok(result.reasons.some((reason) => /happens every week/i.test(reason)));
 });
 
-test("unclear boundary across unknown systems routes to the OIA", () => {
+test("unclear spread across unknown systems routes to the OIA", () => {
   const result = deriveTriage({
     ...base,
     pressure: "visibility",
@@ -40,8 +40,8 @@ test("unclear boundary across unknown systems routes to the OIA", () => {
     spread: "unknown",
   });
   assert.equal(result.route, "OPERATIONAL_INFRASTRUCTURE_ASSESSMENT");
-  assert.ok(result.reasons.some((reason) => /boundary/i.test(reason)));
-  assert.ok(result.reasons.some((reason) => /mapped/i.test(reason)));
+  assert.ok(result.reasons.some((reason) => /where the problem starts and stops/i.test(reason)));
+  assert.ok(result.reasons.some((reason) => /which systems and teams are involved/i.test(reason)));
 });
 
 test("daily material issue can escalate even when the initial path looks bounded", () => {
@@ -57,16 +57,16 @@ test("daily material issue can escalate even when the initial path looks bounded
 
 test("desired outcome falls back to the selected profile outcome", () => {
   const result = deriveTriage({ ...base, pressure: "accountability", desiredOutcome: "   " });
-  assert.match(result.desiredOutcome, /Ownership is explicit/);
+  assert.match(result.desiredOutcome, /visible owner and next step/i);
 });
 
-test("triage brief is explicit about browser-only triage and the missing governed intake", () => {
+test("problem review is explicit about browser-only triage and missing online intake", () => {
   const input = { ...base, desiredOutcome: "Routine work has a visible owner and exception path." };
   const result = deriveTriage(input);
   const brief = buildTriageBrief(input, result);
-  assert.match(brief, /SEKINFRA OPERATIONAL TRIAGE BRIEF/);
-  assert.match(brief, /This is triage, not a diagnosis/);
-  assert.match(brief, /No information in this brief is submitted/);
-  assert.match(brief, /governed online intake is not connected yet/);
+  assert.match(brief, /SEKINFRA PROBLEM REVIEW/);
+  assert.match(brief, /first review, not a diagnosis/i);
+  assert.match(brief, /does not send the information/i);
+  assert.match(brief, /online intake is not connected yet/i);
   assert.match(brief, /Routine work has a visible owner/);
 });

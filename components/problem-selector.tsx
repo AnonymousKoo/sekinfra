@@ -1,72 +1,94 @@
 "use client";
-import{SystemDiagram}from"@/components/visuals/system-diagram";
-import{usePersonalization}from"@/components/personalization-provider";
-import{profiles,PRESSURES,type Pressure}from"@/lib/personalization";
 
-const labels:Record<Pressure,string>={
-  leads:"Leads are waiting",
-  operations:"Too much manual work",
-  accountability:"No clear owner",
-  visibility:"Can’t see what’s happening",
-  "customer-follow-up":"Follow-up keeps slipping",
-  systems:"Systems don’t talk",
-  "cloud-network":"Network or cloud issue",
-  "security-reliability":"Security or access concern",
-  "not-sure":"I’m not sure",
+import { ButtonLink } from "@/components/ui/button-link";
+import { SystemDiagram } from "@/components/visuals/system-diagram";
+import { usePersonalization } from "@/components/personalization-provider";
+import { profiles, PRESSURES, type Pressure } from "@/lib/personalization";
+
+const labels: Record<Pressure, string> = {
+  leads: "Leads are waiting",
+  operations: "Too much work is manual",
+  accountability: "No one clearly owns it",
+  visibility: "I cannot see what is happening",
+  "customer-follow-up": "Follow-up keeps slipping",
+  systems: "Our systems do not talk",
+  "cloud-network": "Network or cloud problems",
+  "security-reliability": "Security, access, or reliability",
+  "not-sure": "I am not sure",
 };
 
-const neutral={
-  label:"Problem",
-  recognition:"You can see the symptom, but the real failure point may sit somewhere else in the operation or technology stack.",
-  consequence:"Fixing the visible symptom alone can create another workaround without solving the underlying condition.",
-  outcome:"The actual failure point is established before SekInfra recommends what should be repaired, connected, secured, automated, or redesigned.",
-  flow:["Symptom","System","Failure point","Intervention","Outcome"],
+const neutral = {
+  label: "Your problem",
+  recognition: "You can see that something is wrong, even if you do not know where the problem starts.",
+  consequence: "Guessing can waste time and money on a fix that does not solve the real problem.",
+  outcome: "Sekinfra traces the problem far enough to decide what should be fixed, connected, secured, automated, or changed.",
+  flow: ["Problem", "Impact", "People & systems", "Cause", "Next step"],
 };
 
-export function ProblemSelector(){
-  const{pressure,profile,setPressure}=usePersonalization();
-  const selected=profile||neutral;
+export function ProblemSelector() {
+  const { pressure, profile, setPressure } = usePersonalization();
+  const selected = profile || neutral;
 
-  return <section aria-labelledby="selector-title" className="section-rule bg-[var(--surface-muted)] py-18 sm:py-28">
-    <div className="mx-auto max-w-[var(--page-width)] px-5 lg:px-8">
-      <div className="grid gap-10 lg:grid-cols-[.75fr_1.25fr] lg:gap-16">
-        <div>
-          <p className="eyebrow">Start with what you are experiencing</p>
-          <h2 id="selector-title" className="mt-4 max-w-lg text-4xl font-semibold tracking-[-.05em] sm:text-5xl">You bring the symptom. We trace the system behind it.</h2>
-          <p className="mt-5 max-w-xl text-lg leading-8 text-[var(--ink-muted)]">Choose an example to see how SekInfra thinks about the problem. You do not need to know whether the root cause is operational, technical, security-related, or automation-related before you start.</p>
+  return (
+    <section aria-labelledby="selector-title" className="section-rule bg-[var(--surface-muted)] py-16 sm:py-24">
+      <div className="mx-auto max-w-[var(--page-width)] px-5 lg:px-8">
+        <div className="grid gap-10 lg:grid-cols-[.74fr_1.26fr] lg:gap-16">
+          <div>
+            <p className="eyebrow">What is going wrong?</p>
+            <h2 id="selector-title" className="mt-4 max-w-lg text-4xl font-semibold tracking-[-.05em] sm:text-5xl">
+              Pick the problem that feels closest.
+            </h2>
+            <p className="mt-5 max-w-xl text-lg leading-8 text-[var(--ink-muted)]">
+              You do not need to know the cause. Start with what you are seeing. Sekinfra follows the problem from there.
+            </p>
 
-          <div className="mt-8 flex flex-wrap gap-2" role="group" aria-label="Example business pressure points">
-            {PRESSURES.map(id=>{
-              const item=profiles[id];
-              return <button key={id} aria-pressed={pressure===id} onClick={()=>setPressure(id)} className={`min-h-11 rounded-full border px-4 text-sm font-bold transition ${pressure===id?"border-[var(--brand)] bg-[var(--brand)] text-white shadow-sm":"border-[var(--line)] bg-white hover:border-[var(--brand)] hover:bg-[var(--brand-wash)]"}`}>
-                {labels[item.id]}
-              </button>
-            })}
+            <div className="mt-8 flex flex-wrap gap-2" role="group" aria-label="Common business problems">
+              {PRESSURES.map((id) => (
+                <button
+                  key={id}
+                  aria-pressed={pressure === id}
+                  onClick={() => setPressure(id)}
+                  className={`min-h-11 rounded-full border px-4 text-sm font-bold transition ${
+                    pressure === id
+                      ? "border-[var(--brand)] bg-[var(--brand)] text-white shadow-sm"
+                      : "border-[var(--line)] bg-white hover:border-[var(--brand)] hover:bg-[var(--brand-wash)]"
+                  }`}
+                >
+                  {labels[id]}
+                </button>
+              ))}
+            </div>
+
+            <p className="mt-7 border-l-2 border-[var(--brand)] pl-4 text-sm leading-6 text-[var(--ink-muted)]">
+              {pressure
+                ? "This example shows how Sekinfra thinks about the problem. It is not a diagnosis."
+                : "Operations, automation, cloud, network, security, and software problems can all start with the same first step: tell us what is happening."}
+            </p>
+
+            <ButtonLink href="/start" className="mt-7">
+              Run the live diagnostic
+            </ButtonLink>
           </div>
 
-          <p className="mt-7 border-l-2 border-[var(--brand)] pl-4 text-sm leading-6 text-[var(--ink-muted)]">
-            {pressure?"This is an illustrative path, not a browser diagnosis. Change the example at any time.":"Network, cloud, security, access, integration, and other technical issues can start the same way: tell us what is happening first."}
-          </p>
-        </div>
-
-        <div className="rounded-[var(--radius-card)] border border-[var(--line)] bg-white p-4 shadow-[0_20px_50px_rgba(16,37,31,.06)] sm:p-6">
-          <SystemDiagram variant="selector" activeLabel={selected.label} flow={selected.flow}/>
-          <div className="mt-6 grid gap-5 sm:grid-cols-3">
-            <div>
-              <p className="eyebrow">What you notice</p>
-              <p className="mt-2 text-sm leading-6">{selected.recognition}</p>
-            </div>
-            <div>
-              <p className="eyebrow">Why it matters</p>
-              <p className="mt-2 text-sm leading-6 text-[var(--ink-muted)]">{selected.consequence}</p>
-            </div>
-            <div>
-              <p className="eyebrow">What SekInfra establishes</p>
-              <p className="mt-2 text-sm font-semibold leading-6 text-[var(--brand)]">{selected.outcome}</p>
+          <div className="rounded-[var(--radius-card)] border border-[var(--line)] bg-white p-4 shadow-[0_20px_50px_rgba(16,37,31,.06)] sm:p-6">
+            <SystemDiagram variant="selector" activeLabel={selected.label} flow={selected.flow} />
+            <div className="mt-6 grid gap-5 sm:grid-cols-3">
+              <div>
+                <p className="eyebrow">What you are seeing</p>
+                <p className="mt-2 text-sm leading-6">{selected.recognition}</p>
+              </div>
+              <div>
+                <p className="eyebrow">Why it matters</p>
+                <p className="mt-2 text-sm leading-6 text-[var(--ink-muted)]">{selected.consequence}</p>
+              </div>
+              <div>
+                <p className="eyebrow">What better looks like</p>
+                <p className="mt-2 text-sm font-semibold leading-6 text-[var(--brand)]">{selected.outcome}</p>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
+  );
 }

@@ -12,20 +12,20 @@ export const metadata:Metadata={
     default:"Sekinfra | We build and fix the systems your business runs on",
     template:"%s | Sekinfra"
   },
-  description:"Sekinfra diagnoses and improves the operational and technical systems businesses depend on—from workflows and automation to cloud, network, security, and business systems.",
+  description:"Sekinfra finds and fixes the systems behind business problems across operations, automation, business software, cloud, network, security, and reliability.",
   applicationName:"Sekinfra",
   openGraph:{
     type:"website",
     locale:"en_US",
     siteName:"Sekinfra",
     title:"Sekinfra | We build and fix the systems your business runs on",
-    description:"Bring us the problem. Sekinfra establishes what is actually happening before deciding what should be repaired, connected, secured, automated, or redesigned.",
+    description:"Show us what is happening. Sekinfra finds where the problem starts and helps fix the right system.",
     url:"https://www.sekinfra.com"
   },
   twitter:{
     card:"summary_large_image",
     title:"Sekinfra | We build and fix the systems your business runs on",
-    description:"Operations, automation, cloud, network, security, and business systems—diagnosed before they are changed."
+    description:"Operations, automation, business systems, cloud, network, and security—understood before they are changed."
   },
   robots:{index:true,follow:true}
 };

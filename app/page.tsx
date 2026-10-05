@@ -1,51 +1,71 @@
 import type { Metadata } from "next";
 import { ContextualHero, ContextualOutcomes } from "@/components/contextual-home";
-import { AuthorityTrust, ImplementationBridge, OiaIntroduction } from "@/components/landing/oia-story";
 import { ProblemSelector } from "@/components/problem-selector";
-import { SectionHeading } from "@/components/sections/section-heading";
 import { SiteShell } from "@/components/site-shell";
 import { ButtonLink } from "@/components/ui/button-link";
 import { DiagnosticPaths } from "@/components/diagnostic-paths";
 
 export const metadata: Metadata = { alternates: { canonical: "/" } };
 
-const signals = [
-  "Customers or leads are waiting too long for a response",
-  "Important work depends on one person remembering",
-  "Systems do not share the information people need",
-  "Network or cloud issues interrupt the operation",
-  "Access, security, or reliability controls are unclear",
-  "Manual coordination is consuming too much staff time",
-  "Leadership cannot easily see what is happening",
-  "The same operational problem keeps coming back",
-] as const;
-
 const capabilityAreas = [
   {
-    title: "Operations & Business Systems",
-    signal: "Work is inconsistent, unclear, or too dependent on people holding the process together.",
-    response: "Design workflows, ownership, handoffs, visibility, and controls around how the business actually operates.",
+    title: "Operations",
+    problem: "Work gets stuck, dropped, or depends on one person knowing what to do next.",
+    help: "We make the path, owner, handoffs, and exceptions clear.",
   },
   {
-    title: "Automation & Integration",
-    signal: "People repeat work, move information manually, or bridge systems that should work together.",
-    response: "Connect the right systems and automate repeatable movement without hiding exceptions.",
+    title: "Automation",
+    problem: "People repeat the same steps, copy information, or chase routine updates.",
+    help: "We automate repeatable work where it is safe and useful.",
   },
   {
-    title: "Cloud & Network Infrastructure",
-    signal: "Connectivity, availability, or infrastructure problems are slowing or interrupting the business.",
-    response: "Trace the failure path, establish the operating requirement, and build or repair the supporting infrastructure.",
+    title: "Business Systems",
+    problem: "Your tools do not share the information your team needs.",
+    help: "We connect the right systems around the work they need to support.",
+  },
+  {
+    title: "Cloud & Network",
+    problem: "Internet, network, cloud, or service problems interrupt normal work.",
+    help: "We trace the failure path and fix the part the business depends on.",
   },
   {
     title: "Security & Reliability",
-    signal: "Access, exposure, recovery, or system dependability is uncertain.",
-    response: "Tighten the controls and reliability measures that the operation actually depends on.",
+    problem: "Access, protection, alerts, or recovery are unclear.",
+    help: "We make access and recovery rules clear around the systems that matter.",
+  },
+] as const;
+
+const scenarios = [
+  {
+    business: "Security company",
+    problem: "A guard calls off. The supervisor starts texting people. No one can clearly see whether the shift is covered.",
+    look: "Who owns the replacement, how the call-off moves, when the client should be updated, and what happens if no one responds.",
+    better: "The call-off creates a clear replacement path, escalation, and visible coverage status.",
   },
   {
-    title: "System Design & Improvement",
-    signal: "The business has a recurring problem but the right technical or operational intervention is not obvious.",
-    response: "Diagnose the condition first, then design the smallest system change that can produce the required outcome.",
+    business: "HVAC company",
+    problem: "A new service request comes in, but follow-up depends on someone seeing the message and remembering to respond.",
+    look: "Where requests enter, who owns the first response, what information is needed, and how missed follow-up is caught.",
+    better: "Every new request has an owner, a response window, and a visible next step.",
   },
+  {
+    business: "Consulting firm",
+    problem: "Client work is spread across email, text, documents, and people’s memory.",
+    look: "How work is assigned, where documents live, who owns the next step, and how leaders see what is late.",
+    better: "Client work follows one clear path with visible ownership and fewer status-chasing messages.",
+  },
+  {
+    business: "Real estate / mortgage",
+    problem: "A file moves through several people and systems, but missing items or slow handoffs are found late.",
+    look: "Where the file changes hands, what each person needs, which steps can wait, and how missing items become visible.",
+    better: "The file has a visible owner, next step, missing-item status, and exception path.",
+  },
+] as const;
+
+const oiaPoints = [
+  ["Use it when", "The problem keeps coming back, crosses teams or systems, or has no clear cause."],
+  ["What it does", "The OIA maps what is happening, why it matters, what is causing it, and what should change."],
+  ["What it does not do", "An OIA does not give Sekinfra permission to change your systems. You approve changes separately."],
 ] as const;
 
 export default function Home() {
@@ -53,41 +73,22 @@ export default function Home() {
     <SiteShell>
       <ContextualHero />
 
-      <section className="section-rule bg-white py-18 sm:py-28">
-        <div className="mx-auto max-w-[var(--page-width)] px-5 lg:px-8">
-          <SectionHeading
-            eyebrow="What brings companies to SekInfra"
-            title="You usually notice the symptom before you know the system causing it."
-          >
-            You do not need to decide whether the problem is operations, automation, cloud, networking, security, or software before talking to SekInfra. Start with what is not working.
-          </SectionHeading>
-          <div className="mt-12 grid gap-x-10 md:grid-cols-2">
-            {signals.map((signal, index) => (
-              <div className="group flex gap-4 border-t border-[var(--line)] py-5" key={signal}>
-                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-[var(--line)] font-mono text-[10px] text-[var(--brand)] transition group-hover:border-[var(--brand)] group-hover:bg-[var(--brand-wash)]">
-                  0{index + 1}
-                </span>
-                <p className="font-semibold leading-7">{signal}</p>
-                <span
-                  aria-hidden="true"
-                  className="ml-auto mt-2 h-2 w-2 shrink-0 rounded-full bg-[var(--line-strong)] group-hover:bg-[var(--brand)]"
-                />
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       <ProblemSelector />
 
-      <section className="section-rule py-18 sm:py-28">
+      <section className="section-rule bg-white py-16 sm:py-24">
         <div className="mx-auto max-w-[var(--page-width)] px-5 lg:px-8">
-          <SectionHeading
-            eyebrow="One operating partner"
-            title="Business problems and technology problems often share the same system."
-          >
-            SekInfra works across the operating stack so the solution can follow the real failure point instead of being forced into a single service category.
-          </SectionHeading>
+          <div className="grid gap-8 lg:grid-cols-[.7fr_1.3fr] lg:items-end">
+            <div>
+              <p className="eyebrow">What we can fix</p>
+              <h2 className="mt-4 text-balance text-4xl font-semibold tracking-[-.055em] sm:text-5xl">
+                One problem can touch the business and the technology behind it.
+              </h2>
+            </div>
+            <p className="max-w-2xl text-lg leading-8 text-[var(--ink-muted)]">
+              You do not need to choose the right service first. Sekinfra follows the problem across operations,
+              automation, business systems, cloud, network, security, and reliability.
+            </p>
+          </div>
 
           <div className="mt-12 grid border-l border-t border-[var(--line)] md:grid-cols-2 xl:grid-cols-5">
             {capabilityAreas.map((area, index) => (
@@ -97,10 +98,54 @@ export default function Home() {
               >
                 <span className="font-mono text-xs text-[var(--brand)]">0{index + 1}</span>
                 <h3 className="mt-8 text-xl font-semibold tracking-[-.035em]">{area.title}</h3>
-                <p className="mt-5 text-sm leading-6 text-[var(--ink-muted)]">{area.signal}</p>
+                <p className="mt-5 text-sm leading-6 text-[var(--ink-muted)]">{area.problem}</p>
                 <p className="mt-auto border-t border-[var(--line)] pt-5 text-sm font-semibold leading-6 text-[var(--brand)]">
-                  {area.response}
+                  {area.help}
                 </p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="section-rule bg-[var(--brand-deep)] py-16 text-white sm:py-24">
+        <div className="mx-auto max-w-[var(--page-width)] px-5 lg:px-8">
+          <div className="grid gap-8 lg:grid-cols-[.7fr_1.3fr] lg:items-end">
+            <div>
+              <p className="eyebrow text-[var(--accent)]">Sekinfra at work</p>
+              <h2 className="mt-4 text-balance text-4xl font-semibold tracking-[-.055em] sm:text-5xl">
+                See the kind of problems we are built to solve.
+              </h2>
+            </div>
+            <p className="max-w-2xl text-lg leading-8 text-white/70">
+              These are simple examples, not client case studies. The point is to show how Sekinfra follows a business
+              problem into the people, steps, systems, and technology behind it.
+            </p>
+          </div>
+
+          <div className="mt-12 grid gap-4 lg:grid-cols-2">
+            {scenarios.map((scenario) => (
+              <article className="rounded-[var(--radius-card)] border border-white/15 bg-white/5 p-6 sm:p-7" key={scenario.business}>
+                <div className="flex items-center justify-between gap-4">
+                  <h3 className="text-xl font-semibold">{scenario.business}</h3>
+                  <span className="rounded-full border border-white/15 px-3 py-1 text-[10px] font-bold uppercase tracking-[.12em] text-[var(--accent)]">
+                    Example
+                  </span>
+                </div>
+                <div className="mt-6 grid gap-5 sm:grid-cols-3">
+                  <div>
+                    <p className="text-xs font-bold uppercase tracking-[.14em] text-[var(--accent)]">What is happening</p>
+                    <p className="mt-2 text-sm leading-6 text-white/70">{scenario.problem}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold uppercase tracking-[.14em] text-[var(--accent)]">What we look at</p>
+                    <p className="mt-2 text-sm leading-6 text-white/70">{scenario.look}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold uppercase tracking-[.14em] text-[var(--accent)]">Better state</p>
+                    <p className="mt-2 text-sm font-semibold leading-6 text-white">{scenario.better}</p>
+                  </div>
+                </div>
               </article>
             ))}
           </div>
@@ -109,27 +154,24 @@ export default function Home() {
 
       <DiagnosticPaths cta />
 
-      <OiaIntroduction />
-
-      <section className="section-rule bg-white py-18 sm:py-28">
-        <div className="mx-auto grid max-w-[var(--page-width)] gap-10 px-5 lg:grid-cols-[.82fr_1.18fr] lg:items-start lg:px-8">
-          <SectionHeading eyebrow="Why diagnosis matters" title="SekInfra does not start by selling you a tool.">
-            Software, automation, infrastructure, and process changes are interventions. The job comes first: establish what is failing, why it matters, and what the operation needs instead.
-          </SectionHeading>
-
-          <div className="grid gap-3 sm:grid-cols-2">
-            {[
-              ["01", "Diagnose", "Establish the real operating and technical condition."],
-              ["02", "Design", "Define the intervention around the required outcome."],
-              ["03", "Build", "Implement only what has been explicitly approved."],
-              ["04", "Secure", "Protect access, reliability, and operating boundaries."],
-              ["05", "Automate", "Remove repeatable manual work where it is justified."],
-              ["06", "Improve", "Validate the result and make the next decision from evidence."],
-            ].map(([number, title, body]) => (
-              <article className="rounded-[var(--radius-card)] border border-[var(--line)] p-5" key={title}>
-                <span className="font-mono text-xs text-[var(--brand)]">{number}</span>
-                <h3 className="mt-6 text-xl font-semibold">{title}</h3>
-                <p className="mt-3 text-sm leading-6 text-[var(--ink-muted)]">{body}</p>
+      <section className="section-rule bg-[var(--surface-muted)] py-16 sm:py-24">
+        <div className="mx-auto grid max-w-[var(--page-width)] gap-10 px-5 lg:grid-cols-[.75fr_1.25fr] lg:px-8">
+          <div>
+            <p className="eyebrow">Operational Infrastructure Assessment (OIA)</p>
+            <h2 className="mt-4 text-balance text-4xl font-semibold tracking-[-.055em] sm:text-5xl">
+              A deeper review for problems that are bigger than one broken step.
+            </h2>
+            <p className="mt-5 text-lg leading-8 text-[var(--ink-muted)]">
+              The OIA is not the first step for every client. We use it when a smaller diagnostic cannot explain the
+              whole problem.
+            </p>
+          </div>
+          <div className="grid gap-3">
+            {oiaPoints.map(([title, body], index) => (
+              <article className="rounded-[var(--radius-card)] border border-[var(--line)] bg-white p-6" key={title}>
+                <span className="font-mono text-xs text-[var(--brand)]">0{index + 1}</span>
+                <h3 className="mt-5 text-xl font-semibold">{title}</h3>
+                <p className="mt-2 text-sm leading-6 text-[var(--ink-muted)]">{body}</p>
               </article>
             ))}
           </div>
@@ -137,20 +179,43 @@ export default function Home() {
       </section>
 
       <ContextualOutcomes />
-      <AuthorityTrust />
-      <ImplementationBridge />
 
-      <section className="py-22 sm:py-30">
+      <section className="section-rule bg-[var(--brand-deep)] py-16 text-white sm:py-24">
+        <div className="mx-auto grid max-w-[var(--page-width)] gap-10 px-5 lg:grid-cols-[.8fr_1.2fr] lg:px-8">
+          <div>
+            <p className="eyebrow text-[var(--accent)]">You stay in control</p>
+            <h2 className="mt-4 text-balance text-4xl font-semibold tracking-[-.055em] sm:text-5xl">
+              Looking at a problem does not give us permission to change your systems.
+            </h2>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-2">
+            {[
+              ["Clear scope", "We agree on what Sekinfra may review before access begins."],
+              ["Limited access", "We use only the access needed for the approved diagnostic."],
+              ["Separate approval", "Finding a problem does not automatically approve a fix."],
+              ["You decide", "Implementation and deployment happen only after you approve them."],
+            ].map(([title, body], index) => (
+              <article className="rounded-[var(--radius-card)] border border-white/15 bg-white/5 p-6" key={title}>
+                <span className="font-mono text-xs text-[var(--accent)]">0{index + 1}</span>
+                <h3 className="mt-5 text-xl font-semibold">{title}</h3>
+                <p className="mt-2 text-sm leading-6 text-white/70">{body}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="py-20 sm:py-28">
         <div className="mx-auto max-w-3xl px-5 text-center">
-          <p className="eyebrow">Bring us the problem</p>
+          <p className="eyebrow">Something is not working?</p>
           <h2 className="text-balance mt-5 text-4xl font-semibold tracking-[-.06em] sm:text-5xl">
-            You do not need to know what kind of system is broken before you start.
+            You do not need to know what is causing it before you start.
           </h2>
-          <p className="mx-auto mt-6 max-w-2xl text-lg text-[var(--ink-muted)]">
-            Tell SekInfra what is happening. We will triage the problem, choose the right diagnostic depth, and establish what deserves attention before recommending what should be built, repaired, connected, secured, or automated.
+          <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-[var(--ink-muted)]">
+            Show Sekinfra what is happening. We will help find where the problem starts and what the right next step is.
           </p>
           <ButtonLink href="/start" className="mt-8">
-            Tell us what&apos;s happening
+            Show us what&apos;s happening
           </ButtonLink>
         </div>
       </section>
