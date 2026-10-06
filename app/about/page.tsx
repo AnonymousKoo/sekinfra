@@ -6,13 +6,13 @@ import { SystemDiagram } from "@/components/visuals/system-diagram";
 export const metadata: Metadata = {
   title: "About",
   description:
-    "Sekinfra finds and fixes the systems behind business problems across operations, automation, business software, cloud, network, security, and reliability.",
+    "Sekinfra finds and fixes the systems behind business problems across operations, automation, business software, cloud, network, security, compliance, and reliability.",
   alternates: { canonical: "/about" },
 };
 
 const principles = [
   ["Find the cause before the tool", "We start with what is going wrong before deciding what software, automation, or technology should change."],
-  ["Look at the whole path", "People, steps, software, cloud, network, security, and handoffs can all be part of the same problem."],
+  ["Look at the whole path", "People, steps, software, cloud, network, security, compliance, and handoffs can all be part of the same problem."],
   ["Make the smallest useful change", "We do not add technology just to add technology. The change should have a clear job."],
   ["Ask before we change anything", "Review access, changes, going live, and ongoing access are separate decisions."],
   ["Make sure it worked", "A job is not done because the change went live. It has to solve the problem it was meant to solve."],
@@ -22,7 +22,7 @@ const domains = [
   "Operations & business systems",
   "Automation & integration",
   "Cloud & network",
-  "Security & reliability",
+  "Security, compliance & reliability",
   "System design & improvement",
 ] as const;
 
@@ -36,7 +36,7 @@ export default function About() {
             We find and fix the system behind the problem.
           </h1>
           <p className="mt-7 max-w-2xl text-lg leading-8 text-[var(--ink-muted)]">
-            Sometimes the problem is the way work moves. Sometimes it is software, automation, network, cloud, security, or a mix of several things. Sekinfra follows the problem until we can see where it starts.
+            Sometimes the problem is the way work moves. Sometimes it is software, automation, network, cloud, security, compliance, or a mix of several things. Sekinfra follows the problem until we can see where it starts.
           </p>
           <p className="mt-5 max-w-2xl leading-7 text-[var(--ink-muted)]">
             Then we build the right fix without making you choose a service category first.
