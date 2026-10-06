@@ -21,7 +21,7 @@ export function OutcomesExperience() {
             <p className="mt-7 max-w-xl text-lg leading-8 text-[var(--ink-muted)]">
               {profile
                 ? profile.outcome
-                : "Faster response. Clear ownership. Less manual work. Better visibility. Safer access. More reliable systems."}
+                : "Faster response. Clear ownership. Less manual work. Better visibility. Safer access. Clearer compliance. More reliable systems."}
             </p>
             <div className="mt-9 flex flex-col gap-3 sm:flex-row">
               <ButtonLink href="/start">Show us what&apos;s happening</ButtonLink>
@@ -42,7 +42,7 @@ export function OutcomesExperience() {
               You should be able to see the difference in daily work.
             </h2>
             <p className="max-w-2xl text-lg leading-8 text-white/65">
-              Sekinfra is not trying to sell more software. We want the problem to stop causing delays, confusion, rework, weak access, or unreliable service.
+              Sekinfra is not trying to sell more software. We want the problem to stop causing delays, confusion, rework, weak access, missing compliance evidence, or unreliable service.
             </p>
           </div>
 
@@ -144,7 +144,7 @@ export function OutcomesExperience() {
             Technology is a tool. The result is what matters.
           </h2>
           <p className="mt-5 max-w-2xl text-lg leading-8 text-[var(--ink-muted)]">
-            A CRM, dashboard, automation, or monitoring tool is useful only when it changes the problem the business is
+            A CRM, dashboard, automation, monitoring tool, or compliance checklist is useful only when it changes the problem the business is
             dealing with.
           </p>
 
