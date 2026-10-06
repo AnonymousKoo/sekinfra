@@ -74,6 +74,52 @@
   transition:border-color .22s ease,background-color .22s ease,transform .22s ease;
 }
 
+
+.tech-page-hero{
+  position:relative;
+  isolation:isolate;
+}
+.tech-page-hero:before{
+  content:"";
+  position:absolute;
+  inset:1rem 0;
+  z-index:-1;
+  border-radius:2rem;
+  background:
+    radial-gradient(circle at 75% 30%,rgb(15 159 152/.08),transparent 20rem),
+    linear-gradient(rgb(15 159 152/.03) 1px,transparent 1px),
+    linear-gradient(90deg,rgb(15 159 152/.03) 1px,transparent 1px);
+  background-size:auto,52px 52px,52px 52px;
+  mask-image:linear-gradient(90deg,transparent,black 8%,black 92%,transparent);
+}
+
+.tech-domain-tile{
+  position:relative;
+  overflow:hidden;
+  transition:background-color .25s ease,transform .25s ease;
+}
+.tech-domain-tile:after{
+  content:"";
+  position:absolute;
+  left:0;
+  bottom:0;
+  width:0;
+  height:2px;
+  background:linear-gradient(90deg,var(--brand),var(--accent));
+  transition:width .35s ease;
+}
+
+.tech-grid-card{
+  position:relative;
+  background:rgb(255 255 255/.74);
+  transition:background-color .25s ease,transform .25s ease,box-shadow .25s ease;
+}
+
+@media(hover:hover){
+  .tech-domain-tile:hover{background:#0d1b20;transform:translateY(-2px)}
+  .tech-domain-tile:hover:after{width:100%}
+  .tech-grid-card:hover{z-index:1;background:white;transform:translateY(-3px);box-shadow:0 18px 50px rgb(15 159 152/.09)}
+}
 .tech-light-surface{
   background-image:
     radial-gradient(circle at 82% 12%,rgb(15 159 152/.06),transparent 24rem),
