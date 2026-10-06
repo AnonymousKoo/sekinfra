@@ -4,14 +4,14 @@ import { ButtonLink } from "@/components/ui/button-link";
 import { SystemDiagram } from "@/components/visuals/system-diagram";
 import { usePersonalization } from "@/components/personalization-provider";
 
-const capabilities = ["Operations", "Automation", "Cloud & Network", "Security", "Business Systems"] as const;
+const capabilities = ["Operations", "Automation", "Cloud & Network", "Security & Compliance", "Business Systems"] as const;
 
 const betterStates = [
   ["Faster response", "Customers and leads are not left waiting without an owner."],
   ["Clear ownership", "People know who owns the next step and what happens if it is missed."],
   ["Less manual work", "Routine work does not need as much copying, chasing, or remembering."],
   ["Better visibility", "The right people can see what is moving, stuck, or at risk."],
-  ["Safer access", "It is clear who can reach important systems and why."],
+  ["Safer access & compliance", "Access, required controls, approvals, and evidence are easier to see and prove."],
   ["More reliable systems", "The technology the business depends on is easier to trust and recover."],
 ] as const;
 
