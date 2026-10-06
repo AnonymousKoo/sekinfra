@@ -8,12 +8,11 @@ export function SiteFooter(){
         <Link href="/" className="inline-flex" aria-label="Sekinfra home">
           <Image src="/brand/sekinfra-wordmark.webp" alt="Sekinfra" width={600} height={155} className="h-11 w-auto mix-blend-multiply" style={{filter:"hue-rotate(13deg) saturate(1.2) brightness(1.35)"}}/>
         </Link>
-        <p className="mt-3 max-w-md text-[var(--ink-muted)]">We build and fix the systems your business runs on, from daily work and automation to cloud, network, security, and business software.</p>
+        <p className="mt-3 max-w-md text-[var(--ink-muted)]">We build and fix the systems your business runs on, from daily work and automation to cloud, network, security, compliance, and business software.</p>
       </div>
       <div className="flex flex-col gap-5 md:items-end">
         <div className="flex flex-col gap-1 text-[var(--ink-muted)] md:items-end">
           <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[var(--ink)]">Contact</p>
-          <a href="tel:+17722046950" className="transition-colors hover:text-[var(--ink)]">772-204-6950</a>
           <a href="mailto:admin@sekinfra.com" className="transition-colors hover:text-[var(--ink)]">admin@sekinfra.com</a>
         </div>
         <div className="flex flex-wrap gap-x-5 gap-y-3 text-[var(--ink-muted)]">
