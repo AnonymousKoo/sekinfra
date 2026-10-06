@@ -3,36 +3,36 @@ import { ButtonLink } from "@/components/ui/button-link";
 const paths = [
   {
     label: "Focused Diagnostic",
-    fit: "Best when the problem looks contained and has a fairly clear boundary.",
+    fit: "Best when the problem looks focused and has a clear starting point.",
     examples: [
       "Network or cloud problem",
       "Access or security concern",
       "System connection failure",
       "One workflow keeps breaking",
     ],
-    outcome: "Find the failure point, show the business impact, and define the smallest fix that makes sense.",
+    outcome: "Find where the problem starts, show the impact, and define the smallest fix that makes sense.",
   },
   {
     label: "Operational Infrastructure Assessment (OIA)",
-    fit: "Best when the problem is bigger, keeps coming back, touches several systems or teams, or has no clear cause.",
+    fit: "Best when the problem is bigger, keeps coming back, touches several teams or systems, or has no clear cause.",
     examples: [
       "Several teams or systems are involved",
       "The same problem keeps coming back",
       "Ownership and visibility are unclear",
       "You can see the problem but not what is causing it",
     ],
-    outcome: "Build a clear picture of what is happening, why it matters, what should change, and what should happen next.",
+    outcome: "Build a clear picture of what is happening, why it matters, what should change, and what comes next.",
   },
 ] as const;
 
 const flow = [
   ["01", "Show us the problem", "Start with what you can see and why it matters."],
-  ["02", "We choose the right depth", "Sekinfra decides whether the problem needs a focused review or the full OIA."],
-  ["03", "We find the cause", "We use evidence instead of guessing."],
-  ["04", "You see the findings", "We explain what is wrong, what matters most, and what should be different."],
-  ["05", "You choose what moves forward", "Nothing becomes implementation just because we found it."],
-  ["06", "We do the approved work", "Sekinfra changes only what you approved."],
-  ["07", "We make sure it worked", "We check the result against the problem we started with."],
+  ["02", "We choose how deep to look", "Sekinfra decides whether the problem needs a focused review or the full OIA."],
+  ["03", "We find where it starts", "We use facts instead of guessing."],
+  ["04", "You see what we found", "We explain what is wrong, what matters most, and what should work better."],
+  ["05", "You choose the next move", "Nothing changes unless you approve it."],
+  ["06", "We make the approved change", "Sekinfra changes only what you approved."],
+  ["07", "We check the result", "We compare the result with the problem we started with."],
 ] as const;
 
 export function DiagnosticPaths({ cta = false, showFlow = true }: { cta?: boolean; showFlow?: boolean }) {
@@ -41,14 +41,13 @@ export function DiagnosticPaths({ cta = false, showFlow = true }: { cta?: boolea
       <div className="mx-auto max-w-[var(--page-width)] px-5 lg:px-8">
         <div className="grid gap-8 lg:grid-cols-[.72fr_1.28fr] lg:items-end">
           <div>
-            <p className="eyebrow">The right level of diagnosis</p>
+            <p className="eyebrow">Two ways we can review a problem</p>
             <h2 className="mt-4 text-balance text-4xl font-semibold tracking-[-.055em] sm:text-5xl">
-              Not every problem needs a big assessment.
+              Start small. Go deeper only when needed.
             </h2>
           </div>
           <p className="max-w-2xl text-lg leading-8 text-[var(--ink-muted)]">
-            Sekinfra starts with the smallest review that can answer the right question. A clear, contained problem can
-            stay focused. A bigger or unclear problem can move into the Operational Infrastructure Assessment.
+            Sekinfra starts with the smallest review that can answer the question. A clear problem stays focused. A bigger or unclear problem can move into the Operational Infrastructure Assessment.
           </p>
         </div>
 
@@ -65,7 +64,7 @@ export function DiagnosticPaths({ cta = false, showFlow = true }: { cta?: boolea
               <div className="flex items-center justify-between gap-4">
                 <span className="font-mono text-xs text-[var(--brand)]">0{index + 1}</span>
                 <span className="rounded-full border border-[var(--line)] bg-white px-3 py-1 text-[10px] font-bold uppercase tracking-[.12em] text-[var(--ink-muted)]">
-                  {index === 0 ? "Clear boundary" : "Bigger / unclear problem"}
+                  {index === 0 ? "Focused problem" : "Bigger or unclear"}
                 </span>
               </div>
               <h3 className="mt-7 text-2xl font-semibold tracking-[-.04em]">{path.label}</h3>
