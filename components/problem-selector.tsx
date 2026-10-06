@@ -61,7 +61,7 @@ export function ProblemSelector() {
 
             <p className="mt-7 border-l-2 border-[var(--brand)] pl-4 text-sm leading-6 text-[var(--ink-muted)]">
               {pressure
-                ? "This shows how Sekinfra looks at the problem. It is not a diagnosis."
+                ? "This shows how Sekinfra looks at the problem. It is only an example, not a final answer."
                 : "No matter where the problem lives, the first step is the same: tell us what is happening."}
             </p>
 
