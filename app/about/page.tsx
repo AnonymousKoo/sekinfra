@@ -15,7 +15,7 @@ const principles = [
   ["Look at the whole path", "People, steps, software, cloud, network, security, and handoffs can all be part of the same problem."],
   ["Make the smallest useful change", "We do not add technology just to add technology. The change should have a clear job."],
   ["Ask before we change anything", "Review access, implementation, deployment, and ongoing access are separate decisions."],
-  ["Make sure it worked", "A build is not done because it shipped. It has to solve the problem it was meant to solve."],
+  ["Make sure it worked", "A job is not done because the change went live. It has to solve the problem it was meant to solve."],
 ] as const;
 
 const domains = [
@@ -33,14 +33,13 @@ export default function About() {
         <div>
           <p className="eyebrow">About Sekinfra</p>
           <h1 className="text-balance mt-5 text-5xl font-semibold tracking-[-.065em] sm:text-6xl">
-            We fix the system behind the business problem.
+            We find and fix the system behind the problem.
           </h1>
           <p className="mt-7 max-w-2xl text-lg leading-8 text-[var(--ink-muted)]">
-            Sometimes the problem is a workflow. Sometimes it is software, automation, network, cloud, security, or a
-            mix of several things. Sekinfra follows the problem until the real failure point is clear.
+            Sometimes the problem is the way work moves. Sometimes it is software, automation, network, cloud, security, or a mix of several things. Sekinfra follows the problem until we can see where it starts.
           </p>
           <p className="mt-5 max-w-2xl leading-7 text-[var(--ink-muted)]">
-            Then we help design and build the right fix—without forcing the business into a service category first.
+            Then we build the right fix without making you choose a service category first.
           </p>
         </div>
         <SystemDiagram variant="control" />
@@ -54,7 +53,7 @@ export default function About() {
               One business problem can cross several systems.
             </h2>
             <p className="mt-5 text-lg leading-8 text-white/70">
-              You should not have to know which technical specialty owns the problem before asking for help.
+              You should not have to know what kind of expert you need before asking for help.
             </p>
           </div>
           <div className="grid gap-px overflow-hidden rounded-[var(--radius-card)] border border-white/15 bg-white/15 sm:grid-cols-2">
