@@ -56,12 +56,12 @@ export const outcomeFamilies: OutcomeFamily[] = [
   },
   {
     id: "reliability",
-    title: "Technology, security, and reliability",
-    summary: "Make the technology the business depends on reliable enough to trust.",
-    outcomes: ["Service availability", "Clear access rules", "System visibility", "Recovery readiness"],
-    whatChanges: "Connections, access, alerts, and recovery are built around the services the business actually needs.",
-    whatBecomesVisible: "What failed, who is affected, what protection is active, and how recovery should work.",
-    goodLooksLike: "Important services work, access is clear, failures are visible, and recovery does not depend on guessing.",
+    title: "Security, compliance, and reliability",
+    summary: "Make the technology, controls, and evidence the business depends on clear enough to trust.",
+    outcomes: ["Service availability", "Clear access rules", "Compliance visibility", "Evidence readiness", "System visibility", "Recovery readiness"],
+    whatChanges: "Connections, access, required controls, evidence, alerts, and recovery are built around the services and obligations the business actually has.",
+    whatBecomesVisible: "What failed, who has access, which controls are active, what evidence exists, and how recovery should work.",
+    goodLooksLike: "Important services work, access and required controls are clear, evidence is easy to show, and recovery does not depend on guessing.",
     pressures: ["cloud-network", "security-reliability"],
   },
 ];
@@ -92,6 +92,11 @@ export const transformations = [
     before: "A service fails and the business has to guess where the problem is.",
     controlled: "The failed service, access rules, and recovery steps are clear enough to act.",
   },
+  {
+    label: "Compliance",
+    before: "Required steps, approvals, or records are scattered and hard to prove later.",
+    controlled: "Required steps, approvals, owners, and evidence stay visible as the work moves.",
+  },
 ] as const;
 
 export const illustrativeOutcome = {
@@ -110,6 +115,7 @@ export const outcomeVsFeature = [
   ["Feature", "A CRM is installed.", "Outcome", "Every qualified inquiry has a visible owner and next action."],
   ["Feature", "A dashboard exists.", "Outcome", "Leaders can see stalled work without chasing updates."],
   ["Feature", "Monitoring is installed.", "Outcome", "A critical service problem is visible early enough for the team to act without guessing."],
+  ["Feature", "A compliance checklist exists.", "Outcome", "Required steps, approvals, owners, and evidence stay visible through the real workflow."],
 ] as const;
 
 export const outcomeProcess = [
