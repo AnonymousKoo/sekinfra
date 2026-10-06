@@ -405,7 +405,7 @@ export function DiagnosticTriage() {
               onChange={(event) => setDesiredOutcome(event.target.value.slice(0, 240))}
               maxLength={240}
               rows={5}
-              placeholder={profile?.outcome || "Example: Critical work has a visible owner, next action, and exception path."}
+              placeholder={profile?.outcome || "Example: Important work has a visible owner, next step, and a clear plan when something goes wrong."}
               className="mt-4 block w-full rounded-xl border border-[var(--line)] bg-white px-4 py-3 text-base outline-none transition placeholder:text-[var(--ink-faint)] focus:border-[var(--brand)]"
             />
             <div className="mt-2 flex items-center justify-between gap-4 text-xs text-[var(--ink-muted)]">
