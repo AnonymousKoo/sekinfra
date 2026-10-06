@@ -2,7 +2,7 @@ import Image from"next/image";
 import Link from"next/link";
 
 export function SiteFooter(){
-  return <footer className="border-t border-[var(--line)]">
+  return <footer className="tech-footer border-t border-[var(--line)]">
     <div className="mx-auto flex max-w-[var(--page-width)] flex-col gap-8 px-5 py-10 text-sm md:flex-row md:items-end md:justify-between lg:px-8">
       <div>
         <Link href="/" className="inline-flex" aria-label="Sekinfra home">
