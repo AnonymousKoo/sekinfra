@@ -8,7 +8,7 @@ export function SiteFooter(){
         <Link href="/" className="inline-flex" aria-label="Sekinfra home">
           <Image src="/brand/sekinfra-wordmark.webp" alt="Sekinfra" width={600} height={155} className="h-11 w-auto mix-blend-multiply" style={{filter:"hue-rotate(13deg) saturate(1.2) brightness(1.35)"}}/>
         </Link>
-        <p className="mt-3 max-w-md text-[var(--ink-muted)]">We build and fix the systems businesses run on—across operations, automation, cloud, network, security, and business systems.</p>
+        <p className="mt-3 max-w-md text-[var(--ink-muted)]">We build and fix the systems your business runs on, from daily work and automation to cloud, network, security, and business software.</p>
       </div>
       <div className="flex flex-col gap-5 md:items-end">
         <div className="flex flex-col gap-1 text-[var(--ink-muted)] md:items-end">
