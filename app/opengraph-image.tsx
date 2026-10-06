@@ -17,7 +17,7 @@ export default function OpenGraphImage(){
               We build and fix the systems your business runs on.
             </div>
             <div style={{display:"flex",fontSize:22,color:"#9fb1b6"}}>
-              Operations · Automation · Cloud & Network · Security · Business Systems
+              Operations · Automation · Cloud & Network · Security & Compliance · Business Systems
             </div>
           </div>
           <div style={{width:250,height:250,background:"#101a21",borderRadius:24,display:"flex",flexDirection:"column",justifyContent:"center",padding:32,gap:26}}>
