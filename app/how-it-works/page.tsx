@@ -45,7 +45,7 @@ const journey = [
   {
     title: "Build the approved change",
     client: "You know what is being changed and what is outside the job.",
-    sekinfra: "We fix, connect, secure, automate, or redesign only what was approved.",
+    sekinfra: "We fix, connect, secure, add required controls, automate, or redesign only what was approved.",
     output: "Only the approved work gets built.",
   },
   {

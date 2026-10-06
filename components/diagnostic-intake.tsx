@@ -283,7 +283,7 @@ export function DiagnosticIntake({
           <p className="eyebrow">Request ready</p>
           <h3 className="mt-3 text-2xl font-semibold tracking-[-.04em]">Your request is ready.</h3>
           <p className="mt-3 max-w-2xl text-sm leading-6 text-[var(--ink-muted)]">
-            Online submission is not connected yet. Copy your request, then email it to admin@sekinfra.com or call 772-204-6950.
+            Online submission is not connected yet. Copy your request, then email it to admin@sekinfra.com.
           </p>
           <div className="mt-5 flex flex-col gap-3 sm:flex-row">
             <button

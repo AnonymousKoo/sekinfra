@@ -21,8 +21,10 @@ const expectedOutcomes = [
   "Administrative reduction",
   "Marketing operations",
   "Service availability",
-  "Controlled access",
-  "Infrastructure visibility",
+  "Clear access rules",
+  "Compliance visibility",
+  "Evidence readiness",
+  "System visibility",
   "Recovery readiness",
 ];
 
@@ -59,7 +61,7 @@ test("outcome copy avoids fabricated performance claims", () => {
 });
 
 test("transformation field covers distinct operating conditions", () => {
-  assert.deepEqual(transformations.map((item) => item.label), ["Response", "Accountability", "Visibility", "Coordination", "Reliability"]);
+  assert.deepEqual(transformations.map((item) => item.label), ["Response", "Accountability", "Visibility", "Coordination", "Reliability", "Compliance"]);
   for (const item of transformations) {
     assert.ok(item.before.length > 10);
     assert.ok(item.controlled.length > 10);

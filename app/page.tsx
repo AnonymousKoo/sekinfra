@@ -36,7 +36,7 @@ const controlFlow = [
     number: "05",
     label: "Evidence",
     title: "The result stays visible",
-    body: "Important actions can be recorded so the business can see what happened, who owned the step, and where an exception occurred.",
+    body: "Important actions can be recorded so the business can see what happened, who owned the step, and whether required steps, approvals, or evidence were missed.",
   },
 ] as const;
 
@@ -54,11 +54,11 @@ const policyAiComparison = [
   {
     label: "Sekinfra business systems",
     title: "Built to keep work moving the right way",
-    body: "Sekinfra builds the rules, triggers, owners, handoffs, alerts, approvals, and records behind the work. The system does not need AI to know what happens next.",
+    body: "Sekinfra builds the rules, triggers, owners, handoffs, alerts, approvals, compliance checks, and records behind the work. The system does not need AI to know what happens next.",
     items: [
       "Rules define the next step",
       "Ownership and next steps stay clear",
-      "Important actions stay visible",
+      "Important actions and required evidence stay visible",
     ],
   },
 ] as const;
@@ -66,10 +66,10 @@ const policyAiComparison = [
 const scenarios = [
   {
     business: "Security company",
-    problem: "Guards call off, arrive late, or miss shifts. Supervisors scramble, and repeat attendance problems are hard to see.",
-    change: "Track call-offs, late arrivals, replacements, repeat issues, and who owns the response.",
-    result: "Fewer uncovered posts. Stronger guard accountability. Better client retention and less risk of losing contracts.",
-    tags: ["Accountability", "Retention"],
+    problem: "Guards call off, arrive late, or miss shifts, but attendance issues are often handled through texts and memory. Repeat problems can continue until the client notices.",
+    change: "Make call-offs, late arrivals, missed shifts, supervisor follow-up, and repeat attendance patterns visible in one clear process.",
+    result: "Guards are held accountable before service slips. Fewer missed posts and repeat call-offs help protect the client relationship and reduce the risk of losing the contract.",
+    tags: ["Accountability", "Client retention"],
   },
   {
     business: "HVAC company",
@@ -86,11 +86,11 @@ const scenarios = [
     tags: ["Capacity", "Retention"],
   },
   {
-    business: "Real estate / mortgage",
-    problem: "Files stall because documents, handoffs, or follow-up are missing and discovered late.",
-    change: "Make missing items, owners, deadlines, and next steps visible early.",
-    result: "More files reach closing with fewer delays. A better client experience supports referrals and repeat business.",
-    tags: ["Closings", "Referrals"],
+    business: "Tax company",
+    problem: "Client documents arrive through email, portals, and messages. Missing items, deadlines, and follow-up can be found too late.",
+    change: "Give each client file a clear owner, document checklist, due dates, review steps, and visible status when something is missing.",
+    result: "More returns move on time with less chasing and fewer missed items. Clear steps and records support compliance, client retention, and a smoother tax season.",
+    tags: ["Compliance", "Client retention"],
   },
 ] as const;
 
