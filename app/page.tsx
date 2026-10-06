@@ -36,7 +36,7 @@ const controlFlow = [
     number: "05",
     label: "Evidence",
     title: "The result stays visible",
-    body: "Important actions can be recorded so the business can see what happened, who owned the step, and where an exception occurred.",
+    body: "Important actions can be recorded so the business can see what happened, who owned the step, and whether required steps, approvals, or evidence were missed.",
   },
 ] as const;
 
