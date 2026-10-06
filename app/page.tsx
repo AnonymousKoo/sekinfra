@@ -66,27 +66,31 @@ const policyAiComparison = [
 const scenarios = [
   {
     business: "Security company",
-    problem: "A guard calls off. The supervisor starts texting people. No one can clearly see whether the shift is covered.",
-    look: "Who owns the replacement, how the call-off moves, when the client should be updated, and what happens if no one responds.",
-    better: "The call-off creates clear replacement steps and a visible coverage status.",
+    problem: "Guards call off, arrive late, or miss shifts. Supervisors scramble, and repeat attendance problems are hard to see.",
+    change: "Track call-offs, late arrivals, replacements, repeat issues, and who owns the response.",
+    result: "Fewer uncovered posts. Stronger guard accountability. Better client retention and less risk of losing contracts.",
+    tags: ["Accountability", "Retention"],
   },
   {
     business: "HVAC company",
-    problem: "A new service request comes in, but follow-up depends on someone seeing the message and remembering to respond.",
-    look: "Where requests enter, who owns the first response, what information is needed, and how missed follow-up is caught.",
-    better: "Every new request has an owner, a response window, and a visible next step.",
+    problem: "Calls, web leads, and estimates wait too long or get lost between people.",
+    change: "Give every inquiry an owner, response time, follow-up path, and alert when it is missed.",
+    result: "More service calls turn into booked jobs. Fewer lost leads. More revenue from the demand you already have.",
+    tags: ["Revenue", "Speed"],
   },
   {
     business: "Consulting firm",
-    problem: "Client work is spread across email, text, documents, and people’s memory.",
-    look: "How work is assigned, where documents live, who owns the next step, and how leaders see what is late.",
-    better: "Client work follows one clear path with visible ownership and fewer status-chasing messages.",
+    problem: "Client work lives across email, text, files, and memory. People spend too much time chasing updates.",
+    change: "Put owners, deadlines, documents, and next steps into one clear flow.",
+    result: "Serve more clients with less admin work. Better delivery supports renewals, referrals, and more capacity.",
+    tags: ["Capacity", "Retention"],
   },
   {
     business: "Real estate / mortgage",
-    problem: "A file moves through several people and systems, but missing items or slow handoffs are found late.",
-    look: "Where the file changes hands, what each person needs, which steps can wait, and how missing items become visible.",
-    better: "The file has a visible owner, next step, missing-item status, and a clear path when something is missing.",
+    problem: "Files stall because documents, handoffs, or follow-up are missing and discovered late.",
+    change: "Make missing items, owners, deadlines, and next steps visible early.",
+    result: "More files reach closing with fewer delays. A better client experience supports referrals and repeat business.",
+    tags: ["Closings", "Referrals"],
   },
 ] as const;
 
@@ -184,42 +188,50 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="section-rule bg-[var(--brand-deep)] py-16 text-white sm:py-24">
+      <section className="section-rule tech-section py-16 text-white sm:py-24">
         <div className="mx-auto max-w-[var(--page-width)] px-5 lg:px-8">
           <div className="grid gap-8 lg:grid-cols-[.7fr_1.3fr] lg:items-end">
             <div>
               <p className="eyebrow text-[var(--accent)]">Sekinfra at work</p>
               <h2 className="mt-4 text-balance text-4xl font-semibold tracking-[-.055em] sm:text-5xl">
-                See the kind of problems we are built to solve.
+                Better systems should create better business results.
               </h2>
             </div>
             <p className="max-w-2xl text-lg leading-8 text-white/70">
-              These are simple examples, not client case studies. The point is to show how Sekinfra follows a business
-              problem into the people, steps, systems, and technology behind it.
+              These are simple examples, not client case studies. The goal is not more software. It is stronger
+              accountability, more revenue, better client retention, and more capacity to grow.
             </p>
           </div>
 
-          <div className="mt-12 grid gap-4 lg:grid-cols-2">
-            {scenarios.map((scenario) => (
-              <article className="rounded-[var(--radius-card)] border border-white/15 bg-white/5 p-6 sm:p-7" key={scenario.business}>
+          <div className="mt-12 grid gap-5 lg:grid-cols-2">
+            {scenarios.map((scenario, index) => (
+              <article className="tech-card tech-card--dark group p-6 sm:p-7" key={scenario.business}>
                 <div className="flex items-center justify-between gap-4">
-                  <h3 className="text-xl font-semibold">{scenario.business}</h3>
-                  <span className="rounded-full border border-white/15 px-3 py-1 text-[10px] font-bold uppercase tracking-[.12em] text-[var(--accent)]">
-                    Example
-                  </span>
+                  <div className="flex items-center gap-3">
+                    <span className="tech-status-dot" aria-hidden="true" />
+                    <h3 className="text-xl font-semibold">{scenario.business}</h3>
+                  </div>
+                  <span className="font-mono text-[11px] text-[var(--accent)]">0{index + 1}</span>
                 </div>
-                <div className="mt-6 grid gap-5 sm:grid-cols-3">
+
+                <div className="mt-5 flex flex-wrap gap-2">
+                  {scenario.tags.map((tag) => (
+                    <span className="tech-pill" key={tag}>{tag}</span>
+                  ))}
+                </div>
+
+                <div className="mt-7 grid gap-6 sm:grid-cols-3">
                   <div>
-                    <p className="text-xs font-bold uppercase tracking-[.14em] text-[var(--accent)]">What is happening</p>
-                    <p className="mt-2 text-sm leading-6 text-white/70">{scenario.problem}</p>
+                    <p className="tech-label">Business problem</p>
+                    <p className="mt-2 text-sm leading-6 text-white/68">{scenario.problem}</p>
                   </div>
                   <div>
-                    <p className="text-xs font-bold uppercase tracking-[.14em] text-[var(--accent)]">What we look at</p>
-                    <p className="mt-2 text-sm leading-6 text-white/70">{scenario.look}</p>
+                    <p className="tech-label">What Sekinfra changes</p>
+                    <p className="mt-2 text-sm leading-6 text-white/74">{scenario.change}</p>
                   </div>
-                  <div>
-                    <p className="text-xs font-bold uppercase tracking-[.14em] text-[var(--accent)]">Better state</p>
-                    <p className="mt-2 text-sm font-semibold leading-6 text-white">{scenario.better}</p>
+                  <div className="rounded-xl border border-[color-mix(in_srgb,var(--accent)_24%,transparent)] bg-[color-mix(in_srgb,var(--accent)_7%,transparent)] p-4">
+                    <p className="tech-label text-[var(--accent)]">Business result</p>
+                    <p className="mt-2 text-sm font-semibold leading-6 text-white">{scenario.result}</p>
                   </div>
                 </div>
               </article>
