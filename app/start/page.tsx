@@ -19,7 +19,7 @@ const nextSteps = [
 export default function Start() {
   return (
     <SiteShell>
-      <section className="relative overflow-hidden bg-[var(--brand-deep)] text-white">
+      <section className="tech-hero relative overflow-hidden bg-[var(--brand-deep)] text-white">
         <div className="absolute inset-0 opacity-20 [background-image:linear-gradient(rgba(185,239,112,.22)_1px,transparent_1px),linear-gradient(90deg,rgba(185,239,112,.22)_1px,transparent_1px)] [background-size:52px_52px] [mask-image:linear-gradient(135deg,black,transparent_78%)]" />
         <div className="relative mx-auto grid max-w-[var(--page-width)] gap-12 px-5 py-18 lg:grid-cols-[.9fr_1.1fr] lg:px-8 lg:py-24">
           <div>
@@ -33,7 +33,7 @@ export default function Start() {
             </p>
             <div className="mt-8 flex flex-wrap gap-2 text-xs font-semibold text-white/70">
               {["Operations", "Automation", "Business Systems", "Cloud & Network", "Security"].map((item) => (
-                <span className="rounded-full border border-white/15 bg-white/5 px-3 py-2" key={item}>
+                <span className="tech-chip rounded-full px-3 py-2" key={item}>
                   {item}
                 </span>
               ))}
@@ -46,7 +46,7 @@ export default function Start() {
               activeLabel="Your problem"
               flow={["What is wrong", "Who it affects", "People & systems", "How deep to look", "Next step"]}
             />
-            <div className="rounded-[var(--radius-card)] border border-white/15 bg-white/5 p-5">
+            <div className="tech-card tech-card--dark p-5">
               <p className="text-xs font-bold uppercase tracking-[.14em] text-[var(--accent)]">What this does</p>
               <p className="mt-3 text-sm leading-6 text-white/70">
                 It helps choose how deep we need to look. It does not find the root cause, ask for system access, or approve any changes.
@@ -56,7 +56,7 @@ export default function Start() {
         </div>
       </section>
 
-      <section className="section-rule bg-[var(--background)] py-14 sm:py-20">
+      <section className="section-rule tech-light-surface bg-[var(--background)] py-14 sm:py-20">
         <div className="mx-auto max-w-[var(--page-width)] px-5 lg:px-8">
           <div className="mb-9 max-w-3xl">
             <p className="eyebrow">Your first step</p>
@@ -71,7 +71,7 @@ export default function Start() {
         </div>
       </section>
 
-      <section className="section-rule bg-white py-16 sm:py-22">
+      <section className="section-rule tech-light-surface bg-white py-16 sm:py-22">
         <div className="mx-auto max-w-[var(--page-width)] px-5 lg:px-8">
           <div className="grid gap-8 lg:grid-cols-[.7fr_1.3fr] lg:items-start">
             <div>
@@ -82,7 +82,7 @@ export default function Start() {
             </div>
             <div className="grid gap-4 sm:grid-cols-3">
               {nextSteps.map(([title, body], index) => (
-                <article className="rounded-[var(--radius-card)] border border-[var(--line)] p-5" key={title}>
+                <article className="tech-card tech-card--light p-5" key={title}>
                   <span className="font-mono text-xs text-[var(--brand)]">0{index + 1}</span>
                   <h3 className="mt-5 text-lg font-semibold">{title}</h3>
                   <p className="mt-2 text-sm leading-6 text-[var(--ink-muted)]">{body}</p>
