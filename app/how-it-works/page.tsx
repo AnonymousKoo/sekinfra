@@ -66,7 +66,7 @@ const controls = [
 export default function HowItWorks() {
   return (
     <SiteShell>
-      <section className="mx-auto max-w-[var(--page-width)] px-5 py-20 lg:px-8 lg:py-28">
+      <section className="tech-page-hero mx-auto max-w-[var(--page-width)] px-5 py-20 lg:px-8 lg:py-28">
         <p className="eyebrow">How Sekinfra works</p>
         <h1 className="text-balance mt-5 max-w-5xl text-5xl font-semibold tracking-[-.065em] sm:text-6xl">
           Start with what is going wrong. We find the cause, fix the right thing, and check the result.
@@ -81,7 +81,7 @@ export default function HowItWorks() {
 
       <DiagnosticPaths />
 
-      <section className="section-rule bg-[var(--surface-muted)] py-16 sm:py-24">
+      <section className="section-rule tech-light-surface bg-[var(--surface-muted)] py-16 sm:py-24">
         <div className="mx-auto max-w-[var(--page-width)] px-5 lg:px-8">
           <div className="max-w-3xl">
             <p className="eyebrow">What happens from start to finish</p>
@@ -96,7 +96,7 @@ export default function HowItWorks() {
           <ol className="mt-12 grid gap-4 lg:grid-cols-2">
             {journey.map((step, index) => (
               <li
-                className="rounded-[var(--radius-card)] border border-[var(--line)] bg-white p-6 sm:p-7"
+                className="tech-card tech-card--light p-6 sm:p-7"
                 key={step.title}
               >
                 <div className="flex items-start justify-between gap-6">
@@ -145,7 +145,7 @@ export default function HowItWorks() {
         </div>
       </section>
 
-      <section className="section-rule bg-white py-16 sm:py-24">
+      <section className="section-rule tech-light-surface bg-white py-16 sm:py-24">
         <div className="mx-auto max-w-[var(--page-width)] px-5 lg:px-8">
           <div className="grid gap-10 lg:grid-cols-[.6fr_1.4fr]">
             <div>
@@ -157,7 +157,7 @@ export default function HowItWorks() {
             <div className="grid gap-4 sm:grid-cols-2">
               {controls.map(([title, body], index) => (
                 <article
-                  className="rounded-[var(--radius-card)] border border-[var(--line)] bg-[var(--surface-muted)] p-6"
+                  className="tech-card tech-card--light p-6"
                   key={title}
                 >
                   <span className="font-mono text-xs text-[var(--brand)]">0{index + 1}</span>

@@ -37,7 +37,7 @@ const flow = [
 
 export function DiagnosticPaths({ cta = false, showFlow = true }: { cta?: boolean; showFlow?: boolean }) {
   return (
-    <section className="section-rule bg-white py-16 sm:py-24">
+    <section className="section-rule tech-light-surface bg-white py-16 sm:py-24">
       <div className="mx-auto max-w-[var(--page-width)] px-5 lg:px-8">
         <div className="grid gap-8 lg:grid-cols-[.72fr_1.28fr] lg:items-end">
           <div>
@@ -54,7 +54,7 @@ export function DiagnosticPaths({ cta = false, showFlow = true }: { cta?: boolea
         <div className="mt-12 grid gap-5 lg:grid-cols-2">
           {paths.map((path, index) => (
             <article
-              className={`rounded-[var(--radius-card)] border p-7 sm:p-8 ${
+              className={`tech-card tech-card--light p-7 sm:p-8 ${
                 index === 1
                   ? "border-[var(--brand)] bg-[var(--brand-wash)]"
                   : "border-[var(--line)] bg-[var(--surface)]"
@@ -88,7 +88,7 @@ export function DiagnosticPaths({ cta = false, showFlow = true }: { cta?: boolea
         {showFlow ? (
           <ol className="mt-12 grid gap-px overflow-hidden rounded-[var(--radius-card)] border border-[var(--line)] bg-[var(--line)] sm:grid-cols-2 lg:grid-cols-7">
             {flow.map(([number, title, body]) => (
-              <li className="bg-[var(--surface)] p-5" key={title}>
+              <li className="tech-grid-card bg-[var(--surface)] p-5" key={title}>
                 <span className="font-mono text-xs text-[var(--brand)]">{number}</span>
                 <h3 className="mt-6 text-lg font-semibold">{title}</h3>
                 <p className="mt-3 text-sm leading-6 text-[var(--ink-muted)]">{body}</p>

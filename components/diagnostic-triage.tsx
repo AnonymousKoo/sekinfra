@@ -69,7 +69,7 @@ function OptionButton({
       type="button"
       aria-pressed={selected}
       onClick={onClick}
-      className={`min-h-28 rounded-[var(--radius-card)] border p-4 text-left transition sm:p-5 ${
+      className={`tech-option min-h-28 rounded-[var(--radius-card)] border p-4 text-left transition sm:p-5 ${
         selected
           ? "border-[var(--brand)] bg-[var(--brand)] text-white shadow-[0_14px_35px_rgba(14,91,71,.16)]"
           : "border-[var(--line)] bg-white hover:border-[var(--brand)] hover:bg-[var(--brand-wash)]"
@@ -180,7 +180,7 @@ export function DiagnosticTriage() {
               ? ["Signal", "Boundaries", "Evidence", "OIA"]
               : ["Signal", "Boundary", "Failure point", "Focused fix"]}
           />
-          <div className="rounded-[var(--radius-card)] border border-[var(--line)] bg-[var(--surface-muted)] p-5">
+          <div className="tech-card tech-card--light p-5">
             <p className="eyebrow">What this means</p>
             <p className="mt-3 text-sm leading-6 text-[var(--ink-muted)]">
               This result only chooses what kind of review may fit. It does not find the root cause, approve work, or give Sekinfra permission to change anything.
@@ -190,7 +190,7 @@ export function DiagnosticTriage() {
 
         <section
           aria-live="polite"
-          className="rounded-[var(--radius-card)] border border-[var(--line)] bg-white p-6 shadow-[0_24px_65px_rgba(16,37,31,.08)] sm:p-8"
+          className="tech-card tech-card--light p-6 sm:p-8"
         >
           <div className="flex flex-wrap items-center justify-between gap-3">
             <p className="eyebrow">Your result</p>
@@ -234,7 +234,7 @@ export function DiagnosticTriage() {
             <button
               type="button"
               onClick={() => setShowIntake(true)}
-              className="inline-flex min-h-12 items-center justify-center rounded-[var(--radius-button)] bg-[var(--brand)] px-5 text-sm font-semibold text-white transition hover:bg-[var(--brand-deep)]"
+              className="tech-button inline-flex min-h-12 items-center justify-center rounded-[var(--radius-button)] bg-[var(--brand)] px-5 text-sm font-semibold text-white transition hover:bg-[var(--brand-deep)]"
             >
               Prepare my request
             </button>
@@ -288,7 +288,7 @@ export function DiagnosticTriage() {
           activeLabel={profile?.label || steps[step]}
           flow={profile?.flow}
         />
-        <div className="rounded-[var(--radius-card)] border border-[var(--line)] bg-[var(--brand-deep)] p-5 text-white">
+        <div className="tech-card tech-card--dark p-5 text-white">
           <div className="flex items-center justify-between gap-4">
             <p className="text-xs font-bold uppercase tracking-[.14em] text-[var(--accent)]">Problem check</p>
             <span className="font-mono text-xs text-white/55">0{step + 1} / 0{steps.length}</span>
@@ -305,7 +305,7 @@ export function DiagnosticTriage() {
         </div>
       </div>
 
-      <section className="rounded-[var(--radius-card)] border border-[var(--line)] bg-white p-6 shadow-[0_24px_65px_rgba(16,37,31,.08)] sm:p-8">
+      <section className="tech-card tech-card--light p-6 sm:p-8">
         <div className="flex items-start justify-between gap-5">
           <div>
             <p className="eyebrow">Step 0{step + 1}</p>
@@ -428,7 +428,7 @@ export function DiagnosticTriage() {
             type="button"
             onClick={moveNext}
             disabled={!answerComplete}
-            className="min-h-12 rounded-[var(--radius-button)] bg-[var(--brand)] px-5 text-sm font-semibold text-white transition hover:bg-[var(--brand-deep)] disabled:cursor-not-allowed disabled:opacity-40"
+            className="tech-button min-h-12 rounded-[var(--radius-button)] bg-[var(--brand)] px-5 text-sm font-semibold text-white transition hover:bg-[var(--brand-deep)] disabled:cursor-not-allowed disabled:opacity-40"
           >
             {step === steps.length - 1 ? "Show my result" : "Continue →"}
           </button>

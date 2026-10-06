@@ -29,7 +29,7 @@ const domains = [
 export default function About() {
   return (
     <SiteShell>
-      <section className="mx-auto grid max-w-[var(--page-width)] gap-12 px-5 py-20 lg:grid-cols-[1.02fr_.98fr] lg:px-8 lg:py-28">
+      <section className="tech-page-hero mx-auto grid max-w-[var(--page-width)] gap-12 px-5 py-20 lg:grid-cols-[1.02fr_.98fr] lg:px-8 lg:py-28">
         <div>
           <p className="eyebrow">About Sekinfra</p>
           <h1 className="text-balance mt-5 text-5xl font-semibold tracking-[-.065em] sm:text-6xl">
@@ -58,7 +58,7 @@ export default function About() {
           </div>
           <div className="grid gap-px overflow-hidden rounded-[var(--radius-card)] border border-white/15 bg-white/15 sm:grid-cols-2">
             {domains.map((domain, index) => (
-              <div className="bg-[var(--brand-deep)] p-6" key={domain}>
+              <div className="tech-domain-tile bg-[var(--brand-deep)] p-6" key={domain}>
                 <span className="font-mono text-xs text-[var(--accent)]">0{index + 1}</span>
                 <p className="mt-7 text-xl font-semibold">{domain}</p>
               </div>
@@ -67,7 +67,7 @@ export default function About() {
         </div>
       </section>
 
-      <section className="section-rule bg-white py-16 sm:py-24">
+      <section className="section-rule tech-light-surface bg-white py-16 sm:py-24">
         <div className="mx-auto max-w-[var(--page-width)] px-5 lg:px-8">
           <div className="max-w-3xl">
             <p className="eyebrow">How we work</p>
@@ -77,7 +77,7 @@ export default function About() {
           </div>
           <div className="mt-12 grid border-l border-t border-[var(--line)] sm:grid-cols-2 lg:grid-cols-3">
             {principles.map(([title, body], index) => (
-              <article className="min-h-64 border-b border-r border-[var(--line)] p-6" key={title}>
+              <article className="tech-grid-card min-h-64 border-b border-r border-[var(--line)] p-6" key={title}>
                 <span className="font-mono text-xs text-[var(--brand)]">0{index + 1}</span>
                 <h3 className="mt-8 text-2xl font-semibold tracking-[-.04em]">{title}</h3>
                 <p className="mt-4 leading-7 text-[var(--ink-muted)]">{body}</p>

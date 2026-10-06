@@ -11,7 +11,7 @@ export function OutcomesExperience() {
 
   return (
     <>
-      <section className="relative overflow-hidden">
+      <section className="tech-light-surface relative overflow-hidden">
         <div className="mx-auto grid max-w-[var(--page-width)] gap-12 px-5 py-20 sm:py-28 lg:grid-cols-[1.04fr_.96fr] lg:px-8 lg:py-32">
           <div className="relative z-10">
             <p className="eyebrow">{profile ? `What better looks like for ${profile.label}` : "Business outcomes"}</p>
@@ -48,7 +48,7 @@ export function OutcomesExperience() {
 
           <div className="mt-12 grid gap-px overflow-hidden rounded-[var(--radius-card)] border border-white/10 bg-white/10 md:grid-cols-2">
             {transformations.map((item, index) => (
-              <article className="bg-[var(--brand-deep)] p-6 sm:p-7" key={item.label}>
+              <article className="tech-domain-tile bg-[var(--brand-deep)] p-6 sm:p-7" key={item.label}>
                 <div className="flex items-center justify-between gap-4">
                   <span className="font-mono text-xs text-[var(--accent)]">0{index + 1}</span>
                   <span className="text-xs font-bold uppercase tracking-[.14em] text-white/45">{item.label}</span>
@@ -72,7 +72,7 @@ export function OutcomesExperience() {
         </div>
       </section>
 
-      <section className="section-rule bg-white py-16 sm:py-24">
+      <section className="section-rule tech-light-surface bg-white py-16 sm:py-24">
         <div className="mx-auto max-w-[var(--page-width)] px-5 lg:px-8">
           <div className="grid gap-6 lg:grid-cols-[.8fr_1.2fr] lg:items-end">
             <div>
@@ -90,7 +90,7 @@ export function OutcomesExperience() {
           <div className="mt-12 grid gap-5 lg:grid-cols-2">
             {families.map((family, index) => (
               <article
-                className={`rounded-[var(--radius-card)] border p-7 sm:p-8 ${
+                className={`tech-card tech-card--light p-7 sm:p-8 ${
                   profile && index === 0
                     ? "border-[var(--brand)] bg-[var(--brand-wash)]"
                     : "border-[var(--line)] bg-white"
@@ -137,7 +137,7 @@ export function OutcomesExperience() {
         </div>
       </section>
 
-      <section className="section-rule bg-[var(--surface-muted)] py-16 sm:py-24">
+      <section className="section-rule tech-light-surface bg-[var(--surface-muted)] py-16 sm:py-24">
         <div className="mx-auto max-w-[var(--page-width)] px-5 lg:px-8">
           <p className="eyebrow">Tools vs results</p>
           <h2 className="mt-4 max-w-3xl text-balance text-4xl font-semibold tracking-[-.055em] sm:text-5xl">
@@ -150,7 +150,7 @@ export function OutcomesExperience() {
 
           <div className="mt-10 grid gap-5 lg:grid-cols-2">
             {outcomeVsFeature.map(([featureLabel, feature, outcomeLabel, outcome], index) => (
-              <article className="rounded-[var(--radius-card)] border border-[var(--line)] bg-white p-7" key={feature}>
+              <article className="tech-card tech-card--light p-7" key={feature}>
                 <span className="font-mono text-xs text-[var(--brand)]">0{index + 1}</span>
                 <div className="mt-6 grid gap-5 sm:grid-cols-[1fr_auto_1fr] sm:items-center">
                   <div>
@@ -173,7 +173,7 @@ export function OutcomesExperience() {
 
       <section className="section-rule py-16 sm:py-24">
         <div className="mx-auto max-w-[var(--page-width)] px-5 lg:px-8">
-          <div className="grid gap-8 rounded-[var(--radius-card)] bg-[var(--brand-deep)] p-7 text-white sm:p-10 lg:grid-cols-[1fr_.8fr] lg:items-end">
+          <div className="tech-card tech-card--dark grid gap-8 p-7 text-white sm:p-10 lg:grid-cols-[1fr_.8fr] lg:items-end">
             <div>
               <p className="eyebrow text-[var(--accent)]">You choose what changes</p>
               <h2 className="mt-4 max-w-3xl text-balance text-3xl font-semibold tracking-[-.045em] sm:text-4xl">
@@ -195,7 +195,7 @@ export function OutcomesExperience() {
         </div>
       </section>
 
-      <section className="section-rule bg-white py-20 sm:py-28">
+      <section className="section-rule tech-light-surface bg-white py-20 sm:py-28">
         <div className="mx-auto max-w-4xl px-5 text-center">
           <p className="eyebrow">Start with the problem</p>
           <h2 className="text-balance mt-5 text-4xl font-semibold tracking-[-.06em] sm:text-5xl">

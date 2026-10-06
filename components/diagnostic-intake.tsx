@@ -93,7 +93,7 @@ export function DiagnosticIntake({
   return (
     <section
       aria-labelledby="diagnostic-intake-title"
-      className="rounded-[var(--radius-card)] border border-[var(--line)] bg-white p-6 shadow-[0_24px_65px_rgba(16,37,31,.08)] sm:p-8"
+      className="tech-card tech-card--light p-6 sm:p-8"
     >
       <div className="flex flex-wrap items-center justify-between gap-3">
         <p className="eyebrow">Continue your request</p>
@@ -109,7 +109,7 @@ export function DiagnosticIntake({
         Your problem check is ready. Add your business and contact details. For now, these details stay in your browser because online submission is not connected yet.
       </p>
 
-      <div className="mt-7 rounded-xl bg-[var(--brand-deep)] p-5 text-white">
+      <div className="tech-card tech-card--dark mt-7 rounded-xl p-5 text-white">
         <div className="grid gap-4 sm:grid-cols-3">
           <div>
             <p className="text-xs font-bold uppercase tracking-[.14em] text-[var(--accent)]">Recommended review</p>
@@ -144,7 +144,7 @@ export function DiagnosticIntake({
                 onChange={(event) => updateOrganization("displayName", event.target.value)}
                 maxLength={160}
                 autoComplete="organization"
-                className="mt-2 block min-h-12 w-full rounded-lg border border-[var(--line)] bg-white px-3 outline-none transition focus:border-[var(--brand)]"
+                className="tech-input mt-2 block min-h-12 w-full rounded-lg border border-[var(--line)] bg-white px-3 outline-none transition focus:border-[var(--brand)]"
               />
               {attempted && <FieldError message={validation.errors.organizationName} />}
             </label>
@@ -158,7 +158,7 @@ export function DiagnosticIntake({
                 inputMode="url"
                 autoComplete="url"
                 placeholder="company.com"
-                className="mt-2 block min-h-12 w-full rounded-lg border border-[var(--line)] bg-white px-3 outline-none transition focus:border-[var(--brand)]"
+                className="tech-input mt-2 block min-h-12 w-full rounded-lg border border-[var(--line)] bg-white px-3 outline-none transition focus:border-[var(--brand)]"
               />
               {attempted && <FieldError message={validation.errors.website} />}
             </label>
@@ -175,7 +175,7 @@ export function DiagnosticIntake({
                 onChange={(event) => updateContact("fullName", event.target.value)}
                 maxLength={120}
                 autoComplete="name"
-                className="mt-2 block min-h-12 w-full rounded-lg border border-[var(--line)] bg-white px-3 outline-none transition focus:border-[var(--brand)]"
+                className="tech-input mt-2 block min-h-12 w-full rounded-lg border border-[var(--line)] bg-white px-3 outline-none transition focus:border-[var(--brand)]"
               />
               {attempted && <FieldError message={validation.errors.fullName} />}
             </label>
@@ -187,7 +187,7 @@ export function DiagnosticIntake({
                 onChange={(event) => updateContact("role", event.target.value)}
                 maxLength={120}
                 autoComplete="organization-title"
-                className="mt-2 block min-h-12 w-full rounded-lg border border-[var(--line)] bg-white px-3 outline-none transition focus:border-[var(--brand)]"
+                className="tech-input mt-2 block min-h-12 w-full rounded-lg border border-[var(--line)] bg-white px-3 outline-none transition focus:border-[var(--brand)]"
               />
             </label>
 
@@ -199,7 +199,7 @@ export function DiagnosticIntake({
                 onChange={(event) => updateContact("businessEmail", event.target.value)}
                 maxLength={254}
                 autoComplete="email"
-                className="mt-2 block min-h-12 w-full rounded-lg border border-[var(--line)] bg-white px-3 outline-none transition focus:border-[var(--brand)]"
+                className="tech-input mt-2 block min-h-12 w-full rounded-lg border border-[var(--line)] bg-white px-3 outline-none transition focus:border-[var(--brand)]"
               />
               {attempted && <FieldError message={validation.errors.businessEmail} />}
             </label>
@@ -212,7 +212,7 @@ export function DiagnosticIntake({
                 onChange={(event) => updateContact("businessPhone", event.target.value)}
                 maxLength={30}
                 autoComplete="tel"
-                className="mt-2 block min-h-12 w-full rounded-lg border border-[var(--line)] bg-white px-3 outline-none transition focus:border-[var(--brand)]"
+                className="tech-input mt-2 block min-h-12 w-full rounded-lg border border-[var(--line)] bg-white px-3 outline-none transition focus:border-[var(--brand)]"
               />
               {attempted && <FieldError message={validation.errors.businessPhone} />}
             </label>
@@ -271,7 +271,7 @@ export function DiagnosticIntake({
           </button>
           <button
             type="submit"
-            className="min-h-12 rounded-[var(--radius-button)] bg-[var(--brand)] px-5 text-sm font-semibold text-white transition hover:bg-[var(--brand-deep)]"
+            className="tech-button min-h-12 rounded-[var(--radius-button)] bg-[var(--brand)] px-5 text-sm font-semibold text-white transition hover:bg-[var(--brand-deep)]"
           >
             Prepare my request
           </button>
@@ -279,7 +279,7 @@ export function DiagnosticIntake({
       </form>
 
       {candidateText && (
-        <div className="mt-8 rounded-[var(--radius-card)] border border-[var(--brand)] bg-[var(--brand-wash)] p-5 sm:p-6" aria-live="polite">
+        <div className="tech-card tech-card--light mt-8 border-[var(--brand)] bg-[var(--brand-wash)] p-5 sm:p-6" aria-live="polite">
           <p className="eyebrow">Request ready</p>
           <h3 className="mt-3 text-2xl font-semibold tracking-[-.04em]">Your request is ready.</h3>
           <p className="mt-3 max-w-2xl text-sm leading-6 text-[var(--ink-muted)]">
@@ -289,7 +289,7 @@ export function DiagnosticIntake({
             <button
               type="button"
               onClick={copyRequest}
-              className="min-h-12 rounded-[var(--radius-button)] bg-[var(--brand)] px-5 text-sm font-semibold text-white"
+              className="tech-button min-h-12 rounded-[var(--radius-button)] bg-[var(--brand)] px-5 text-sm font-semibold text-white"
             >
               Copy my request
             </button>
