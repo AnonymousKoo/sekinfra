@@ -109,6 +109,27 @@
   transition:width .35s ease;
 }
 
+
+.tech-option{
+  position:relative;
+  overflow:hidden;
+  box-shadow:0 10px 30px rgb(9 18 23/.04);
+}
+.tech-option:after{
+  content:"";
+  position:absolute;
+  left:0;
+  bottom:0;
+  width:0;
+  height:2px;
+  background:linear-gradient(90deg,var(--brand),var(--accent));
+  transition:width .28s ease;
+}
+.tech-option[aria-pressed="true"]:after{width:100%}
+@media(hover:hover){
+  .tech-option:hover:after{width:100%}
+  .tech-option:hover{transform:translateY(-2px);box-shadow:0 16px 36px rgb(15 159 152/.09)}
+}
 .tech-grid-card{
   position:relative;
   background:rgb(255 255 255/.74);
