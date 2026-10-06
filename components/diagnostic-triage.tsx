@@ -43,7 +43,7 @@ const impactDescriptions: Record<TriageImpact, string> = {
   customer: "Customers face delays, confusion, or poor follow-up.",
   revenue: "The issue can cost sales, billing, or repeat business.",
   delivery: "The issue can make work late or unreliable.",
-  risk: "The problem involves access, security, rules, or another serious business risk.",
+  risk: "The problem involves access, security, compliance, or another serious business risk.",
 };
 
 const spreadDescriptions: Record<TriageSpread, string> = {
