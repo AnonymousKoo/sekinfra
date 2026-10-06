@@ -56,9 +56,9 @@ export const outcomeFamilies: OutcomeFamily[] = [
   },
   {
     id: "reliability",
-    title: "Infrastructure, security, and reliability",
+    title: "Technology, security, and reliability",
     summary: "Make the technology the business depends on reliable enough to trust.",
-    outcomes: ["Service availability", "Controlled access", "Infrastructure visibility", "Recovery readiness"],
+    outcomes: ["Service availability", "Clear access rules", "System visibility", "Recovery readiness"],
     whatChanges: "Connections, access, alerts, and recovery are built around the services the business actually needs.",
     whatBecomesVisible: "What failed, who is affected, what protection is active, and how recovery should work.",
     goodLooksLike: "Important services work, access is clear, failures are visible, and recovery does not depend on guessing.",
