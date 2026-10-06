@@ -16,20 +16,20 @@ const controlFlow = [
   },
   {
     number: "02",
-    label: "Policy",
-    title: "The business rules decide what must happen",
-    body: "Ownership, response time, required information, approvals, and escalation come from explicit rules the business chose.",
+    label: "Rule",
+    title: "The business rules decide what happens next",
+    body: "Response time, required information, approvals, and escalation come from rules the business chose.",
   },
   {
     number: "03",
-    label: "AI assist",
-    title: "AI can help interpret the lead",
-    body: "AI may summarize the request, classify the need, or draft a response, but it does not get to rewrite the rules or grant itself authority.",
+    label: "Ownership",
+    title: "The right person owns the next step",
+    body: "The system makes responsibility clear so the work does not depend on someone noticing a message or remembering what to do.",
   },
   {
     number: "04",
     label: "Action",
-    title: "The approved next step runs",
+    title: "The approved work moves",
     body: "The system can assign work, send a message, update a record, create a task, or stop and wait for a person to approve the next move.",
   },
   {
@@ -42,23 +42,23 @@ const controlFlow = [
 
 const policyAiComparison = [
   {
-    label: "AI first automation",
-    title: "Powerful when the model is asked to decide the workflow",
-    body: "AI is strong at language, patterns, recommendations, and uncertain inputs. But model outputs can vary, so critical business actions need explicit limits, approvals, and guardrails around them.",
+    label: "AI tools",
+    title: "Useful for thinking, creating, and interpreting information",
+    body: "AI can answer questions, generate content, analyze information, and make recommendations. Those are valuable capabilities, but they are different from the operating rules that keep a business moving.",
     items: [
-      "Strong with language and messy inputs",
-      "Outputs can vary with context",
-      "Needs guardrails for critical actions",
+      "Answers and generates quickly",
+      "Helps analyze information",
+      "Supports human decisions",
     ],
   },
   {
-    label: "Sekinfra controlled systems",
-    title: "The business rules remain the authority",
-    body: "Events trigger the workflow. Policies define what is allowed, required, or blocked. AI can assist inside that path, but approved rules control permissions, ownership, escalation, and change.",
+    label: "Sekinfra business systems",
+    title: "Built to make the business run consistently",
+    body: "Sekinfra builds the rules, triggers, ownership, handoffs, alerts, approvals, and records behind the work. The operation does not depend on AI to know what should happen next.",
     items: [
-      "Approved rules decide critical actions",
-      "Human approval stays available where needed",
-      "Important actions can be traced",
+      "Rules define the next step",
+      "Ownership and escalation stay clear",
+      "Important actions stay visible",
     ],
   },
 ] as const;
@@ -107,19 +107,19 @@ export default function Home() {
         <div className="mx-auto max-w-[var(--page-width)] px-5 lg:px-8">
           <div className="grid gap-8 lg:grid-cols-[.78fr_1.22fr] lg:items-end">
             <div>
-              <p className="eyebrow text-[var(--accent)]">AI vs controlled systems</p>
+              <p className="eyebrow text-[var(--accent)]">AI and business systems</p>
               <h2 className="mt-4 text-balance text-4xl font-semibold tracking-[-.055em] sm:text-5xl">
-                AI can think. Your business still needs rules.
+                AI can help you think. Your business still needs a system.
               </h2>
             </div>
             <div className="max-w-2xl">
               <p className="text-lg leading-8 text-white/75">
-                AI is powerful, but intelligence is not the same as operational control. Sekinfra builds the control
-                layer first: events show what happened, policies decide what is allowed or required next, and AI can
-                assist inside that path without becoming the authority over the business.
+                AI is useful for answers, content, analysis, and recommendations. Sekinfra solves a different problem:
+                making sure work moves the way the business decided it should. We build the operational system behind
+                the work so the right event triggers the right rule, owner, action, and follow-up.
               </p>
               <p className="mt-4 text-sm font-semibold leading-6 text-[var(--accent)]">
-                AI is intelligence. Sekinfra is control.
+                AI adds intelligence. Sekinfra adds operational control.
               </p>
             </div>
           </div>
@@ -158,7 +158,7 @@ export default function Home() {
                   A new lead comes in.
                 </h3>
                 <p className="mt-4 text-sm leading-6 text-white/65">
-                  AI can help with the lead without deciding the rules the company runs on.
+                  This is what operational control looks like without depending on AI.
                 </p>
               </div>
 
@@ -178,8 +178,9 @@ export default function Home() {
           </div>
 
           <p className="mt-8 max-w-3xl border-l-2 border-[var(--accent)] pl-4 text-sm leading-6 text-white/70">
-            We do not replace AI. We put it where it belongs: inside a system with explicit business authority.
-            Approvals, limits, ownership, escalation, and change stay under the company's control.
+            Sekinfra is not an AI company, and our operating systems do not depend on AI to run. AI can still be
+            useful elsewhere in a business. Our job is to make sure the business itself has clear rules, ownership,
+            handoffs, escalation, and evidence.
           </p>
         </div>
       </section>
