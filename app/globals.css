@@ -29,6 +29,23 @@
   .tech-button:hover{transform:translateY(-2px);box-shadow:0 16px 36px rgb(15 159 152/.18)}
   .tech-button:hover:before{transform:translateX(135%)}
 }
+
+.tech-footer{
+  position:relative;
+  background:
+    radial-gradient(circle at 12% 0%,rgb(15 159 152/.06),transparent 20rem),
+    linear-gradient(180deg,rgb(255 255 255/.65),rgb(231 238 238/.65));
+}
+.tech-footer:before{
+  content:"";
+  position:absolute;
+  top:-1px;
+  left:0;
+  right:0;
+  height:1px;
+  background:linear-gradient(90deg,transparent,var(--brand),var(--accent),var(--brand),transparent);
+  opacity:.48;
+}
 .tech-header{
   position:sticky;
   box-shadow:0 8px 30px rgb(9 18 23/.055);
