@@ -12,7 +12,7 @@ export const metadata:Metadata={
     default:"Sekinfra | We build and fix the systems your business runs on",
     template:"%s | Sekinfra"
   },
-  description:"Sekinfra finds and fixes the systems behind business problems across operations, automation, business software, cloud, network, security, and reliability.",
+  description:"Sekinfra finds and fixes the systems behind business problems across operations, automation, business software, cloud, network, security, compliance, and reliability.",
   applicationName:"Sekinfra",
   openGraph:{
     type:"website",
@@ -25,7 +25,7 @@ export const metadata:Metadata={
   twitter:{
     card:"summary_large_image",
     title:"Sekinfra | We build and fix the systems your business runs on",
-    description:"Operations, automation, business systems, cloud, network, and security—understood before they are changed."
+    description:"Operations, automation, business systems, cloud, network, security, and compliance—understood before they are changed."
   },
   robots:{index:true,follow:true}
 };
