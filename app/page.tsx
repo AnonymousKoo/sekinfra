@@ -7,31 +7,45 @@ import { DiagnosticPaths } from "@/components/diagnostic-paths";
 
 export const metadata: Metadata = { alternates: { canonical: "/" } };
 
-const capabilityAreas = [
+const controlFlow = [
   {
-    title: "Operations",
-    problem: "Work gets stuck, dropped, or depends on one person knowing what to do next.",
-    help: "We make the path, owner, handoffs, and exceptions clear.",
+    number: "01",
+    label: "Event",
+    title: "Something happens",
+    body: "A lead arrives, a payment fails, a shift opens, or a file changes status. The event tells the system that the business state changed.",
   },
   {
-    title: "Automation",
-    problem: "People repeat the same steps, copy information, or chase routine updates.",
-    help: "We automate repeatable work where it is safe and useful.",
+    number: "02",
+    label: "Policy",
+    title: "The business rule decides what happens next",
+    body: "The policy defines ownership, deadlines, approvals, limits, and escalation. It is a rule the business chose, not a guess made in the moment.",
   },
   {
-    title: "Business Systems",
-    problem: "Your tools do not share the information your team needs.",
-    help: "We connect the right systems around the work they need to support.",
+    number: "03",
+    label: "Action",
+    title: "The approved next step runs",
+    body: "The system can assign work, send a message, update a record, create a task, or stop and ask a person for approval.",
   },
   {
-    title: "Cloud & Network",
-    problem: "Internet, network, cloud, or service problems interrupt normal work.",
-    help: "We trace the failure path and fix the part the business depends on.",
+    number: "04",
+    label: "Evidence",
+    title: "The result stays visible",
+    body: "Important actions can be recorded so the business can see who owned the step, what happened, and where an exception occurred.",
+  },
+] as const;
+
+const policyAiComparison = [
+  {
+    label: "Policy and event driven",
+    title: "Predictable where the business needs control",
+    body: "Use explicit rules for permissions, approvals, deadlines, escalation, access, and other actions the business must be able to explain later.",
+    items: ["Rules are approved on purpose", "Exceptions have a defined path", "Important actions can be traced"],
   },
   {
-    title: "Security & Reliability",
-    problem: "Access, protection, alerts, or recovery are unclear.",
-    help: "We make access and recovery rules clear around the systems that matter.",
+    label: "AI assisted",
+    title: "Flexible where judgment helps",
+    body: "AI is optional. When it adds value, it can summarize a message, classify a request, draft a response, or surface patterns inside the controlled workflow.",
+    items: ["Useful with messy language and patterns", "Can prepare or recommend work", "Does not silently rewrite business policy"],
   },
 ] as const;
 
@@ -75,36 +89,84 @@ export default function Home() {
 
       <ProblemSelector />
 
-      <section className="section-rule bg-white py-16 sm:py-24">
+      <section className="section-rule bg-[var(--brand-deep)] py-16 text-white sm:py-24">
         <div className="mx-auto max-w-[var(--page-width)] px-5 lg:px-8">
-          <div className="grid gap-8 lg:grid-cols-[.7fr_1.3fr] lg:items-end">
+          <div className="grid gap-8 lg:grid-cols-[.78fr_1.22fr] lg:items-end">
             <div>
-              <p className="eyebrow">What we can fix</p>
+              <p className="eyebrow text-[var(--accent)]">How Sekinfra automation works</p>
               <h2 className="mt-4 text-balance text-4xl font-semibold tracking-[-.055em] sm:text-5xl">
-                One problem can touch the business and the technology behind it.
+                AI can help with the work. It should not run the rulebook.
               </h2>
             </div>
-            <p className="max-w-2xl text-lg leading-8 text-[var(--ink-muted)]">
-              You do not need to choose the right service first. Sekinfra follows the problem across operations,
-              automation, business systems, cloud, network, security, and reliability.
-            </p>
+            <div className="max-w-2xl">
+              <p className="text-lg leading-8 text-white/75">
+                Sekinfra builds around policies and events first. An event says something happened. A policy says what
+                is allowed, required, or blocked next. AI can assist inside that path when it is useful, but the business
+                rules stay under your control.
+              </p>
+              <p className="mt-4 text-sm font-semibold leading-6 text-[var(--accent)]">
+                The goal is simple: flexible where judgment helps, predictable where control matters.
+              </p>
+            </div>
           </div>
 
-          <div className="mt-12 grid border-l border-t border-[var(--line)] md:grid-cols-2 xl:grid-cols-5">
-            {capabilityAreas.map((area, index) => (
+          <div className="mt-12 grid gap-4 lg:grid-cols-2">
+            {policyAiComparison.map((model, index) => (
               <article
-                className="flex min-h-80 flex-col border-b border-r border-[var(--line)] bg-white p-6"
-                key={area.title}
+                className="rounded-[var(--radius-card)] border border-white/15 bg-white/5 p-6 sm:p-7"
+                key={model.label}
               >
-                <span className="font-mono text-xs text-[var(--brand)]">0{index + 1}</span>
-                <h3 className="mt-8 text-xl font-semibold tracking-[-.035em]">{area.title}</h3>
-                <p className="mt-5 text-sm leading-6 text-[var(--ink-muted)]">{area.problem}</p>
-                <p className="mt-auto border-t border-[var(--line)] pt-5 text-sm font-semibold leading-6 text-[var(--brand)]">
-                  {area.help}
-                </p>
+                <div className="flex items-center justify-between gap-4">
+                  <span className="font-mono text-xs text-[var(--accent)]">0{index + 1}</span>
+                  <span className="rounded-full border border-white/15 px-3 py-1 text-[10px] font-bold uppercase tracking-[.12em] text-white/60">
+                    {model.label}
+                  </span>
+                </div>
+                <h3 className="mt-7 text-2xl font-semibold tracking-[-.035em]">{model.title}</h3>
+                <p className="mt-4 text-sm leading-6 text-white/70">{model.body}</p>
+                <ul className="mt-6 grid gap-3 border-t border-white/10 pt-5">
+                  {model.items.map((item) => (
+                    <li className="flex gap-3 text-sm leading-6 text-white/80" key={item}>
+                      <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--accent)]" aria-hidden="true" />
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
               </article>
             ))}
           </div>
+
+          <div className="mt-12 rounded-[var(--radius-card)] border border-white/15 bg-black/10 p-6 sm:p-8">
+            <div className="grid gap-8 xl:grid-cols-[.55fr_1.45fr]">
+              <div>
+                <p className="eyebrow text-[var(--accent)]">Simple example</p>
+                <h3 className="mt-4 text-3xl font-semibold tracking-[-.045em] sm:text-4xl">
+                  A new lead comes in.
+                </h3>
+                <p className="mt-4 text-sm leading-6 text-white/65">
+                  The workflow can stay controlled even when AI helps with part of the work.
+                </p>
+              </div>
+
+              <ol className="grid border-l border-t border-white/15 sm:grid-cols-2 xl:grid-cols-4">
+                {controlFlow.map((step) => (
+                  <li className="min-h-56 border-b border-r border-white/15 p-5" key={step.number}>
+                    <div className="flex items-center justify-between gap-3">
+                      <span className="font-mono text-xs text-[var(--accent)]">{step.number}</span>
+                      <span className="text-[10px] font-bold uppercase tracking-[.12em] text-white/45">{step.label}</span>
+                    </div>
+                    <h4 className="mt-6 text-lg font-semibold tracking-[-.03em]">{step.title}</h4>
+                    <p className="mt-3 text-sm leading-6 text-white/65">{step.body}</p>
+                  </li>
+                ))}
+              </ol>
+            </div>
+          </div>
+
+          <p className="mt-8 max-w-3xl border-l-2 border-[var(--accent)] pl-4 text-sm leading-6 text-white/70">
+            AI is a tool inside the system, not the authority over the system. Sekinfra keeps approvals, limits,
+            ownership, escalation, and change under explicit business control.
+          </p>
         </div>
       </section>
 
