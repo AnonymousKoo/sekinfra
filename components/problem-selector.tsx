@@ -21,7 +21,7 @@ const neutral = {
   label: "Your problem",
   recognition: "You can see that something is wrong, even if you do not know where the problem starts.",
   consequence: "Guessing can waste time and money on a fix that does not solve the real problem.",
-  outcome: "Sekinfra traces the problem far enough to decide what should be fixed, connected, secured, automated, or changed.",
+  outcome: "Sekinfra follows the problem until we know what needs to change.",
   flow: ["Problem", "Impact", "People & systems", "Cause", "Next step"],
 };
 
@@ -61,12 +61,12 @@ export function ProblemSelector() {
 
             <p className="mt-7 border-l-2 border-[var(--brand)] pl-4 text-sm leading-6 text-[var(--ink-muted)]">
               {pressure
-                ? "This example shows how Sekinfra thinks about the problem. It is not a diagnosis."
-                : "Operations, automation, cloud, network, security, and software problems can all start with the same first step: tell us what is happening."}
+                ? "This shows how Sekinfra looks at the problem. It is not a diagnosis."
+                : "No matter where the problem lives, the first step is the same: tell us what is happening."}
             </p>
 
             <ButtonLink href="/start" className="mt-7">
-              Run the live diagnostic
+              Start the problem check
             </ButtonLink>
           </div>
 
