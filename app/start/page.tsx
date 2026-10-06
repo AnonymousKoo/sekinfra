@@ -32,7 +32,7 @@ export default function Start() {
               wrong, who it affects, and how often it happens.
             </p>
             <div className="mt-8 flex flex-wrap gap-2 text-xs font-semibold text-white/70">
-              {["Operations", "Automation", "Business Systems", "Cloud & Network", "Security"].map((item) => (
+              {["Operations", "Automation", "Business Systems", "Cloud & Network", "Security & Compliance"].map((item) => (
                 <span className="tech-chip rounded-full px-3 py-2" key={item}>
                   {item}
                 </span>
