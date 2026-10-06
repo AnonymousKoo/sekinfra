@@ -10,6 +10,7 @@ import {
   type WebsiteDiagnosticIntakeDraft,
 } from "@/lib/diagnostic-intake";
 import type { TriageInput, TriageResult } from "@/lib/diagnostic-triage";
+import { profiles } from "@/lib/personalization";
 
 const emptyDraft: WebsiteDiagnosticIntakeDraft = {
   organization: { displayName: "", website: "" },
@@ -83,9 +84,9 @@ export function DiagnosticIntake({
     try {
       if (!navigator.clipboard?.writeText) throw new Error("Clipboard unavailable");
       await navigator.clipboard.writeText(candidateText);
-      setCopyStatus("Diagnostic intake candidate copied.");
+      setCopyStatus("Request copied.");
     } catch {
-      setCopyStatus("Automatic copy is unavailable. Select the prepared request below and copy it manually.");
+      setCopyStatus("Automatic copy is not available. You can copy the request below by hand.");
     }
   };
 
@@ -95,31 +96,31 @@ export function DiagnosticIntake({
       className="rounded-[var(--radius-card)] border border-[var(--line)] bg-white p-6 shadow-[0_24px_65px_rgba(16,37,31,.08)] sm:p-8"
     >
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <p className="eyebrow">Start your diagnostic</p>
+        <p className="eyebrow">Continue your request</p>
         <span className="rounded-full bg-[var(--brand-wash)] px-3 py-1 font-mono text-[11px] font-bold uppercase tracking-[.12em] text-[var(--brand)]">
-          Secure handoff preview
+          Contact details
         </span>
       </div>
 
       <h2 id="diagnostic-intake-title" className="mt-4 text-balance text-4xl font-semibold tracking-[-.055em]">
-        Start your Sekinfra request.
+        Tell us how to reach you.
       </h2>
       <p className="mt-5 max-w-3xl text-lg leading-8 text-[var(--ink-muted)]">
-        Sekinfra already has your triage result. Add only the business details needed to continue. These details stay in your browser for now because online intake is not connected yet.
+        Your problem check is ready. Add your business and contact details. For now, these details stay in your browser because online submission is not connected yet.
       </p>
 
       <div className="mt-7 rounded-xl bg-[var(--brand-deep)] p-5 text-white">
         <div className="grid gap-4 sm:grid-cols-3">
           <div>
-            <p className="text-xs font-bold uppercase tracking-[.14em] text-[var(--accent)]">Recommended path</p>
+            <p className="text-xs font-bold uppercase tracking-[.14em] text-[var(--accent)]">Recommended review</p>
             <p className="mt-2 font-semibold">{triageResult.routeLabel}</p>
           </div>
           <div>
-            <p className="text-xs font-bold uppercase tracking-[.14em] text-[var(--accent)]">Pressure</p>
-            <p className="mt-2 font-semibold">{triageInput.pressure}</p>
+            <p className="text-xs font-bold uppercase tracking-[.14em] text-[var(--accent)]">Problem area</p>
+            <p className="mt-2 font-semibold">{profiles[triageInput.pressure].label}</p>
           </div>
           <div>
-            <p className="text-xs font-bold uppercase tracking-[.14em] text-[var(--accent)]">Desired outcome</p>
+            <p className="text-xs font-bold uppercase tracking-[.14em] text-[var(--accent)]">Goal</p>
             <p className="mt-2 text-sm leading-6 text-white/75">{triageResult.desiredOutcome}</p>
           </div>
         </div>
@@ -165,7 +166,7 @@ export function DiagnosticIntake({
         </fieldset>
 
         <fieldset className="border-t border-[var(--line)] pt-6">
-          <legend className="text-lg font-semibold">Who should Sekinfra continue with?</legend>
+          <legend className="text-lg font-semibold">Who should we contact?</legend>
           <div className="mt-4 grid gap-5 sm:grid-cols-2">
             <label className="block text-sm font-semibold">
               Your name
@@ -204,7 +205,7 @@ export function DiagnosticIntake({
             </label>
 
             <label className="block text-sm font-semibold">
-              Business phone <span className="font-normal text-[var(--ink-muted)]">(optional unless phone preferred)</span>
+              Business phone <span className="font-normal text-[var(--ink-muted)]">(required if you choose phone)</span>
               <input
                 type="tel"
                 value={draft.contact.businessPhone || ""}
@@ -219,7 +220,7 @@ export function DiagnosticIntake({
         </fieldset>
 
         <fieldset className="border-t border-[var(--line)] pt-6">
-          <legend className="text-sm font-semibold">Preferred way to continue</legend>
+          <legend className="text-sm font-semibold">How should we contact you?</legend>
           <div className="mt-3 flex flex-wrap gap-3">
             {(["EMAIL", "PHONE"] as PreferredContactMethod[]).map((method) => (
               <label
@@ -255,8 +256,7 @@ export function DiagnosticIntake({
             className="mt-1 h-4 w-4 shrink-0"
           />
           <span>
-            I want Sekinfra to contact me about this diagnostic request. This does not authorize system access,
-            implementation, deployment, or any change to my environment.
+            I want Sekinfra to contact me about this request. This does not give Sekinfra access to my systems or permission to change anything.
           </span>
         </label>
         {attempted && <FieldError message={validation.errors.contactRequested} />}
@@ -267,13 +267,13 @@ export function DiagnosticIntake({
             onClick={onBack}
             className="min-h-12 rounded-[var(--radius-button)] px-4 text-sm font-semibold text-[var(--ink-muted)] transition hover:text-[var(--brand)]"
           >
-            ← Back to triage result
+            ← Back to result
           </button>
           <button
             type="submit"
             className="min-h-12 rounded-[var(--radius-button)] bg-[var(--brand)] px-5 text-sm font-semibold text-white transition hover:bg-[var(--brand-deep)]"
           >
-            Prepare my diagnostic request
+            Prepare my request
           </button>
         </div>
       </form>
@@ -283,7 +283,7 @@ export function DiagnosticIntake({
           <p className="eyebrow">Request ready</p>
           <h3 className="mt-3 text-2xl font-semibold tracking-[-.04em]">Your request is ready.</h3>
           <p className="mt-3 max-w-2xl text-sm leading-6 text-[var(--ink-muted)]">
-            Online submission is not live yet. Nothing has left this browser.
+            Online submission is not connected yet. Copy your request, then email it to admin@sekinfra.com or call 772-204-6950.
           </p>
           <div className="mt-5 flex flex-col gap-3 sm:flex-row">
             <button
@@ -291,7 +291,7 @@ export function DiagnosticIntake({
               onClick={copyRequest}
               className="min-h-12 rounded-[var(--radius-button)] bg-[var(--brand)] px-5 text-sm font-semibold text-white"
             >
-              Copy prepared request
+              Copy my request
             </button>
           </div>
           <p className="mt-3 min-h-6 text-sm font-medium text-[var(--brand)]" aria-live="polite">{copyStatus}</p>
@@ -303,7 +303,7 @@ export function DiagnosticIntake({
       )}
 
       <p className="mt-6 border-l-2 border-[var(--brand)] pl-4 text-sm leading-6 text-[var(--ink-muted)]">
-        Filling this out does not start an engagement, OIA, system access, implementation, or deployment.
+        Filling this out only prepares a request. It does not start work or give Sekinfra access to your systems.
       </p>
     </section>
   );
