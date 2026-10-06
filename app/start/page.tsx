@@ -6,14 +6,14 @@ import { SystemDiagram } from "@/components/visuals/system-diagram";
 export const metadata: Metadata = {
   title: "Show us what is happening",
   description:
-    "Tell Sekinfra what is going wrong. Answer a few simple questions and get the right diagnostic path without needing to know the cause first.",
+    "Tell Sekinfra what is going wrong. Answer a few simple questions and get a clear next step without needing to know the cause first.",
   alternates: { canonical: "/start" },
 };
 
 const nextSteps = [
-  ["We choose the right depth", "Sekinfra uses your answers to recommend a Focused Diagnostic or the Operational Infrastructure Assessment (OIA)."],
-  ["We keep the problem bounded", "A smaller problem stays focused. A bigger or unclear problem can go deeper only when the signals support it."],
-  ["You stay in control", "Triage does not give Sekinfra permission to inspect, change, or deploy anything in your systems."],
+  ["We choose how deep to look", "Sekinfra uses your answers to recommend a Focused Diagnostic or a deeper Operational Infrastructure Assessment (OIA)."],
+  ["We keep small problems small", "A clear problem stays focused. A bigger or unclear problem gets a deeper review only when needed."],
+  ["You stay in control", "This problem check does not give Sekinfra permission to inspect or change your systems."],
 ] as const;
 
 export default function Start() {
@@ -44,13 +44,12 @@ export default function Start() {
             <SystemDiagram
               variant="selector"
               activeLabel="Your problem"
-              flow={["What is wrong", "Impact", "People & systems", "Diagnostic path", "Next step"]}
+              flow={["What is wrong", "Who it affects", "People & systems", "How deep to look", "Next step"]}
             />
             <div className="rounded-[var(--radius-card)] border border-white/15 bg-white/5 p-5">
               <p className="text-xs font-bold uppercase tracking-[.14em] text-[var(--accent)]">What this does</p>
               <p className="mt-3 text-sm leading-6 text-white/70">
-                It helps choose the right level of diagnosis. It does not diagnose the root cause, ask for system access,
-                or approve any changes.
+                It helps choose how deep we need to look. It does not find the root cause, ask for system access, or approve any changes.
               </p>
             </div>
           </div>
@@ -65,7 +64,7 @@ export default function Start() {
               Answer six simple questions.
             </h2>
             <p className="mt-5 text-lg leading-8 text-[var(--ink-muted)]">
-              Sekinfra will use your answers to show whether the problem looks contained or needs a deeper review.
+              Sekinfra will use your answers to show whether the problem looks small and focused or needs a deeper review.
             </p>
           </div>
           <DiagnosticTriage />
@@ -78,7 +77,7 @@ export default function Start() {
             <div>
               <p className="eyebrow">What happens next</p>
               <h2 className="mt-4 text-balance text-3xl font-semibold tracking-[-.045em] sm:text-4xl">
-                A triage result is a next step, not permission to change anything.
+                The result is a next step, not permission to change anything.
               </h2>
             </div>
             <div className="grid gap-4 sm:grid-cols-3">
@@ -97,8 +96,7 @@ export default function Start() {
       <section className="section-rule bg-[var(--surface-muted)] py-10">
         <div className="mx-auto max-w-[var(--page-width)] px-5 lg:px-8">
           <p className="max-w-3xl border-l-2 border-[var(--brand)] pl-4 text-sm leading-6 text-[var(--ink-muted)]">
-            This triage runs in your browser. The governed Sekinfra intake connection is not live yet, so the site does
-            not send your diagnostic or contact information into Sekinfra systems or the Sekinfra Acquisition System.
+            This problem check runs in your browser. Online submission is not connected yet, so nothing you enter here is sent to Sekinfra.
           </p>
         </div>
       </section>
