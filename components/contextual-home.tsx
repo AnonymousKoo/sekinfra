@@ -22,7 +22,7 @@ export function ContextualHero() {
     : "Customers waiting? Work getting dropped? Systems not working together? Sekinfra finds where the problem starts and fixes the right part.";
 
   return (
-    <section className="relative overflow-hidden bg-[var(--brand-deep)] text-white">
+    <section className="tech-hero relative overflow-hidden bg-[var(--brand-deep)] text-white">
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 opacity-90"
@@ -49,7 +49,7 @@ export function ContextualHero() {
           <ul className="mt-10 flex max-w-2xl flex-wrap gap-2" aria-label="Sekinfra capability areas">
             {capabilities.map((capability) => (
               <li
-                className="rounded-full border border-white/15 bg-white/5 px-3.5 py-2 text-xs font-semibold text-white/70"
+                className="tech-chip rounded-full px-3.5 py-2 text-xs font-semibold text-white/75"
                 key={capability}
               >
                 {capability}
@@ -57,7 +57,7 @@ export function ContextualHero() {
             ))}
           </ul>
           <div className="mt-8 flex items-center gap-3 text-sm font-semibold text-white/65">
-            <span className="h-2.5 w-2.5 rounded-full bg-[var(--accent)] shadow-[0_0_0_5px_rgba(185,239,112,.12)]" />
+            <span className="tech-status-dot" aria-hidden="true" />
             {profile ? profile.cta : "Start with the problem. We will help find where it starts."}
           </div>
         </div>
@@ -72,7 +72,7 @@ export function ContextualOutcomes() {
   const { profile } = usePersonalization();
 
   return (
-    <section className="section-rule bg-white py-16 sm:py-24">
+    <section className="section-rule tech-light-surface bg-white py-16 sm:py-24">
       <div className="mx-auto max-w-[var(--page-width)] px-5 lg:px-8">
         <div className="grid gap-8 lg:grid-cols-[.75fr_1.25fr] lg:items-end">
           <div>
@@ -90,7 +90,7 @@ export function ContextualOutcomes() {
 
         <div className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {betterStates.map(([title, body], index) => (
-            <article className="rounded-[var(--radius-card)] border border-[var(--line)] bg-[var(--surface-muted)] p-5" key={title}>
+            <article className="tech-card tech-card--light p-5" key={title}>
               <span className="font-mono text-xs text-[var(--brand)]">0{index + 1}</span>
               <h3 className="mt-5 text-xl font-semibold">{title}</h3>
               <p className="mt-2 text-sm leading-6 text-[var(--ink-muted)]">{body}</p>
