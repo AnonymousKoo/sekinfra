@@ -18,7 +18,7 @@ const controlFlow = [
     number: "02",
     label: "Rule",
     title: "The rules choose the next step",
-    body: "Response time, required information, approvals, and escalation come from rules the business chose.",
+    body: "Response time, required information, approvals, and what happens if something is missed come from rules the business chose.",
   },
   {
     number: "03",
@@ -57,7 +57,7 @@ const policyAiComparison = [
     body: "Sekinfra builds the rules, triggers, owners, handoffs, alerts, approvals, and records behind the work. The system does not need AI to know what happens next.",
     items: [
       "Rules define the next step",
-      "Ownership and escalation stay clear",
+      "Ownership and next steps stay clear",
       "Important actions stay visible",
     ],
   },
@@ -68,7 +68,7 @@ const scenarios = [
     business: "Security company",
     problem: "A guard calls off. The supervisor starts texting people. No one can clearly see whether the shift is covered.",
     look: "Who owns the replacement, how the call-off moves, when the client should be updated, and what happens if no one responds.",
-    better: "The call-off creates a clear replacement path, escalation, and visible coverage status.",
+    better: "The call-off creates clear replacement steps and a visible coverage status.",
   },
   {
     business: "HVAC company",
@@ -86,7 +86,7 @@ const scenarios = [
     business: "Real estate / mortgage",
     problem: "A file moves through several people and systems, but missing items or slow handoffs are found late.",
     look: "Where the file changes hands, what each person needs, which steps can wait, and how missing items become visible.",
-    better: "The file has a visible owner, next step, missing-item status, and exception path.",
+    better: "The file has a visible owner, next step, missing-item status, and a clear path when something is missing.",
   },
 ] as const;
 
@@ -268,7 +268,7 @@ export default function Home() {
               ["Clear scope", "We agree on what Sekinfra may review before access begins."],
               ["Limited access", "We use only the access needed for the approved diagnostic."],
               ["Separate approval", "Finding a problem does not automatically approve a fix."],
-              ["You decide", "Implementation and deployment happen only after you approve them."],
+              ["You decide", "Changes go live only after you approve them."],
             ].map(([title, body], index) => (
               <article className="rounded-[var(--radius-card)] border border-white/15 bg-white/5 p-6" key={title}>
                 <span className="font-mono text-xs text-[var(--accent)]">0{index + 1}</span>
