@@ -13,7 +13,7 @@ const labels: Record<Pressure, string> = {
   "customer-follow-up": "Follow-up keeps slipping",
   systems: "Our systems do not talk",
   "cloud-network": "Network or cloud problems",
-  "security-reliability": "Security, access, or reliability",
+  "security-reliability": "Security, compliance, access, or reliability",
   "not-sure": "I am not sure",
 };
 
