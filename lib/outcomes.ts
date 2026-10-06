@@ -112,10 +112,10 @@ export const illustrativeOutcome = {
 } as const;
 
 export const outcomeVsFeature = [
-  ["Feature", "A CRM is installed.", "Outcome", "Every qualified inquiry has a visible owner and next action."],
-  ["Feature", "A dashboard exists.", "Outcome", "Leaders can see stalled work without chasing updates."],
-  ["Feature", "Monitoring is installed.", "Outcome", "A critical service problem is visible early enough for the team to act without guessing."],
-  ["Feature", "A compliance checklist exists.", "Outcome", "Required steps, approvals, owners, and evidence stay visible through the real workflow."],
+  ["Business need", "New inquiries cannot sit unnoticed.", "Business result", "Every lead has an owner, response time, and follow-up. Fewer leads are lost and more have a chance to become customers."],
+  ["Business need", "Leaders need to know where work is stuck.", "Business result", "Stalled work becomes visible early enough to act before it hurts the client."],
+  ["Business need", "Critical services need to fail visibly and recover clearly.", "Business result", "Problems are caught earlier, response is clearer, and downtime is reduced."],
+  ["Business need", "Required steps and proof need to stay with the work.", "Business result", "Approvals, owners, deadlines, and evidence stay visible when needed, reducing compliance risk."],
 ] as const;
 
 export const outcomeProcess = [
