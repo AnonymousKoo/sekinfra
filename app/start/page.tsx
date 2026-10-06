@@ -6,7 +6,7 @@ import { SystemDiagram } from "@/components/visuals/system-diagram";
 export const metadata: Metadata = {
   title: "Show us what is happening",
   description:
-    "Tell Sekinfra what is going wrong. Answer a few simple questions and get a clear next step without needing to know the cause first.",
+    "Tell Sekinfra what is going wrong. Answer a few simple questions and get a clear next step. You do not need to know the cause.",
   alternates: { canonical: "/start" },
 };
 
