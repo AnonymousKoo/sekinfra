@@ -30,7 +30,7 @@ const controlFlow = [
     number: "04",
     label: "Action",
     title: "The work moves",
-    body: "The system can assign work, send a message, update a record, create a task, or stop and wait for a person to approve the next move.",
+    body: "The system can assign work, send a message, update a record, or create a task. It can also stop and wait for approval.",
   },
   {
     number: "05",
