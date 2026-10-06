@@ -68,10 +68,10 @@ export const profiles: Record<Pressure, Profile> = {
   operations: {
     id: "operations",
     label: "Operations",
-    recognition: "Routine work depends on workarounds and people remembering the unwritten steps.",
+    recognition: "Routine work depends on people remembering steps that are not written down.",
     consequence: "Small problems turn into delays and extra back-and-forth.",
     outcome: "Routine work follows a clear path, with a known way to handle exceptions.",
-    response: "Make the main path, owner, handoffs, and exceptions easy to follow.",
+    response: "Make the steps, owner, handoffs, and what happens when something goes wrong easy to follow.",
     hero: "Reduce manual coordination by giving routine work a clear path and a clear owner.",
     cta: "Start with the routine work that takes too much chasing.",
     signals: [
@@ -106,7 +106,7 @@ export const profiles: Record<Pressure, Profile> = {
     recognition: "Work gets handed off, but it is not always clear who owns the next step.",
     consequence: "Problems are found late, after work has already been missed or delayed.",
     outcome: "Important work always has a visible owner and next step.",
-    response: "Make ownership, check-ins, escalation, and resolution clear.",
+    response: "Make ownership, follow-up, and what happens when work is missed clear.",
     hero: "Make it clear who owns the work, what is late, and what happens next.",
     cta: "Start where ownership gets unclear.",
     signals: [
@@ -176,7 +176,7 @@ export const profiles: Record<Pressure, Profile> = {
     recognition: "Customer follow-up changes from person to person because timing and details are spread across tools.",
     consequence: "Customers wait, repeat themselves, or have to ask again.",
     outcome: "Customers get the right follow-up at the right time.",
-    response: "Use clear triggers, timing, ownership, and next steps to keep follow-up moving.",
+    response: "Set clear timing, ownership, and next steps so follow-up keeps moving.",
     hero: "Make customer follow-up timely, clear, and easy for the team to track.",
     cta: "Start with the moments when customer follow-up most often slips.",
     signals: [
@@ -246,8 +246,8 @@ export const profiles: Record<Pressure, Profile> = {
     recognition: "Internet, network, cloud, or service problems interrupt normal work.",
     consequence: "People lose access, services become unreliable, and work slows down or stops.",
     outcome: "Key services stay reachable, visible, and reliable enough for the work they support.",
-    response: "Trace the path from the user or device through the network and cloud service before changing anything.",
-    hero: "Find where the connection or service is failing, then repair the path the business depends on.",
+    response: "Follow the connection from the person or device to the network and cloud service before changing anything.",
+    hero: "Find where the connection or service is failing, then fix the path the business depends on.",
     cta: "Start where access, connection, or service keeps breaking.",
     signals: [
       "Network or cloud issues interrupting work",
@@ -281,7 +281,7 @@ export const profiles: Record<Pressure, Profile> = {
     recognition: "Who has access, what is protected, or how recovery works is not clear.",
     consequence: "Too much access, weak controls, or an unclear recovery plan can put important systems at risk.",
     outcome: "Access rules, alerts, and recovery steps are clear around the systems that matter.",
-    response: "Check the real access, risk, and recovery need before changing permissions or controls.",
+    response: "Check the real access, risk, and recovery need before changing permissions or security settings.",
     hero: "Make access, security, alerts, and recovery clear around the systems the business depends on.",
     cta: "Start with the system, access, or reliability concern that worries you.",
     signals: [
