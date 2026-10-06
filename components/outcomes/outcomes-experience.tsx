@@ -141,10 +141,10 @@ export function OutcomesExperience() {
         <div className="mx-auto max-w-[var(--page-width)] px-5 lg:px-8">
           <p className="eyebrow">Outcome first</p>
           <h2 className="mt-4 max-w-3xl text-balance text-4xl font-semibold tracking-[-.055em] sm:text-5xl">
-            The result comes first. Tools come second.
+            The result comes first. Tools are optional.
           </h2>
           <p className="mt-5 max-w-2xl text-lg leading-8 text-[var(--ink-muted)]">
-            Sekinfra does not start by selling software. We start with what the business needs to improve. The fix may be a clearer process, stronger accountability, a policy, better use of what you already have, automation, or new technology. We use a tool only when it helps create the result.
+            First we define the business result. The fix might be a clearer process, stronger accountability, a policy, better use of what you already have, automation, or new technology. If a tool helps, we use it. If it does not, we do not.
           </p>
 
           <div className="mt-10 grid gap-5 lg:grid-cols-2">
