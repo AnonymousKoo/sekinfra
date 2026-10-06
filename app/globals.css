@@ -8,6 +8,23 @@
 @media(max-width:640px){.system-diagram{min-height:280px}.system-diagram__node{min-width:88px;padding:8px;font-size:.65rem}.system-diagram__node:nth-of-type(2){left:5%}.system-diagram__node:nth-of-type(3){left:27%}.system-diagram__node:nth-of-type(4){left:48%}.system-diagram__node:nth-of-type(5){right:4%}.system-diagram__status{left:15px;bottom:14px}}
 
 /* Sekinfra technical visual system */
+
+.tech-header{
+  position:sticky;
+  box-shadow:0 8px 30px rgb(9 18 23/.055);
+}
+.tech-header:after{
+  content:"";
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:-1px;
+  height:1px;
+  pointer-events:none;
+  background:linear-gradient(90deg,transparent 0%,rgb(15 159 152/.22) 22%,rgb(185 239 112/.6) 50%,rgb(15 159 152/.22) 78%,transparent 100%);
+  background-size:200% 100%;
+  animation:header-signal 9s linear infinite;
+}
 .tech-hero{
   position:relative;
   isolation:isolate;
@@ -182,3 +199,5 @@ article[class*="rounded-[var(--radius-card)]"]{
 @keyframes grid-drift{to{transform:translate3d(42px,42px,0)}}
 @keyframes tech-sweep{0%,18%{transform:translateX(-120%)}55%,100%{transform:translateX(120%)}}
 @keyframes tech-status{0%,100%{opacity:.72;box-shadow:0 0 0 4px rgb(185 239 112/.07),0 0 14px rgb(185 239 112/.22)}50%{opacity:1;box-shadow:0 0 0 7px rgb(185 239 112/.025),0 0 26px rgb(185 239 112/.5)}}
+
+@keyframes header-signal{to{background-position:-200% 0}}
