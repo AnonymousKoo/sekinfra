@@ -18,12 +18,27 @@ const principles = [
   ["Make sure it worked", "A job is not done because the change went live. It has to solve the problem it was meant to solve."],
 ] as const;
 
-const domains = [
-  "Operations & business systems",
-  "Automation & integration",
-  "Cloud & network",
-  "Security, compliance & reliability",
-  "System design & improvement",
+const audiences = [
+  [
+    "Growing service businesses",
+    "More customers, employees, locations, or work have created more handoffs and more chances for things to get missed.",
+  ],
+  [
+    "Owner-led companies",
+    "Too much still depends on the owner knowing what is happening, answering questions, or fixing problems personally.",
+  ],
+  [
+    "Teams with accountability gaps",
+    "Work gets missed, deadlines slip, or no one can clearly say who owns the next step.",
+  ],
+  [
+    "Businesses with compliance or risk requirements",
+    "Required steps, approvals, access, records, or proof need to stay clear and easy to show.",
+  ],
+  [
+    "Companies with disconnected systems",
+    "Information lives in too many places, people repeat work, and important updates do not move where they need to.",
+  ],
 ] as const;
 
 export default function About() {
@@ -46,24 +61,38 @@ export default function About() {
       </section>
 
       <section className="section-rule bg-[var(--brand-deep)] py-16 text-white sm:py-24">
-        <div className="mx-auto grid max-w-[var(--page-width)] gap-10 px-5 lg:grid-cols-[.7fr_1.3fr] lg:px-8">
-          <div>
-            <p className="eyebrow text-[var(--accent)]">What Sekinfra works across</p>
-            <h2 className="mt-4 text-balance text-4xl font-semibold tracking-[-.055em] sm:text-5xl">
-              One business problem can cross several systems.
-            </h2>
-            <p className="mt-5 text-lg leading-8 text-white/70">
-              You should not have to know what kind of expert you need before asking for help.
+        <div className="mx-auto max-w-[var(--page-width)] px-5 lg:px-8">
+          <div className="grid gap-8 lg:grid-cols-[.72fr_1.28fr] lg:items-end">
+            <div>
+              <p className="eyebrow text-[var(--accent)]">Who Sekinfra is for</p>
+              <h2 className="mt-4 text-balance text-4xl font-semibold tracking-[-.055em] sm:text-5xl">
+                For businesses that have outgrown “just figure it out.”
+              </h2>
+            </div>
+            <p className="max-w-2xl text-lg leading-8 text-white/70">
+              Sekinfra fits when the business is growing, the work is getting harder to manage, or too much still depends on memory, workarounds, and the owner stepping in.
             </p>
           </div>
-          <div className="grid gap-px overflow-hidden rounded-[var(--radius-card)] border border-white/15 bg-white/15 sm:grid-cols-2">
-            {domains.map((domain, index) => (
-              <div className="tech-domain-tile bg-[var(--brand-deep)] p-6" key={domain}>
+
+          <div className="mt-12 grid gap-px overflow-hidden rounded-[var(--radius-card)] border border-white/15 bg-white/15 sm:grid-cols-2 lg:grid-cols-3">
+            {audiences.map(([title, body], index) => (
+              <article className="tech-domain-tile bg-[var(--brand-deep)] p-6 sm:p-7" key={title}>
                 <span className="font-mono text-xs text-[var(--accent)]">0{index + 1}</span>
-                <p className="mt-7 text-xl font-semibold">{domain}</p>
-              </div>
+                <h3 className="mt-7 text-xl font-semibold">{title}</h3>
+                <p className="mt-3 text-sm leading-6 text-white/70">{body}</p>
+              </article>
             ))}
+            <div className="bg-[color-mix(in_srgb,var(--brand-deep)_92%,white)] p-6 sm:p-7">
+              <p className="eyebrow text-[var(--accent)]">You do not need to know the cause</p>
+              <p className="mt-4 text-lg font-semibold leading-7">
+                You only need to know the business is not running the way it should.
+              </p>
+            </div>
           </div>
+
+          <p className="mt-8 max-w-4xl text-sm leading-6 text-white/55">
+            When the problem requires it, Sekinfra can work across operations, automation, business systems, cloud, network, security, compliance, and reliability.
+          </p>
         </div>
       </section>
 
