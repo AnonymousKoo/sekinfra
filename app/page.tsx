@@ -11,41 +11,55 @@ const controlFlow = [
   {
     number: "01",
     label: "Event",
-    title: "Something happens",
-    body: "A lead arrives, a payment fails, a shift opens, or a file changes status. The event tells the system that the business state changed.",
+    title: "A new lead arrives",
+    body: "The event tells the system that something changed and starts the approved workflow.",
   },
   {
     number: "02",
     label: "Policy",
-    title: "The business rule decides what happens next",
-    body: "The policy defines ownership, deadlines, approvals, limits, and escalation. It is a rule the business chose, not a guess made in the moment.",
+    title: "The business rules decide what must happen",
+    body: "Ownership, response time, required information, approvals, and escalation come from explicit rules the business chose.",
   },
   {
     number: "03",
-    label: "Action",
-    title: "The approved next step runs",
-    body: "The system can assign work, send a message, update a record, create a task, or stop and ask a person for approval.",
+    label: "AI assist",
+    title: "AI can help interpret the lead",
+    body: "AI may summarize the request, classify the need, or draft a response, but it does not get to rewrite the rules or grant itself authority.",
   },
   {
     number: "04",
+    label: "Action",
+    title: "The approved next step runs",
+    body: "The system can assign work, send a message, update a record, create a task, or stop and wait for a person to approve the next move.",
+  },
+  {
+    number: "05",
     label: "Evidence",
     title: "The result stays visible",
-    body: "Important actions can be recorded so the business can see who owned the step, what happened, and where an exception occurred.",
+    body: "Important actions can be recorded so the business can see what happened, who owned the step, and where an exception occurred.",
   },
 ] as const;
 
 const policyAiComparison = [
   {
-    label: "Policy and event driven",
-    title: "Predictable where the business needs control",
-    body: "Use explicit rules for permissions, approvals, deadlines, escalation, access, and other actions the business must be able to explain later.",
-    items: ["Rules are approved on purpose", "Exceptions have a defined path", "Important actions can be traced"],
+    label: "AI first automation",
+    title: "Powerful when the model is asked to decide the workflow",
+    body: "AI is strong at language, patterns, recommendations, and uncertain inputs. But model outputs can vary, so critical business actions need explicit limits, approvals, and guardrails around them.",
+    items: [
+      "Strong with language and messy inputs",
+      "Outputs can vary with context",
+      "Needs guardrails for critical actions",
+    ],
   },
   {
-    label: "AI assisted",
-    title: "Flexible where judgment helps",
-    body: "AI is optional. When it adds value, it can summarize a message, classify a request, draft a response, or surface patterns inside the controlled workflow.",
-    items: ["Useful with messy language and patterns", "Can prepare or recommend work", "Does not silently rewrite business policy"],
+    label: "Sekinfra controlled systems",
+    title: "The business rules remain the authority",
+    body: "Events trigger the workflow. Policies define what is allowed, required, or blocked. AI can assist inside that path, but approved rules control permissions, ownership, escalation, and change.",
+    items: [
+      "Approved rules decide critical actions",
+      "Human approval stays available where needed",
+      "Important actions can be traced",
+    ],
   },
 ] as const;
 
@@ -93,19 +107,19 @@ export default function Home() {
         <div className="mx-auto max-w-[var(--page-width)] px-5 lg:px-8">
           <div className="grid gap-8 lg:grid-cols-[.78fr_1.22fr] lg:items-end">
             <div>
-              <p className="eyebrow text-[var(--accent)]">How Sekinfra automation works</p>
+              <p className="eyebrow text-[var(--accent)]">AI vs controlled systems</p>
               <h2 className="mt-4 text-balance text-4xl font-semibold tracking-[-.055em] sm:text-5xl">
-                AI can help with the work. It should not run the rulebook.
+                AI can think. Your business still needs rules.
               </h2>
             </div>
             <div className="max-w-2xl">
               <p className="text-lg leading-8 text-white/75">
-                Sekinfra builds around policies and events first. An event says something happened. A policy says what
-                is allowed, required, or blocked next. AI can assist inside that path when it is useful, but the business
-                rules stay under your control.
+                AI is powerful, but intelligence is not the same as operational control. Sekinfra builds the control
+                layer first: events show what happened, policies decide what is allowed or required next, and AI can
+                assist inside that path without becoming the authority over the business.
               </p>
               <p className="mt-4 text-sm font-semibold leading-6 text-[var(--accent)]">
-                The goal is simple: flexible where judgment helps, predictable where control matters.
+                AI is intelligence. Sekinfra is control.
               </p>
             </div>
           </div>
@@ -144,11 +158,11 @@ export default function Home() {
                   A new lead comes in.
                 </h3>
                 <p className="mt-4 text-sm leading-6 text-white/65">
-                  The workflow can stay controlled even when AI helps with part of the work.
+                  AI can help with the lead without deciding the rules the company runs on.
                 </p>
               </div>
 
-              <ol className="grid border-l border-t border-white/15 sm:grid-cols-2 xl:grid-cols-4">
+              <ol className="grid border-l border-t border-white/15 sm:grid-cols-2 xl:grid-cols-5">
                 {controlFlow.map((step) => (
                   <li className="min-h-56 border-b border-r border-white/15 p-5" key={step.number}>
                     <div className="flex items-center justify-between gap-3">
@@ -164,8 +178,8 @@ export default function Home() {
           </div>
 
           <p className="mt-8 max-w-3xl border-l-2 border-[var(--accent)] pl-4 text-sm leading-6 text-white/70">
-            AI is a tool inside the system, not the authority over the system. Sekinfra keeps approvals, limits,
-            ownership, escalation, and change under explicit business control.
+            We do not replace AI. We put it where it belongs: inside a system with explicit business authority.
+            Approvals, limits, ownership, escalation, and change stay under the company's control.
           </p>
         </div>
       </section>
