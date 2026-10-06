@@ -119,10 +119,10 @@ export const profiles: Record<Pressure, Profile> = {
       "Inconsistent processes between employees",
     ],
     outcomes: ["Accountability", "Operational alerts", "Workforce reliability", "Workflow visibility"],
-    flow: ["Work", "Owner", "Check-in", "Escalation", "Done"],
+    flow: ["Work", "Owner", "Check-in", "If missed", "Done"],
     process: {
       Diagnose: "Trace where ownership becomes unclear or is silently dropped.",
-      Design: "Define ownership, escalation, and visibility at critical points.",
+      Design: "Define ownership, what happens when work is missed, and what needs to stay visible.",
       Build: "Connect the workflow and control points that support accountability.",
       Validate: "Test whether exceptions are actually surfaced and owned.",
       Improve: "Use unresolved exceptions to strengthen the system.",
@@ -163,7 +163,7 @@ export const profiles: Record<Pressure, Profile> = {
       Improve: "Refine the view around real decision needs.",
     },
     diagnostic: [
-      "Which systems hold operational state",
+      "Which systems hold the important status",
       "What status is hard to see",
       "Who needs the view",
       "How delays are currently found",
@@ -227,7 +227,7 @@ export const profiles: Record<Pressure, Profile> = {
     flow: ["System", "Information", "Connection", "Work", "Result"],
     process: {
       Diagnose: "Trace which systems hold the needed state and where information breaks down.",
-      Design: "Define the source of truth, integration boundaries, ownership, and exception path.",
+      Design: "Decide which system owns each piece of information, what should move, who owns it, and what happens if the connection fails.",
       Build: "Connect only the approved system points needed for dependable movement.",
       Validate: "Test expected movement, failures, retries, and visibility.",
       Improve: "Refine the integration from real exceptions and operating evidence.",
@@ -262,8 +262,8 @@ export const profiles: Record<Pressure, Profile> = {
     flow: ["User", "Network", "Cloud", "Service", "Work"],
     process: {
       Diagnose: "Trace the failure path across device, network, cloud, and service dependencies.",
-      Design: "Define the required operating state, controls, and infrastructure change.",
-      Build: "Repair or implement only the approved infrastructure components.",
+      Design: "Define how the service should work, what protects it, and what technology needs to change.",
+      Build: "Repair or change only the approved technology.",
       Validate: "Test reachability, resilience, visibility, and the user path.",
       Improve: "Use incidents and operating evidence to strengthen reliability.",
     },
