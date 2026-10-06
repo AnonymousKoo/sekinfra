@@ -17,19 +17,19 @@ const controlFlow = [
   {
     number: "02",
     label: "Rule",
-    title: "The business rules decide what happens next",
+    title: "The rules choose the next step",
     body: "Response time, required information, approvals, and escalation come from rules the business chose.",
   },
   {
     number: "03",
     label: "Ownership",
-    title: "The right person owns the next step",
+    title: "One person owns the next step",
     body: "The system makes responsibility clear so the work does not depend on someone noticing a message or remembering what to do.",
   },
   {
     number: "04",
     label: "Action",
-    title: "The approved work moves",
+    title: "The work moves",
     body: "The system can assign work, send a message, update a record, create a task, or stop and wait for a person to approve the next move.",
   },
   {
@@ -43,8 +43,8 @@ const controlFlow = [
 const policyAiComparison = [
   {
     label: "AI tools",
-    title: "Useful for thinking, creating, and interpreting information",
-    body: "AI can answer questions, generate content, analyze information, and make recommendations. Those are valuable capabilities, but they are different from the operating rules that keep a business moving.",
+    title: "Useful for thinking, creating, and analyzing",
+    body: "AI can answer questions, create content, study information, and suggest ideas. That is useful, but it is not the same as running the work.",
     items: [
       "Answers and generates quickly",
       "Helps analyze information",
@@ -53,8 +53,8 @@ const policyAiComparison = [
   },
   {
     label: "Sekinfra business systems",
-    title: "Built to make the business run consistently",
-    body: "Sekinfra builds the rules, triggers, ownership, handoffs, alerts, approvals, and records behind the work. The operation does not depend on AI to know what should happen next.",
+    title: "Built to keep work moving the right way",
+    body: "Sekinfra builds the rules, triggers, owners, handoffs, alerts, approvals, and records behind the work. The system does not need AI to know what happens next.",
     items: [
       "Rules define the next step",
       "Ownership and escalation stay clear",
@@ -114,12 +114,12 @@ export default function Home() {
             </div>
             <div className="max-w-2xl">
               <p className="text-lg leading-8 text-white/75">
-                AI is useful for answers, content, analysis, and recommendations. Sekinfra solves a different problem:
-                making sure work moves the way the business decided it should. We build the operational system behind
-                the work so the right event triggers the right rule, owner, action, and follow-up.
+                AI can answer questions, create content, study information, and suggest ideas. Sekinfra solves a different problem:
+                making sure the right work happens at the right time. We build the rules, owners, handoffs, alerts,
+                and checks that keep work moving.
               </p>
               <p className="mt-4 text-sm font-semibold leading-6 text-[var(--accent)]">
-                AI adds intelligence. Sekinfra adds operational control.
+                AI adds intelligence. Sekinfra adds control.
               </p>
             </div>
           </div>
@@ -158,7 +158,7 @@ export default function Home() {
                   A new lead comes in.
                 </h3>
                 <p className="mt-4 text-sm leading-6 text-white/65">
-                  This is what operational control looks like without depending on AI.
+                  Here is the same lead handled by a clear business system.
                 </p>
               </div>
 
@@ -178,9 +178,8 @@ export default function Home() {
           </div>
 
           <p className="mt-8 max-w-3xl border-l-2 border-[var(--accent)] pl-4 text-sm leading-6 text-white/70">
-            Sekinfra is not an AI company, and our operating systems do not depend on AI to run. AI can still be
-            useful elsewhere in a business. Our job is to make sure the business itself has clear rules, ownership,
-            handoffs, escalation, and evidence.
+            Sekinfra is not an AI company. We build business systems that run on clear rules, not AI guesses. AI can still be
+            useful in other parts of a business.
           </p>
         </div>
       </section>
@@ -236,11 +235,10 @@ export default function Home() {
           <div>
             <p className="eyebrow">Operational Infrastructure Assessment (OIA)</p>
             <h2 className="mt-4 text-balance text-4xl font-semibold tracking-[-.055em] sm:text-5xl">
-              A deeper review for problems that are bigger than one broken step.
+              A deeper review for problems that cross more than one part of the business.
             </h2>
             <p className="mt-5 text-lg leading-8 text-[var(--ink-muted)]">
-              The OIA is not the first step for every client. We use it when a smaller diagnostic cannot explain the
-              whole problem.
+              The OIA is for bigger or unclear problems. We use it only when a smaller review cannot explain the whole problem.
             </p>
           </div>
           <div className="grid gap-3">
@@ -262,7 +260,7 @@ export default function Home() {
           <div>
             <p className="eyebrow text-[var(--accent)]">You stay in control</p>
             <h2 className="mt-4 text-balance text-4xl font-semibold tracking-[-.055em] sm:text-5xl">
-              Looking at a problem does not give us permission to change your systems.
+              Looking at a problem does not give us permission to change anything.
             </h2>
           </div>
           <div className="grid gap-3 sm:grid-cols-2">
@@ -286,10 +284,10 @@ export default function Home() {
         <div className="mx-auto max-w-3xl px-5 text-center">
           <p className="eyebrow">Something is not working?</p>
           <h2 className="text-balance mt-5 text-4xl font-semibold tracking-[-.06em] sm:text-5xl">
-            You do not need to know what is causing it before you start.
+            You do not need to know the cause before you start.
           </h2>
           <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-[var(--ink-muted)]">
-            Show Sekinfra what is happening. We will help find where the problem starts and what the right next step is.
+            Show Sekinfra what is happening. We will help find where the problem starts and what should happen next.
           </p>
           <ButtonLink href="/start" className="mt-8">
             Show us what&apos;s happening
