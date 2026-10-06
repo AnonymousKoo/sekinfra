@@ -39,7 +39,7 @@ const journey = [
   {
     title: "Approve the work",
     client: "You decide which recommendation, if any, should move forward.",
-    sekinfra: "Sekinfra turns only the approved recommendation into a clear implementation plan.",
+    sekinfra: "Sekinfra turns only the approved recommendation into a clear work plan.",
     output: "A clear scope before any changes begin.",
   },
   {
@@ -60,7 +60,7 @@ const controls = [
   ["Scope", "We agree on what Sekinfra may look at before access begins."],
   ["Access", "We use only the access needed for the approved diagnostic."],
   ["Approval", "Finding a problem does not automatically approve a fix."],
-  ["Change", "Implementation and deployment require their own approval."],
+  ["Change", "Making changes and putting them live require their own approval."],
 ] as const;
 
 export default function HowItWorks() {
