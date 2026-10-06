@@ -7,7 +7,7 @@ import { DiagnosticPaths } from "@/components/diagnostic-paths";
 export const metadata: Metadata = {
   title: "How it works",
   description:
-    "See how Sekinfra moves from a business problem to the right diagnosis, clear findings, approved work, and a checked result.",
+    "See how Sekinfra moves from a business problem to the right review, clear findings, approved work, and a checked result.",
   alternates: { canonical: "/how-it-works" },
 };
 
@@ -19,40 +19,40 @@ const journey = [
     output: "A clear starting problem.",
   },
   {
-    title: "Choose the right diagnostic",
+    title: "Choose the right review",
     client: "You give enough context for us to understand how broad the problem may be.",
-    sekinfra: "Sekinfra recommends a Focused Diagnostic or the Operational Infrastructure Assessment (OIA).",
-    output: "The right level of diagnosis.",
+    sekinfra: "Sekinfra recommends a Focused Diagnostic or a deeper Operational Infrastructure Assessment (OIA).",
+    output: "The right level of review.",
   },
   {
-    title: "Find the cause",
-    client: "You approve only the systems, work, or information needed for the agreed diagnostic.",
-    sekinfra: "We check the real path behind the problem and use evidence instead of guessing.",
-    output: "A supported picture of what is actually wrong.",
+    title: "Find where it starts",
+    client: "You approve only the systems, work, or information needed for the agreed review.",
+    sekinfra: "We follow the real path behind the problem and use facts instead of guessing.",
+    output: "A clear picture of what is wrong.",
   },
   {
     title: "See the findings",
-    client: "You see what we found, what still is not clear, what matters most, and what should be better.",
-    sekinfra: "Sekinfra explains the cause, business impact, priority, and recommended next step in plain language.",
-    output: "A clear decision about what deserves attention.",
+    client: "You see what we found, what is still unclear, what matters most, and what should work better.",
+    sekinfra: "Sekinfra explains the cause, the impact on the business, and the next step in plain language.",
+    output: "A clear choice about what needs attention.",
   },
   {
     title: "Approve the work",
     client: "You decide which recommendation, if any, should move forward.",
     sekinfra: "Sekinfra turns only the approved recommendation into a clear implementation plan.",
-    output: "Approved scope before changes begin.",
+    output: "A clear scope before any changes begin.",
   },
   {
     title: "Build the approved change",
     client: "You know what is being changed and what is outside the job.",
     sekinfra: "We fix, connect, secure, automate, or redesign only what was approved.",
-    output: "A controlled build with clear boundaries.",
+    output: "Only the approved work gets built.",
   },
   {
     title: "Make sure it worked",
     client: "You see whether the result solved the problem we started with.",
     sekinfra: "Sekinfra tests the result and records anything that is still unresolved.",
-    output: "Proof of the result and a clear next decision.",
+    output: "A checked result and a clear next step.",
   },
 ] as const;
 
@@ -69,11 +69,10 @@ export default function HowItWorks() {
       <section className="mx-auto max-w-[var(--page-width)] px-5 py-20 lg:px-8 lg:py-28">
         <p className="eyebrow">How Sekinfra works</p>
         <h1 className="text-balance mt-5 max-w-5xl text-5xl font-semibold tracking-[-.065em] sm:text-6xl">
-          Start with the problem. We find the cause, fix the right thing, and make sure it worked.
+          Start with what is going wrong. We find the cause, fix the right thing, and check the result.
         </h1>
         <p className="mt-6 max-w-3xl text-lg leading-8 text-[var(--ink-muted)]">
-          You do not need to know whether the problem is operations, automation, software, cloud, network, or security.
-          Sekinfra follows the problem far enough to choose the right next step.
+          You do not need to know what kind of problem it is. Tell us what is going wrong. We will follow it far enough to find the right next step.
         </p>
         <div className="mt-9">
           <ButtonLink href="/start">Show us what&apos;s happening</ButtonLink>
@@ -85,12 +84,12 @@ export default function HowItWorks() {
       <section className="section-rule bg-[var(--surface-muted)] py-16 sm:py-24">
         <div className="mx-auto max-w-[var(--page-width)] px-5 lg:px-8">
           <div className="max-w-3xl">
-            <p className="eyebrow">The client journey</p>
+            <p className="eyebrow">What happens from start to finish</p>
             <h2 className="mt-4 text-balance text-4xl font-semibold tracking-[-.055em] sm:text-5xl">
               From “something is wrong” to a checked result.
             </h2>
             <p className="mt-5 text-lg leading-8 text-[var(--ink-muted)]">
-              Each step has a clear job. Diagnosis does not become implementation without your approval.
+              Each step has a clear job. Finding a problem does not give us permission to change it.
             </p>
           </div>
 
@@ -133,11 +132,10 @@ export default function HowItWorks() {
             <div>
               <p className="eyebrow text-[var(--accent)]">The delivery loop</p>
               <h2 className="mt-4 text-balance text-4xl font-semibold tracking-[-.055em] sm:text-5xl">
-                Diagnose → Design → Build → Validate → Improve.
+                Find → Plan → Build → Check → Improve.
               </h2>
               <p className="mt-5 text-lg leading-8 text-white/70">
-                The words are simple on purpose. Find the problem, plan the right fix, make the approved change, and check
-                the result.
+                Find the problem, plan the right fix, make the approved change, check the result, and improve only when it makes sense.
               </p>
             </div>
             <div>
@@ -179,7 +177,7 @@ export default function HowItWorks() {
             Tell us what is not working the way it should.
           </h2>
           <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-[var(--ink-muted)]">
-            You do not need to know the cause. Sekinfra will help choose the right diagnostic path.
+            You do not need to know the cause. Sekinfra will help choose the right review.
           </p>
           <ButtonLink href="/start" className="mt-8">
             Show us what&apos;s happening
