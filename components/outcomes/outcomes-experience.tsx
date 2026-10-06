@@ -139,13 +139,12 @@ export function OutcomesExperience() {
 
       <section className="section-rule tech-light-surface bg-[var(--surface-muted)] py-16 sm:py-24">
         <div className="mx-auto max-w-[var(--page-width)] px-5 lg:px-8">
-          <p className="eyebrow">Tools vs results</p>
+          <p className="eyebrow">Outcome first</p>
           <h2 className="mt-4 max-w-3xl text-balance text-4xl font-semibold tracking-[-.055em] sm:text-5xl">
-            Technology is a tool. The result is what matters.
+            The result comes first. Tools come second.
           </h2>
           <p className="mt-5 max-w-2xl text-lg leading-8 text-[var(--ink-muted)]">
-            A CRM, dashboard, automation, monitoring tool, or compliance checklist is useful only when it changes the problem the business is
-            dealing with.
+            Sekinfra does not start by selling software. We start with what the business needs to improve. The fix may be a clearer process, stronger accountability, a policy, better use of what you already have, automation, or new technology. We use a tool only when it helps create the result.
           </p>
 
           <div className="mt-10 grid gap-5 lg:grid-cols-2">
