@@ -4,7 +4,7 @@ import { OutcomesExperience } from "@/components/outcomes/outcomes-experience";
 
 export const metadata: Metadata = {
   title: "Business outcomes",
-  description: "See the business results Sekinfra works toward: faster response, clear ownership, less manual work, better visibility, and more reliable systems.",
+  description: "See the business results Sekinfra works toward: faster response, clear ownership, less manual work, better visibility, stronger compliance, and more reliable systems.",
   alternates: { canonical: "/outcomes" },
 };
 
