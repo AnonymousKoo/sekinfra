@@ -11,10 +11,10 @@ export const metadata: Metadata = {
 };
 
 const principles = [
-  ["Find the cause before the tool", "We start with what is going wrong before deciding what software, automation, or infrastructure should change."],
+  ["Find the cause before the tool", "We start with what is going wrong before deciding what software, automation, or technology should change."],
   ["Look at the whole path", "People, steps, software, cloud, network, security, and handoffs can all be part of the same problem."],
   ["Make the smallest useful change", "We do not add technology just to add technology. The change should have a clear job."],
-  ["Ask before we change anything", "Review access, implementation, deployment, and ongoing access are separate decisions."],
+  ["Ask before we change anything", "Review access, changes, going live, and ongoing access are separate decisions."],
   ["Make sure it worked", "A job is not done because the change went live. It has to solve the problem it was meant to solve."],
 ] as const;
 
