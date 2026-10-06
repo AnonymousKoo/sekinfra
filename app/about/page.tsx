@@ -82,7 +82,7 @@ export default function About() {
                 <p className="mt-3 text-sm leading-6 text-white/70">{body}</p>
               </article>
             ))}
-            <div className="bg-[color-mix(in_srgb,var(--brand-deep)_92%,white)] p-6 sm:p-7">
+            <div className="bg-white/5 p-6 sm:p-7">
               <p className="eyebrow text-[var(--accent)]">You do not need to know the cause</p>
               <p className="mt-4 text-lg font-semibold leading-7">
                 You only need to know the business is not running the way it should.
