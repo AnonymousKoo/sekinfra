@@ -178,7 +178,7 @@ export default function Home() {
           </div>
 
           <p className="mt-8 max-w-3xl border-l-2 border-[var(--accent)] pl-4 text-sm leading-6 text-white/70">
-            Sekinfra is not an AI company. We build business systems that run on clear rules, not AI guesses. AI can still be
+            Sekinfra is not an AI company. We build business systems that run on clear rules and defined steps. AI can still be
             useful in other parts of a business.
           </p>
         </div>
