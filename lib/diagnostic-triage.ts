@@ -97,17 +97,17 @@ export function deriveTriage(input: TriageInput): TriageResult {
     ? {
         route: "OPERATIONAL_INFRASTRUCTURE_ASSESSMENT",
         routeLabel: "Operational Infrastructure Assessment",
-        summary: "The problem looks bigger or less clear, so Sekinfra should look across the teams and systems involved before recommending a fix.",
+        summary: "The problem looks bigger or less clear, so Sekinfra should look across the teams and systems involved before suggesting a fix.",
         reasons,
-        nextAction: "Use the OIA to show what is happening, what is causing it, what matters most, and what should happen next.",
+        nextAction: "Use the OIA to show what is happening, where it starts, what matters most, and what should happen next.",
         desiredOutcome,
       }
     : {
         route: "FOCUSED_DIAGNOSTIC",
         routeLabel: "Focused Diagnostic",
-        summary: "The problem looks focused enough to find the failure point without starting a full OIA.",
+        summary: "The problem looks focused enough for a smaller review instead of a full OIA.",
         reasons,
-        nextAction: "Keep the review focused: confirm the failure point, the business impact, and the smallest fix that makes sense.",
+        nextAction: "Keep the review focused: find where the problem starts, show the impact, and define the smallest fix that makes sense.",
         desiredOutcome,
       };
 }
@@ -130,6 +130,6 @@ export function buildTriageBrief(input: TriageInput, result = deriveTriage(input
     "",
     `Next step: ${result.nextAction}`,
     "",
-    "This is a first review, not a diagnosis. This website does not send the information in this brief to Sekinfra. Online intake is not connected yet.",
+    "This is a first review, not a diagnosis. This website does not send this brief to Sekinfra. Online submission is not connected yet.",
   ].join("\n");
 }

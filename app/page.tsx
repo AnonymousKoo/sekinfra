@@ -16,21 +16,21 @@ const controlFlow = [
   },
   {
     number: "02",
-    label: "Policy",
-    title: "The business rules decide what must happen",
-    body: "Ownership, response time, required information, approvals, and escalation come from explicit rules the business chose.",
+    label: "Rule",
+    title: "The rules choose the next step",
+    body: "Response time, required information, approvals, and what happens if something is missed come from rules the business chose.",
   },
   {
     number: "03",
-    label: "AI assist",
-    title: "AI can help interpret the lead",
-    body: "AI may summarize the request, classify the need, or draft a response, but it does not get to rewrite the rules or grant itself authority.",
+    label: "Ownership",
+    title: "One person owns the next step",
+    body: "The system makes responsibility clear so the work does not depend on someone noticing a message or remembering what to do.",
   },
   {
     number: "04",
     label: "Action",
-    title: "The approved next step runs",
-    body: "The system can assign work, send a message, update a record, create a task, or stop and wait for a person to approve the next move.",
+    title: "The work moves",
+    body: "The system can assign work, send a message, update a record, or create a task. It can also stop and wait for approval.",
   },
   {
     number: "05",
@@ -42,23 +42,23 @@ const controlFlow = [
 
 const policyAiComparison = [
   {
-    label: "AI first automation",
-    title: "Powerful when the model is asked to decide the workflow",
-    body: "AI is strong at language, patterns, recommendations, and uncertain inputs. But model outputs can vary, so critical business actions need explicit limits, approvals, and guardrails around them.",
+    label: "AI tools",
+    title: "Useful for thinking, creating, and analyzing",
+    body: "AI can answer questions, create content, study information, and suggest ideas. That is useful, but it is not the same as running the work.",
     items: [
-      "Strong with language and messy inputs",
-      "Outputs can vary with context",
-      "Needs guardrails for critical actions",
+      "Answers and generates quickly",
+      "Helps analyze information",
+      "Supports human decisions",
     ],
   },
   {
-    label: "Sekinfra controlled systems",
-    title: "The business rules remain the authority",
-    body: "Events trigger the workflow. Policies define what is allowed, required, or blocked. AI can assist inside that path, but approved rules control permissions, ownership, escalation, and change.",
+    label: "Sekinfra business systems",
+    title: "Built to keep work moving the right way",
+    body: "Sekinfra builds the rules, triggers, owners, handoffs, alerts, approvals, and records behind the work. The system does not need AI to know what happens next.",
     items: [
-      "Approved rules decide critical actions",
-      "Human approval stays available where needed",
-      "Important actions can be traced",
+      "Rules define the next step",
+      "Ownership and next steps stay clear",
+      "Important actions stay visible",
     ],
   },
 ] as const;
@@ -68,7 +68,7 @@ const scenarios = [
     business: "Security company",
     problem: "A guard calls off. The supervisor starts texting people. No one can clearly see whether the shift is covered.",
     look: "Who owns the replacement, how the call-off moves, when the client should be updated, and what happens if no one responds.",
-    better: "The call-off creates a clear replacement path, escalation, and visible coverage status.",
+    better: "The call-off creates clear replacement steps and a visible coverage status.",
   },
   {
     business: "HVAC company",
@@ -86,7 +86,7 @@ const scenarios = [
     business: "Real estate / mortgage",
     problem: "A file moves through several people and systems, but missing items or slow handoffs are found late.",
     look: "Where the file changes hands, what each person needs, which steps can wait, and how missing items become visible.",
-    better: "The file has a visible owner, next step, missing-item status, and exception path.",
+    better: "The file has a visible owner, next step, missing-item status, and a clear path when something is missing.",
   },
 ] as const;
 
@@ -107,19 +107,19 @@ export default function Home() {
         <div className="mx-auto max-w-[var(--page-width)] px-5 lg:px-8">
           <div className="grid gap-8 lg:grid-cols-[.78fr_1.22fr] lg:items-end">
             <div>
-              <p className="eyebrow text-[var(--accent)]">AI vs controlled systems</p>
+              <p className="eyebrow text-[var(--accent)]">AI and business systems</p>
               <h2 className="mt-4 text-balance text-4xl font-semibold tracking-[-.055em] sm:text-5xl">
-                AI can think. Your business still needs rules.
+                AI can help you think. Your business still needs a system.
               </h2>
             </div>
             <div className="max-w-2xl">
               <p className="text-lg leading-8 text-white/75">
-                AI is powerful, but intelligence is not the same as operational control. Sekinfra builds the control
-                layer first: events show what happened, policies decide what is allowed or required next, and AI can
-                assist inside that path without becoming the authority over the business.
+                AI can answer questions, create content, study information, and suggest ideas. Sekinfra solves a different problem:
+                making sure the right work happens at the right time. We build the rules, owners, handoffs, alerts,
+                and checks that keep work moving.
               </p>
               <p className="mt-4 text-sm font-semibold leading-6 text-[var(--accent)]">
-                AI is intelligence. Sekinfra is control.
+                AI adds intelligence. Sekinfra adds control.
               </p>
             </div>
           </div>
@@ -158,7 +158,7 @@ export default function Home() {
                   A new lead comes in.
                 </h3>
                 <p className="mt-4 text-sm leading-6 text-white/65">
-                  AI can help with the lead without deciding the rules the company runs on.
+                  Here is the same lead handled by a clear business system.
                 </p>
               </div>
 
@@ -178,8 +178,8 @@ export default function Home() {
           </div>
 
           <p className="mt-8 max-w-3xl border-l-2 border-[var(--accent)] pl-4 text-sm leading-6 text-white/70">
-            We do not replace AI. We put it where it belongs: inside a system with explicit business authority.
-            Approvals, limits, ownership, escalation, and change stay under the company's control.
+            Sekinfra is not an AI company. We build business systems that run on clear rules and defined steps. AI can still be
+            useful in other parts of a business.
           </p>
         </div>
       </section>
@@ -235,11 +235,10 @@ export default function Home() {
           <div>
             <p className="eyebrow">Operational Infrastructure Assessment (OIA)</p>
             <h2 className="mt-4 text-balance text-4xl font-semibold tracking-[-.055em] sm:text-5xl">
-              A deeper review for problems that are bigger than one broken step.
+              A deeper review for problems that cross more than one part of the business.
             </h2>
             <p className="mt-5 text-lg leading-8 text-[var(--ink-muted)]">
-              The OIA is not the first step for every client. We use it when a smaller diagnostic cannot explain the
-              whole problem.
+              The OIA is for bigger or unclear problems. We use it only when a smaller review cannot explain the whole problem.
             </p>
           </div>
           <div className="grid gap-3">
@@ -261,7 +260,7 @@ export default function Home() {
           <div>
             <p className="eyebrow text-[var(--accent)]">You stay in control</p>
             <h2 className="mt-4 text-balance text-4xl font-semibold tracking-[-.055em] sm:text-5xl">
-              Looking at a problem does not give us permission to change your systems.
+              Looking at a problem does not give us permission to change anything.
             </h2>
           </div>
           <div className="grid gap-3 sm:grid-cols-2">
@@ -269,7 +268,7 @@ export default function Home() {
               ["Clear scope", "We agree on what Sekinfra may review before access begins."],
               ["Limited access", "We use only the access needed for the approved diagnostic."],
               ["Separate approval", "Finding a problem does not automatically approve a fix."],
-              ["You decide", "Implementation and deployment happen only after you approve them."],
+              ["You decide", "Changes go live only after you approve them."],
             ].map(([title, body], index) => (
               <article className="rounded-[var(--radius-card)] border border-white/15 bg-white/5 p-6" key={title}>
                 <span className="font-mono text-xs text-[var(--accent)]">0{index + 1}</span>
@@ -285,10 +284,10 @@ export default function Home() {
         <div className="mx-auto max-w-3xl px-5 text-center">
           <p className="eyebrow">Something is not working?</p>
           <h2 className="text-balance mt-5 text-4xl font-semibold tracking-[-.06em] sm:text-5xl">
-            You do not need to know what is causing it before you start.
+            You do not need to know the cause before you start.
           </h2>
           <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-[var(--ink-muted)]">
-            Show Sekinfra what is happening. We will help find where the problem starts and what the right next step is.
+            Show Sekinfra what is happening. We will help find where the problem starts and what should happen next.
           </p>
           <ButtonLink href="/start" className="mt-8">
             Show us what&apos;s happening

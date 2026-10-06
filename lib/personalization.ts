@@ -68,10 +68,10 @@ export const profiles: Record<Pressure, Profile> = {
   operations: {
     id: "operations",
     label: "Operations",
-    recognition: "Routine work depends on workarounds and people remembering the unwritten steps.",
+    recognition: "Routine work depends on people remembering steps that are not written down.",
     consequence: "Small problems turn into delays and extra back-and-forth.",
     outcome: "Routine work follows a clear path, with a known way to handle exceptions.",
-    response: "Make the main path, owner, handoffs, and exceptions easy to follow.",
+    response: "Make the steps, owner, handoffs, and what happens when something goes wrong easy to follow.",
     hero: "Reduce manual coordination by giving routine work a clear path and a clear owner.",
     cta: "Start with the routine work that takes too much chasing.",
     signals: [
@@ -106,7 +106,7 @@ export const profiles: Record<Pressure, Profile> = {
     recognition: "Work gets handed off, but it is not always clear who owns the next step.",
     consequence: "Problems are found late, after work has already been missed or delayed.",
     outcome: "Important work always has a visible owner and next step.",
-    response: "Make ownership, check-ins, escalation, and resolution clear.",
+    response: "Make ownership, follow-up, and what happens when work is missed clear.",
     hero: "Make it clear who owns the work, what is late, and what happens next.",
     cta: "Start where ownership gets unclear.",
     signals: [
@@ -119,10 +119,10 @@ export const profiles: Record<Pressure, Profile> = {
       "Inconsistent processes between employees",
     ],
     outcomes: ["Accountability", "Operational alerts", "Workforce reliability", "Workflow visibility"],
-    flow: ["Work", "Owner", "Check-in", "Escalation", "Done"],
+    flow: ["Work", "Owner", "Check-in", "If missed", "Done"],
     process: {
       Diagnose: "Trace where ownership becomes unclear or is silently dropped.",
-      Design: "Define ownership, escalation, and visibility at critical points.",
+      Design: "Define ownership, what happens when work is missed, and what needs to stay visible.",
       Build: "Connect the workflow and control points that support accountability.",
       Validate: "Test whether exceptions are actually surfaced and owned.",
       Improve: "Use unresolved exceptions to strengthen the system.",
@@ -163,7 +163,7 @@ export const profiles: Record<Pressure, Profile> = {
       Improve: "Refine the view around real decision needs.",
     },
     diagnostic: [
-      "Which systems hold operational state",
+      "Which systems hold the important status",
       "What status is hard to see",
       "Who needs the view",
       "How delays are currently found",
@@ -176,7 +176,7 @@ export const profiles: Record<Pressure, Profile> = {
     recognition: "Customer follow-up changes from person to person because timing and details are spread across tools.",
     consequence: "Customers wait, repeat themselves, or have to ask again.",
     outcome: "Customers get the right follow-up at the right time.",
-    response: "Use clear triggers, timing, ownership, and next steps to keep follow-up moving.",
+    response: "Set clear timing, ownership, and next steps so follow-up keeps moving.",
     hero: "Make customer follow-up timely, clear, and easy for the team to track.",
     cta: "Start with the moments when customer follow-up most often slips.",
     signals: [
@@ -227,7 +227,7 @@ export const profiles: Record<Pressure, Profile> = {
     flow: ["System", "Information", "Connection", "Work", "Result"],
     process: {
       Diagnose: "Trace which systems hold the needed state and where information breaks down.",
-      Design: "Define the source of truth, integration boundaries, ownership, and exception path.",
+      Design: "Decide which system owns each piece of information, what should move, who owns it, and what happens if the connection fails.",
       Build: "Connect only the approved system points needed for dependable movement.",
       Validate: "Test expected movement, failures, retries, and visibility.",
       Improve: "Refine the integration from real exceptions and operating evidence.",
@@ -246,8 +246,8 @@ export const profiles: Record<Pressure, Profile> = {
     recognition: "Internet, network, cloud, or service problems interrupt normal work.",
     consequence: "People lose access, services become unreliable, and work slows down or stops.",
     outcome: "Key services stay reachable, visible, and reliable enough for the work they support.",
-    response: "Trace the path from the user or device through the network and cloud service before changing anything.",
-    hero: "Find where the connection or service is failing, then repair the path the business depends on.",
+    response: "Follow the connection from the person or device to the network and cloud service before changing anything.",
+    hero: "Find where the connection or service is failing, then fix the path the business depends on.",
     cta: "Start where access, connection, or service keeps breaking.",
     signals: [
       "Network or cloud issues interrupting work",
@@ -262,8 +262,8 @@ export const profiles: Record<Pressure, Profile> = {
     flow: ["User", "Network", "Cloud", "Service", "Work"],
     process: {
       Diagnose: "Trace the failure path across device, network, cloud, and service dependencies.",
-      Design: "Define the required operating state, controls, and infrastructure change.",
-      Build: "Repair or implement only the approved infrastructure components.",
+      Design: "Define how the service should work, what protects it, and what technology needs to change.",
+      Build: "Repair or change only the approved technology.",
       Validate: "Test reachability, resilience, visibility, and the user path.",
       Improve: "Use incidents and operating evidence to strengthen reliability.",
     },
@@ -281,7 +281,7 @@ export const profiles: Record<Pressure, Profile> = {
     recognition: "Who has access, what is protected, or how recovery works is not clear.",
     consequence: "Too much access, weak controls, or an unclear recovery plan can put important systems at risk.",
     outcome: "Access rules, alerts, and recovery steps are clear around the systems that matter.",
-    response: "Check the real access, risk, and recovery need before changing permissions or controls.",
+    response: "Check the real access, risk, and recovery need before changing permissions or security settings.",
     hero: "Make access, security, alerts, and recovery clear around the systems the business depends on.",
     cta: "Start with the system, access, or reliability concern that worries you.",
     signals: [

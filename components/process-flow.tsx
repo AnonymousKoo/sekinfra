@@ -6,29 +6,29 @@ import { usePersonalization } from "@/components/personalization-provider";
 
 const steps = [
   {
-    title: "Diagnose",
+    title: "Find",
     doing: "Find where the problem starts and what it affects.",
     gets: "A clear picture of the problem and what needs attention first.",
   },
   {
-    title: "Design",
+    title: "Plan",
     doing: "Plan the smallest change that can solve the problem.",
-    gets: "A clear plan with scope, ownership, and success conditions.",
+    gets: "A clear plan for what will change, who owns it, and how we will know it worked.",
   },
   {
     title: "Build",
     doing: "Make only the change that was approved.",
-    gets: "A controlled build with clear progress and no silent scope growth.",
+    gets: "The approved change, with clear progress and no surprise extra work.",
   },
   {
-    title: "Validate",
-    doing: "Test the change in the real conditions it needs to support.",
-    gets: "Proof that the result works—or a clear reason it does not.",
+    title: "Check",
+    doing: "Test the change where it actually needs to work.",
+    gets: "Proof that it works, or a clear reason it does not.",
   },
   {
     title: "Improve",
-    doing: "Use what we learned to decide whether another change is worth making.",
-    gets: "A clear next decision instead of an endless project.",
+    doing: "Use what we learned to decide if another change is worth making.",
+    gets: "A clear next step instead of an endless project.",
   },
 ] as const;
 

@@ -20,35 +20,35 @@ import {
 } from "@/lib/diagnostic-triage";
 import { PRESSURES, profiles, type Pressure } from "@/lib/personalization";
 
-const steps = ["Pressure", "Scope", "Pattern", "Impact", "Spread", "Outcome"] as const;
+const steps = ["Problem", "Reach", "Pattern", "Impact", "Systems", "Goal"] as const;
 
 const scopeDescriptions: Record<TriageScope, string> = {
-  contained: "The problem seems to stay inside one workflow, tool, or part of the business.",
-  "multi-step": "Several connected steps are involved, but the path is still fairly clear.",
+  contained: "The problem stays inside one workflow, tool, or part of the business.",
+  "multi-step": "A few connected steps are involved, but the path is still clear.",
   "cross-team": "The problem touches more than one team, location, or owner.",
-  unclear: "You can see the problem, but you cannot yet tell where it starts or stops.",
+  unclear: "You can see the problem, but you cannot tell where it starts or stops.",
 };
 
 const frequencyDescriptions: Record<TriageFrequency, string> = {
   isolated: "This is unusual or tied to a specific event.",
-  monthly: "It appears occasionally, but not as part of everyday operations.",
-  weekly: "The same pattern returns often enough to affect normal work.",
-  daily: "The problem appears during ordinary daily operations.",
-  constant: "The workaround or failure is effectively part of how the business runs.",
+  monthly: "It happens sometimes, but not every day.",
+  weekly: "It comes back often enough to affect normal work.",
+  daily: "It happens during normal daily work.",
+  constant: "The problem or workaround has become part of how the business runs.",
 };
 
 const impactDescriptions: Record<TriageImpact, string> = {
-  friction: "Extra clicks, rework, chasing, or annoyance without a larger visible consequence yet.",
-  capacity: "People are spending meaningful time coordinating, repeating, or recovering work.",
-  customer: "Customers feel delays, uncertainty, inconsistency, or poor follow-up.",
-  revenue: "The issue can affect opportunities, conversion, billing, or retained revenue.",
-  delivery: "The issue can affect whether work is completed reliably and on time.",
-  risk: "The problem involves access, security, compliance, or another serious business risk.",
+  friction: "Extra clicks, rework, chasing, or annoyance.",
+  capacity: "People spend too much time coordinating, repeating, or fixing work.",
+  customer: "Customers face delays, confusion, or poor follow-up.",
+  revenue: "The issue can cost sales, billing, or repeat business.",
+  delivery: "The issue can make work late or unreliable.",
+  risk: "The problem involves access, security, rules, or another serious business risk.",
 };
 
 const spreadDescriptions: Record<TriageSpread, string> = {
-  one: "There is one main system, team, or operating owner in the path.",
-  few: "A small number of systems or teams exchange context or responsibility.",
+  one: "One main system or team is involved.",
+  few: "Two or three systems or teams share the work.",
   many: "The problem moves across several teams or systems.",
   unknown: "We still do not know all the systems or teams involved.",
 };
@@ -135,9 +135,9 @@ export function DiagnosticTriage() {
     try {
       if (!navigator.clipboard?.writeText) throw new Error("Clipboard unavailable");
       await navigator.clipboard.writeText(brief);
-      setCopyStatus("Triage brief copied. You can save it for a future Sekinfra conversation.");
+      setCopyStatus("Problem brief copied. You can save it for a future Sekinfra conversation.");
     } catch {
-      setCopyStatus("Automatic copy is unavailable in this browser. The complete brief is available below to select manually.");
+      setCopyStatus("Automatic copy is not available in this browser. You can copy the brief below by hand.");
     }
   };
 
@@ -195,7 +195,7 @@ export function DiagnosticTriage() {
           <div className="flex flex-wrap items-center justify-between gap-3">
             <p className="eyebrow">Your result</p>
             <span className="rounded-full bg-[var(--brand-wash)] px-3 py-1 font-mono text-[11px] font-bold uppercase tracking-[.12em] text-[var(--brand)]">
-              Triage · not diagnosis
+              First review · not diagnosis
             </span>
           </div>
           <h2 className="mt-5 text-balance text-4xl font-semibold tracking-[-.055em] sm:text-5xl">{result.routeLabel}</h2>
@@ -236,14 +236,14 @@ export function DiagnosticTriage() {
               onClick={() => setShowIntake(true)}
               className="inline-flex min-h-12 items-center justify-center rounded-[var(--radius-button)] bg-[var(--brand)] px-5 text-sm font-semibold text-white transition hover:bg-[var(--brand-deep)]"
             >
-              Start My Diagnostic
+              Prepare my request
             </button>
             <button
               type="button"
               onClick={copyBrief}
               className="inline-flex min-h-12 items-center justify-center rounded-[var(--radius-button)] border border-[var(--line)] bg-white px-5 text-sm font-semibold transition hover:border-[var(--brand)] hover:bg-[var(--surface-muted)]"
             >
-              Copy triage brief
+              Copy problem brief
             </button>
             <button
               type="button"
@@ -268,12 +268,12 @@ export function DiagnosticTriage() {
           <p className="mt-4 min-h-6 text-sm text-[var(--brand)]" aria-live="polite">{copyStatus}</p>
 
           <details className="mt-4 rounded-xl bg-[var(--surface-muted)] p-4">
-            <summary className="cursor-pointer text-sm font-semibold">View the complete copyable brief</summary>
+            <summary className="cursor-pointer text-sm font-semibold">View the complete brief</summary>
             <pre className="mt-4 whitespace-pre-wrap font-sans text-sm leading-6 text-[var(--ink-muted)]">{brief}</pre>
           </details>
 
           <p className="mt-6 border-l-2 border-[var(--brand)] pl-4 text-sm leading-6 text-[var(--ink-muted)]">
-            Online intake is not connected yet. Nothing you entered here was sent to Sekinfra systems or anyone else.
+            Online submission is not connected yet. Nothing you entered here was sent to Sekinfra or anyone else.
           </p>
         </section>
       </div>
@@ -300,7 +300,7 @@ export function DiagnosticTriage() {
             />
           </div>
           <p className="mt-5 text-sm leading-6 text-white/70">
-            We are only narrowing the problem. No system access, diagnosis, or permission to change anything begins here.
+            We are only narrowing the problem. This does not give us system access or permission to change anything.
           </p>
         </div>
       </div>
@@ -310,10 +310,10 @@ export function DiagnosticTriage() {
           <div>
             <p className="eyebrow">Step 0{step + 1}</p>
             <h2 className="mt-3 text-3xl font-semibold tracking-[-.045em] sm:text-4xl">
-              {step === 0 && "Where is the pressure showing up?"}
-              {step === 1 && "How far does the problem spread?"}
-              {step === 2 && "How often does the pattern repeat?"}
-              {step === 3 && "What part of the business is hurt the most?"}
+              {step === 0 && "Where is the problem showing up?"}
+              {step === 1 && "How far does it spread?"}
+              {step === 2 && "How often does it happen?"}
+              {step === 3 && "What does it hurt the most?"}
               {step === 4 && "How many systems or teams are involved?"}
               {step === 5 && "What should be working better?"}
             </h2>
@@ -395,9 +395,9 @@ export function DiagnosticTriage() {
 
         {step === 5 && (
           <div className="mt-7">
-            <label className="block text-sm font-semibold" htmlFor="desired-outcome">What better should look like</label>
+            <label className="block text-sm font-semibold" htmlFor="desired-outcome">What should work better</label>
             <p className="mt-2 max-w-2xl text-sm leading-6 text-[var(--ink-muted)]">
-              Describe what you want to work better. Do not include names, email addresses, phone numbers, or other private information. This answer stays in your browser.
+              Describe what you want to improve. Do not include names, email addresses, phone numbers, or other private information. This answer stays in your browser.
             </p>
             <textarea
               id="desired-outcome"
@@ -405,11 +405,11 @@ export function DiagnosticTriage() {
               onChange={(event) => setDesiredOutcome(event.target.value.slice(0, 240))}
               maxLength={240}
               rows={5}
-              placeholder={profile?.outcome || "Example: Critical work has a visible owner, next action, and exception path."}
+              placeholder={profile?.outcome || "Example: Important work has a visible owner, next step, and a clear plan when something goes wrong."}
               className="mt-4 block w-full rounded-xl border border-[var(--line)] bg-white px-4 py-3 text-base outline-none transition placeholder:text-[var(--ink-faint)] focus:border-[var(--brand)]"
             />
             <div className="mt-2 flex items-center justify-between gap-4 text-xs text-[var(--ink-muted)]">
-              <span>Optional. If you leave this blank, Sekinfra uses the suggested outcome for the problem you picked.</span>
+              <span>Optional. If you leave this blank, we will use the suggested goal for the problem you picked.</span>
               <span className="font-mono">{desiredOutcome.length}/240</span>
             </div>
           </div>
@@ -430,12 +430,12 @@ export function DiagnosticTriage() {
             disabled={!answerComplete}
             className="min-h-12 rounded-[var(--radius-button)] bg-[var(--brand)] px-5 text-sm font-semibold text-white transition hover:bg-[var(--brand-deep)] disabled:cursor-not-allowed disabled:opacity-40"
           >
-            {step === steps.length - 1 ? "Generate initial readout" : "Continue →"}
+            {step === steps.length - 1 ? "Show my result" : "Continue →"}
           </button>
         </div>
 
         <p className="mt-4 text-xs leading-5 text-[var(--ink-muted)]">
-          This triage runs in your browser. Your answers are not sent or stored by this page.
+          This problem check runs in your browser. Your answers are not sent or stored by this page.
         </p>
       </section>
     </div>

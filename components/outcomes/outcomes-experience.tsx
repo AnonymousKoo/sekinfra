@@ -39,11 +39,10 @@ export function OutcomesExperience() {
           <p className="eyebrow text-[var(--accent)]">Before and after</p>
           <div className="mt-4 grid gap-6 lg:grid-cols-[.82fr_1.18fr] lg:items-end">
             <h2 className="text-balance text-4xl font-semibold tracking-[-.055em] sm:text-5xl">
-              The value should be easy to see in the way the business works.
+              You should be able to see the difference in daily work.
             </h2>
             <p className="max-w-2xl text-lg leading-8 text-white/65">
-              Sekinfra is not trying to sell more software. We want the problem to stop creating delay, confusion, rework,
-              weak access, or unreliable service.
+              Sekinfra is not trying to sell more software. We want the problem to stop causing delays, confusion, rework, weak access, or unreliable service.
             </p>
           </div>
 
@@ -79,7 +78,7 @@ export function OutcomesExperience() {
             <div>
               <p className="eyebrow">Five ways the business can get stronger</p>
               <h2 className="mt-4 text-balance text-4xl font-semibold tracking-[-.055em] sm:text-5xl">
-                Different problems. Clearer business outcomes.
+                Different problems. Better day-to-day results.
               </h2>
             </div>
             <p className="max-w-2xl text-lg leading-8 text-[var(--ink-muted)]">
@@ -140,7 +139,7 @@ export function OutcomesExperience() {
 
       <section className="section-rule bg-[var(--surface-muted)] py-16 sm:py-24">
         <div className="mx-auto max-w-[var(--page-width)] px-5 lg:px-8">
-          <p className="eyebrow">Outcome versus feature</p>
+          <p className="eyebrow">Tools vs results</p>
           <h2 className="mt-4 max-w-3xl text-balance text-4xl font-semibold tracking-[-.055em] sm:text-5xl">
             Technology is a tool. The result is what matters.
           </h2>
@@ -178,19 +177,18 @@ export function OutcomesExperience() {
             <div>
               <p className="eyebrow text-[var(--accent)]">You choose what changes</p>
               <h2 className="mt-4 max-w-3xl text-balance text-3xl font-semibold tracking-[-.045em] sm:text-4xl">
-                Finding a problem does not give Sekinfra permission to fix it.
+                Finding a problem does not give Sekinfra permission to change it.
               </h2>
               <p className="mt-5 max-w-2xl leading-7 text-white/65">
-                We can diagnose, explain, and recommend. Implementation and deployment happen only after you approve
-                them.
+                We can find the problem, explain it, and suggest a fix. We make changes only after you approve them.
               </p>
             </div>
             <div className="rounded-xl border border-white/10 bg-white/5 p-6">
               <p className="eyebrow text-white/45">What this protects</p>
               <ul className="mt-5 space-y-3 text-sm leading-6 text-white/75">
-                <li>Diagnosis does not automatically become implementation.</li>
-                <li>Access does not automatically become permission to change.</li>
-                <li>A finding does not automatically become a deployment.</li>
+                <li>Finding a problem does not automatically start the fix.</li>
+                <li>Access does not mean permission to change anything.</li>
+                <li>A finding does not automatically become a live change.</li>
               </ul>
             </div>
           </div>
@@ -204,7 +202,7 @@ export function OutcomesExperience() {
             You do not need to know what kind of system needs to change.
           </h2>
           <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-[var(--ink-muted)]">
-            Show Sekinfra what is happening. We will help find the cause and the outcome worth working toward.
+            Show Sekinfra what is happening. We will help find the cause and what better should look like.
           </p>
           <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
             <ButtonLink href="/start">Show us what&apos;s happening</ButtonLink>

@@ -19,7 +19,7 @@ export function ContextualHero() {
   const { profile } = usePersonalization();
   const copy = profile
     ? profile.hero
-    : "When customers wait, work gets dropped, systems do not talk, or technology keeps causing problems, Sekinfra finds what is causing it and fixes the right thing.";
+    : "Customers waiting? Work getting dropped? Systems not working together? Sekinfra finds where the problem starts and fixes the right part.";
 
   return (
     <section className="relative overflow-hidden bg-[var(--brand-deep)] text-white">
@@ -43,7 +43,7 @@ export function ContextualHero() {
           <div className="mt-9 flex flex-col gap-3 sm:flex-row">
             <ButtonLink href="/start">Show us what&apos;s happening</ButtonLink>
             <ButtonLink href="/how-it-works" variant="secondary">
-              See how Sekinfra works
+              See how it works
             </ButtonLink>
           </div>
           <ul className="mt-10 flex max-w-2xl flex-wrap gap-2" aria-label="Sekinfra capability areas">
@@ -58,7 +58,7 @@ export function ContextualHero() {
           </ul>
           <div className="mt-8 flex items-center gap-3 text-sm font-semibold text-white/65">
             <span className="h-2.5 w-2.5 rounded-full bg-[var(--accent)] shadow-[0_0_0_5px_rgba(185,239,112,.12)]" />
-            {profile ? profile.cta : "Start with the problem. We will help find the cause."}
+            {profile ? profile.cta : "Start with the problem. We will help find where it starts."}
           </div>
         </div>
 
@@ -84,7 +84,7 @@ export function ContextualOutcomes() {
           <p className="max-w-2xl text-lg leading-8 text-[var(--ink-muted)]">
             {profile
               ? profile.response
-              : "The work should move with less chasing, clearer ownership, safer access, and systems the team can depend on."}
+              : "Work should move with less chasing, clear ownership, safer access, and systems the team can count on."}
           </p>
         </div>
 
