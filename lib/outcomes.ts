@@ -21,7 +21,7 @@ export const outcomeFamilies: OutcomeFamily[] = [
     outcomes: ["Lead response", "Customer follow up"],
     whatChanges: "New inquiries, response timing, and follow-up use one clear path.",
     whatBecomesVisible: "Who owns the response, what happens next, and what is waiting.",
-    goodLooksLike: "Every qualified inquiry has a clear owner, response time, and next step.",
+    goodLooksLike: "Every new inquiry has a clear owner, response time, and next step.",
     pressures: ["leads", "customer-follow-up"],
   },
   {
@@ -30,8 +30,8 @@ export const outcomeFamilies: OutcomeFamily[] = [
     summary: "Make it clear who owns the work, who has responded, and what happens when something is missed.",
     outcomes: ["Accountability", "Operational alerts", "Workforce reliability"],
     whatChanges: "Important handoffs stop depending on someone noticing or remembering.",
-    whatBecomesVisible: "The current owner, what is unresolved, when to escalate, and the next step.",
-    goodLooksLike: "Important work cannot disappear between people without someone seeing it.",
+    whatBecomesVisible: "The current owner, what is still open, what happens if it is missed, and the next step.",
+    goodLooksLike: "Important work cannot get lost between people without someone seeing it.",
     pressures: ["accountability"],
   },
   {
@@ -39,29 +39,29 @@ export const outcomeFamilies: OutcomeFamily[] = [
     title: "Visibility and decisions",
     summary: "Turn scattered updates into one view that shows work, risk, and next steps.",
     outcomes: ["Workflow visibility", "Reporting", "System state"],
-    whatChanges: "Important status from different systems is brought into one view for decisions.",
+    whatChanges: "Important updates from different systems are brought into one clear view.",
     whatBecomesVisible: "What is moving, what is stuck, where risk exists, and what needs a decision.",
-    goodLooksLike: "The right people can understand what is happening without building the picture by hand.",
+    goodLooksLike: "The right people can understand what is happening without chasing updates by hand.",
     pressures: ["visibility", "systems", "not-sure"],
   },
   {
     id: "capacity",
     title: "Capacity and coordination",
-    summary: "Reduce the manual chasing that keeps routine work moving while keeping clear paths for real problems.",
+    summary: "Reduce the manual chasing needed to keep routine work moving.",
     outcomes: ["Scheduling and coordination", "Administrative reduction", "Marketing operations"],
-    whatChanges: "Repeatable work follows clear steps with ownership, timing, and a way to handle exceptions.",
+    whatChanges: "Repeatable work follows clear steps, clear ownership, and a plan for problems.",
     whatBecomesVisible: "Where work is waiting, what needs help, and when the job is complete.",
-    goodLooksLike: "Routine coordination takes less time because the process carries more of the load.",
+    goodLooksLike: "Routine work takes less time because the system carries more of the load.",
     pressures: ["operations"],
   },
   {
     id: "reliability",
     title: "Infrastructure, security, and reliability",
-    summary: "Make the technology underneath the business reliable enough for people to trust it.",
+    summary: "Make the technology the business depends on reliable enough to trust.",
     outcomes: ["Service availability", "Controlled access", "Infrastructure visibility", "Recovery readiness"],
-    whatChanges: "Connections, access, monitoring, and recovery are built around the services the business actually needs.",
+    whatChanges: "Connections, access, alerts, and recovery are built around the services the business actually needs.",
     whatBecomesVisible: "What failed, who is affected, what protection is active, and how recovery should work.",
-    goodLooksLike: "Important services are reachable, access is clear, failures are visible, and recovery does not depend on guessing.",
+    goodLooksLike: "Important services work, access is clear, failures are visible, and recovery does not depend on guessing.",
     pressures: ["cloud-network", "security-reliability"],
   },
 ];
@@ -70,12 +70,12 @@ export const transformations = [
   {
     label: "Response",
     before: "An inquiry waits in the wrong place.",
-    controlled: "Owner, response window, and next action are visible.",
+    controlled: "The owner, response time, and next step are clear.",
   },
   {
     label: "Accountability",
     before: "A handoff has no visible owner.",
-    controlled: "The owner, response, and escalation path are clear.",
+    controlled: "The owner, response, and what happens if it is missed are clear.",
   },
   {
     label: "Visibility",
@@ -85,12 +85,12 @@ export const transformations = [
   {
     label: "Coordination",
     before: "Routine work depends on memory and manual follow through.",
-    controlled: "The steps, exception path, and completion status are clear.",
+    controlled: "The steps, what happens when something goes wrong, and when the work is done are clear.",
   },
   {
     label: "Reliability",
-    before: "A service fails and the business has to guess whether the issue is device, network, cloud, access, or application.",
-    controlled: "The failing service, access rules, and recovery path are clear enough to act.",
+    before: "A service fails and the business has to guess where the problem is.",
+    controlled: "The failed service, access rules, and recovery steps are clear enough to act.",
   },
 ] as const;
 
@@ -109,7 +109,7 @@ export const illustrativeOutcome = {
 export const outcomeVsFeature = [
   ["Feature", "A CRM is installed.", "Outcome", "Every qualified inquiry has a visible owner and next action."],
   ["Feature", "A dashboard exists.", "Outcome", "Leaders can see stalled work without chasing updates."],
-  ["Feature", "Monitoring is installed.", "Outcome", "A critical service problem becomes visible with enough context to act before troubleshooting turns into guesswork."],
+  ["Feature", "Monitoring is installed.", "Outcome", "A critical service problem is visible early enough for the team to act without guessing."],
 ] as const;
 
 export const outcomeProcess = [
