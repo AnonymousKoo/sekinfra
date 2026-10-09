@@ -283,7 +283,8 @@ export function DiagnosticIntake({
           <p className="eyebrow">Request ready</p>
           <h3 className="mt-3 text-2xl font-semibold tracking-[-.04em]">Your request is ready.</h3>
           <p className="mt-3 max-w-2xl text-sm leading-6 text-[var(--ink-muted)]">
-            Online submission is not connected yet. Copy your request, then email it to admin@sekinfra.com.
+            Step 1: Copy your request. Step 2: Open an email to Sekinfra, paste the request, and press Send in your email app.
+            This website does not send or save your details.
           </p>
           <div className="mt-5 flex flex-col gap-3 sm:flex-row">
             <button
@@ -291,8 +292,14 @@ export function DiagnosticIntake({
               onClick={copyRequest}
               className="tech-button min-h-12 rounded-[var(--radius-button)] bg-[var(--brand)] px-5 text-sm font-semibold text-white"
             >
-              Copy my request
+              1. Copy my request
             </button>
+            <a
+              href="mailto:admin@sekinfra.com"
+              className="inline-flex min-h-12 items-center justify-center rounded-[var(--radius-button)] border border-[var(--brand)] bg-white px-5 text-sm font-semibold text-[var(--brand)] transition hover:bg-[var(--surface-muted)]"
+            >
+              2. Email Sekinfra
+            </a>
           </div>
           <p className="mt-3 min-h-6 text-sm font-medium text-[var(--brand)]" aria-live="polite">{copyStatus}</p>
           <details className="mt-3 rounded-xl bg-white p-4">
