@@ -31,6 +31,17 @@ export default function Start() {
               You do not need to know the cause or choose a service. Answer a few simple questions about what is going
               wrong, who it affects, and how often it happens.
             </p>
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
+              <a
+                href="mailto:admin@sekinfra.com"
+                className="inline-flex min-h-12 w-fit items-center justify-center rounded-[var(--radius-button)] bg-[var(--accent)] px-5 text-sm font-semibold text-[var(--brand-deep)] transition hover:bg-white"
+              >
+                Email Sekinfra to get started
+              </a>
+              <p className="max-w-sm text-sm leading-6 text-white/70">
+                Have a project in mind? Email us directly. You do not need to finish this problem check first.
+              </p>
+            </div>
             <div className="mt-8 flex flex-wrap gap-2 text-xs font-semibold text-white/70">
               {["Operations", "Automation", "Business Systems", "Cloud & Network", "Security & Compliance"].map((item) => (
                 <span className="tech-chip rounded-full px-3 py-2" key={item}>
