@@ -1,0 +1,59 @@
+name: Pilot acquisition contract gate
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/pilot-acquisition-contract.yml'
+      - 'lib/diagnostic-intake.ts'
+      - 'lib/diagnostic-triage.ts'
+      - 'lib/personalization.ts'
+      - 'lib/server/avuhz-acquisition-adapter.ts'
+      - 'app/api/diagnostic-intake/route.ts'
+      - 'tests/avuhz-acquisition-adapter.test.ts'
+      - 'tests/diagnostic-intake.test.ts'
+      - 'tests/diagnostic-intake-boundary.test.ts'
+      - 'package.json'
+      - 'package-lock.json'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pilot-acquisition-contract-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  offline-contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Checkout candidate without persisted credentials
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+
+      - name: Install pinned Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22.16.0'
+          cache: npm
+
+      - name: Install locked dependencies without lifecycle scripts
+        run: npm ci --ignore-scripts --no-audit --no-fund
+
+      - name: Verify website and Avuhz contract types
+        run: ./node_modules/.bin/tsc --noEmit
+
+      - name: Run offline intake and authority-boundary tests
+        run: |
+          node --test \
+            tests/avuhz-acquisition-adapter.test.ts \
+            tests/diagnostic-intake.test.ts \
+            tests/diagnostic-intake-boundary.test.ts
+
+      - name: Confirm no live website submission was activated
+        run: |
+          grep -Fq 'status: 503' app/api/diagnostic-intake/route.ts
+          grep -Fq 'INTAKE_NOT_CONNECTED' app/api/diagnostic-intake/route.ts
