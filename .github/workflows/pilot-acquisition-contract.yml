@@ -51,7 +51,7 @@ jobs:
 
       - name: Run offline intake and authority-boundary tests
         run: |
-          node --test \
+          node --experimental-strip-types --test \
             tests/avuhz-acquisition-adapter.test.ts \
             tests/diagnostic-intake.test.ts \
             tests/diagnostic-intake-boundary.test.ts
