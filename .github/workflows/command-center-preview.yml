@@ -1,0 +1,45 @@
+name: Sekinfra command-center preview gate
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'app/(prototype)/command-center/**'
+      - 'components/command-center/**'
+      - 'tests/command-center-preview.test.ts'
+      - '.github/workflows/command-center-preview.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sekinfra-command-center-preview-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  preview-safety:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      NEXT_TELEMETRY_DISABLED: '1'
+    steps:
+      - name: Checkout reviewed branch without stored credentials
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - name: Install pinned Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22.16.0'
+          cache: npm
+      - name: Restore lockfile dependencies
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Verify preview-only access and disconnected action boundaries
+        run: node --experimental-strip-types --test tests/command-center-preview.test.ts
+      - name: Generate Next.js route types
+        run: ./node_modules/.bin/next typegen
+      - name: Check strict TypeScript typing
+        run: ./node_modules/.bin/tsc --noEmit
+      - name: Build website with no provider credentials
+        run: npm run build
