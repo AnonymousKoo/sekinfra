@@ -5,6 +5,8 @@ import { CommandCenterExperience } from "@/components/command-center/command-cen
 import { orderedWorkspaceEngagements, oiaWorkspaceFixture } from "@/fixtures/oia-workspace";
 import { isPrototypeRouteBlocked } from "@/lib/prototype-route";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Sekinfra Command Center — preview",
   robots: { index: false, follow: false, nocache: true },
@@ -15,7 +17,10 @@ export default function CommandCenterPreviewPage() {
   // The public production website must NEVER expose an operator UI, even one
   // containing only demonstrations. A separately authenticated private
   // deployment and reviewed read APIs are required for a real command center.
-  if (isPrototypeRouteBlocked(process.env.VERCEL_ENV)) notFound();
+  if (
+    isPrototypeRouteBlocked(process.env.VERCEL_ENV) ||
+    (process.env.VERCEL_ENV !== "preview" && process.env.NODE_ENV !== "development")
+  ) notFound();
 
   const engagements = orderedWorkspaceEngagements.map((item) => ({
     id: item.identity.engagementId,
