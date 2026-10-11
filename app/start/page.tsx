@@ -33,13 +33,13 @@ export default function Start() {
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
               <a
-                href="mailto:admin@sekinfra.com"
+                href="#first-review"
                 className="inline-flex min-h-12 w-fit items-center justify-center rounded-[var(--radius-button)] bg-[var(--accent)] px-5 text-sm font-semibold text-[var(--brand-deep)] transition hover:bg-white"
               >
-                Email Sekinfra to get started
+                See how to get started
               </a>
               <p className="max-w-sm text-sm leading-6 text-white/70">
-                Have a project in mind? Email us directly. You do not need to finish this problem check first.
+                Have a project in mind? You do not need to finish this problem check first.
               </p>
             </div>
             <div className="mt-8 flex flex-wrap gap-2 text-xs font-semibold text-white/70">
@@ -61,6 +61,75 @@ export default function Start() {
               <p className="text-xs font-bold uppercase tracking-[.14em] text-[var(--accent)]">What this does</p>
               <p className="mt-3 text-sm leading-6 text-white/70">
                 It helps choose how deep we need to look. It does not find the root cause, ask for system access, or approve any changes.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section
+        id="first-review"
+        aria-labelledby="first-review-heading"
+        className="section-rule bg-white py-16 sm:py-20 scroll-mt-24"
+      >
+        <div className="mx-auto max-w-[var(--page-width)] px-5 lg:px-8">
+          <div className="grid gap-10 lg:grid-cols-[.9fr_1.1fr] lg:items-start">
+            <div className="max-w-2xl">
+              <p className="eyebrow">Your first step with Sekinfra</p>
+              <h2
+                id="first-review-heading"
+                className="mt-4 text-balance text-4xl font-semibold tracking-[-.055em] sm:text-5xl"
+              >
+                Get a clear plan before you pay for a build.
+              </h2>
+              <p className="mt-5 text-lg leading-8 text-[var(--ink-muted)]">
+                Start with a short discovery conversation. If a focused review makes sense, we agree on the
+                problem, deliverables, assessment fee, and timing in writing before any paid work begins.
+                You do not need to know which technology is causing the problem.
+              </p>
+              <div className="mt-7 flex flex-col items-start gap-3">
+                <a
+                  href="mailto:admin@sekinfra.com"
+                  className="inline-flex min-h-12 items-center justify-center rounded-[var(--radius-button)] bg-[var(--brand)] px-5 text-sm font-semibold text-white transition hover:bg-[var(--brand-deep)]"
+                >
+                  Email Sekinfra to get started
+                  <span className="ml-2" aria-hidden="true">→</span>
+                </a>
+                <p className="max-w-lg text-sm leading-6 text-[var(--ink-muted)]">
+                  This opens your email app; it does not book a meeting or submit an online form.
+                  Describe the business problem briefly. Please do not email passwords, customer records,
+                  access tokens, or sensitive system details.
+                </p>
+              </div>
+            </div>
+
+            <div className="tech-card tech-card--light p-6 sm:p-8">
+              <p className="eyebrow">A clear first offer</p>
+              <h3 className="mt-4 text-2xl font-semibold tracking-[-.04em] sm:text-3xl">
+                Focused Systems Review
+              </h3>
+              <p className="mt-4 text-sm leading-7 text-[var(--ink-muted)]">
+                A scoped, paid assessment of one business problem: missed leads, broken handoffs,
+                repeated service delays, unreliable cloud or network systems, or gaps in security
+                and compliance processes. If the issue is wider, we can propose a deeper Operational
+                Infrastructure Assessment instead.
+              </p>
+              <ol className="mt-7 grid gap-5 border-t border-[var(--line)] pt-6 sm:grid-cols-3">
+                {[
+                  ["01", "Discover", "Tell us what is happening and what it costs your business. No system access is needed for this conversation."],
+                  ["02", "Agree", "Review the written assessment scope, fee, timeframe, and information needed. You choose whether to proceed."],
+                  ["03", "Decide", "Receive findings, the priority fixes, and a proposed next step. Implementation requires separate approval."],
+                ].map(([number, title, body]) => (
+                  <li key={number}>
+                    <span className="font-mono text-xs font-bold text-[var(--brand)]">{number}</span>
+                    <h4 className="mt-2 text-base font-semibold">{title}</h4>
+                    <p className="mt-2 text-sm leading-6 text-[var(--ink-muted)]">{body}</p>
+                  </li>
+                ))}
+              </ol>
+              <p className="mt-6 border-l-2 border-[var(--brand)] pl-4 text-sm leading-6 text-[var(--ink-muted)]">
+                You remain in control. An assessment is not permission to access or change your systems.
+                Any access and implementation require their own written authorization.
               </p>
             </div>
           </div>
