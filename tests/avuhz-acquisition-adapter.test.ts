@@ -151,3 +151,132 @@ test("public website POST stays closed; this adapter is not a new endpoint or cr
   assert.equal(post.status, 503);
   assert.equal((await post.json()).error, "INTAKE_NOT_CONNECTED");
 });
+
+
+import {
+  deliverDevelopmentAcquisitionCandidate,
+  type DevelopmentAcquisitionDeliveryContext,
+  type DevelopmentAcquisitionPost,
+} from "../lib/server/avuhz-acquisition-delivery.ts";
+
+const testDeliveryContext: DevelopmentAcquisitionDeliveryContext = {
+  environment: "DEVELOPMENT",
+  dataProjectRef: "gnuqaefotwgkwurjpyik",
+  authProjectRef: "pwlhruwutoitnieactol",
+  bearer: "fictional.test.only.identity.token.1234567",
+};
+const acceptedIntakeId = "a4730000-0000-4000-8000-000000000081";
+
+test("exact server-only DEVELOPMENT transport posts one minimal Sekinfra payload", async () => {
+  const calls: { url: string; options: RequestInit }[] = [];
+  const send: DevelopmentAcquisitionPost = async (url, options) => {
+    calls.push({ url, options });
+    return Response.json({ intake_id: acceptedIntakeId, duplicate: false }, { status: 202 });
+  };
+  const receipt = await deliverDevelopmentAcquisitionCandidate(candidate(), testDeliveryContext, send);
+  assert.deepEqual(receipt, { intake_id: acceptedIntakeId, duplicate: false });
+  assert.equal(calls.length, 1);
+  assert.equal(calls[0].url, "https://avuhz-command-dev.onrender.com/v1/acquisition/intakes");
+  assert.equal(calls[0].options.method, "POST");
+  assert.equal(calls[0].options.redirect, "error");
+  assert.equal(calls[0].options.credentials, "omit");
+  assert.equal(calls[0].options.cache, "no-store");
+  const headers = calls[0].options.headers as Record<string, string>;
+  assert.equal(headers.Authorization, "Bearer " + testDeliveryContext.bearer);
+  assert.equal(headers["Content-Type"], "application/json");
+  const transmitted = JSON.parse(String(calls[0].options.body));
+  assert.deepEqual(transmitted, toAvuhzAcquisitionIntake(candidate()));
+  assert.equal(transmitted.source_system, "sekinfra.website");
+  for (const key of ["tenant_id", "organization_id", "authority", "access_token", "password", "role"]) {
+    assert.ok(!Object.hasOwn(transmitted, key));
+  }
+});
+
+test("DEV transport treats an exact 200 duplicate as idempotent acknowledgment", async () => {
+  const reply: DevelopmentAcquisitionPost = async () =>
+    Response.json({ intake_id: acceptedIntakeId, duplicate: true }, { status: 200 });
+  assert.deepEqual(
+    await deliverDevelopmentAcquisitionCandidate(candidate(), testDeliveryContext, reply),
+    { intake_id: acceptedIntakeId, duplicate: true },
+  );
+});
+
+test("invalid tenant/project or credential context halts before network", async () => {
+  let calls = 0;
+  const send: DevelopmentAcquisitionPost = async () => {
+    calls++;
+    throw Error("must never connect");
+  };
+  for (const invalid of [
+    { ...testDeliveryContext, environment: "PRODUCTION" },
+    { ...testDeliveryContext, dataProjectRef: "pwlhruwutoitnieactol" },
+    { ...testDeliveryContext, authProjectRef: "gnuqaefotwgkwurjpyik" },
+    { ...testDeliveryContext, bearer: "" },
+    { ...testDeliveryContext, bearer: "never-use-a-user-bearer" },
+    { ...testDeliveryContext, bearer: testDeliveryContext.bearer + "\nInjected" },
+  ]) {
+    await assert.rejects(
+      deliverDevelopmentAcquisitionCandidate(candidate(), invalid as DevelopmentAcquisitionDeliveryContext, send),
+      (error: unknown) => error instanceof Error &&
+        error.message === "acquisition_delivery_not_authorized",
+    );
+  }
+  assert.equal(calls, 0);
+});
+
+test("forged authority and malformed browser contact data make zero upstream calls", async () => {
+  let calls = 0;
+  const send: DevelopmentAcquisitionPost = async () => {
+    calls++;
+    throw Error("not expected");
+  };
+  for (const input of [
+    { ...candidate(), tenant_id: "injected" },
+    { ...candidate(), authority: { ...candidate().authority, systemAccessAuthorized: true } },
+    { ...candidate(), contact: { ...candidate().contact, businessEmail: "leaked\nemail" } },
+  ]) {
+    await assert.rejects(
+      deliverDevelopmentAcquisitionCandidate(input, testDeliveryContext, send),
+      (error: unknown) => error instanceof Error &&
+        error.message === "invalid_website_acquisition_candidate",
+    );
+  }
+  assert.equal(calls, 0);
+});
+
+test("provider failures, malformed receipts, or response bodies never leak text", async () => {
+  const privateResponse = "super-sensitive@example.invalid bearer.provider.private";
+  for (const reply of [
+    () => Promise.reject(Error(privateResponse)),
+    () => Promise.resolve(new Response(privateResponse, { status: 500 })),
+    () => Promise.resolve(new Response(privateResponse, { status: 202, headers: { "Content-Type": "text/plain" } })),
+    () => Promise.resolve(Response.json({ intake_id: acceptedIntakeId, duplicate: true }, { status: 202 })),
+    () => Promise.resolve(Response.json({ intake_id: acceptedIntakeId, duplicate: false }, { status: 200 })),
+    () => Promise.resolve(Response.json({ intake_id: acceptedIntakeId, duplicate: false, pii: privateResponse }, { status: 202 })),
+    () => Promise.resolve(Response.json({ intake_id: "bad", duplicate: false }, { status: 202 })),
+    () => Promise.resolve(Response.json({ error: privateResponse }, { status: 202 })),
+    () => Promise.resolve(Response.json({ intake_id: acceptedIntakeId, duplicate: false, filler: "x".repeat(700) }, { status: 202 })),
+  ]) {
+    let calls = 0;
+    const send: DevelopmentAcquisitionPost = async () => {
+      calls++;
+      return reply();
+    };
+    await assert.rejects(
+      deliverDevelopmentAcquisitionCandidate(candidate(), testDeliveryContext, send),
+      (error: unknown) => error instanceof Error &&
+        error.message === "acquisition_delivery_unavailable" &&
+        !error.message.includes(privateResponse) &&
+        !error.message.includes(testDeliveryContext.bearer),
+    );
+    assert.equal(calls, 1, "never retry failed or ambiguous submissions");
+  }
+});
+
+test("new delivery module grants no public intake path before approved activation", async () => {
+  const status = await GET();
+  assert.equal((await status.json()).acceptsRealProspectData, false);
+  const response = await POST();
+  assert.equal(response.status, 503);
+  assert.equal((await response.json()).error, "INTAKE_NOT_CONNECTED");
+});
