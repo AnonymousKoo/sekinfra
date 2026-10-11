@@ -117,11 +117,19 @@ jobs:
 
           # Execute the actual Avuhz Python validator, not a copied schema or
           # duplicated Sekinfra-specific rules. No hosted data access occurs.
-          PYTHONPATH="$GITHUB_WORKSPACE/_avuhz_contract/src" python3 - <<'PY'
+          python3 - <<'PY'
           import json
           import os
           from pathlib import Path
-          from avuhz_service.acquisition_intake import validate_acquisition_intake
+          from runpy import run_path
+
+          # Run the real pinned validator source directly. Importing the
+          # package would execute unrelated app startup imports/dependencies.
+          validator_path = (Path(os.environ["GITHUB_WORKSPACE"]) /
+              "_avuhz_contract/src/avuhz_service/acquisition_intake.py")
+          validate_acquisition_intake = run_path(str(validator_path))[
+              "validate_acquisition_intake"
+          ]
 
           payloads = [
               json.loads(line) for line in
