@@ -60,3 +60,100 @@ jobs:
         run: |
           grep -Fq 'status: 503' app/api/diagnostic-intake/route.ts
           grep -Fq 'INTAKE_NOT_CONNECTED' app/api/diagnostic-intake/route.ts
+
+      - name: Checkout exact shared Avuhz acquisition validator
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          repository: AnonymousKoo/avuhz-infra
+          # Reviewed immutable source, not latest main or a vertical-specific fork.
+          ref: 1e7d1ed1080e8a373d1fcbedf14f52d619f7d1b3
+          path: _avuhz_contract
+          persist-credentials: false
+          sparse-checkout: |
+            src/avuhz_service
+
+      - name: Prove two fictional website requests match the real shared Avuhz validator
+        shell: bash
+        run: |
+          # The only data crossing this boundary are synthetic TEST fixtures.
+          # No real prospect details, tenant, auth, credentials or API requests.
+          node --experimental-strip-types --input-type=module <<'NODE' > "$RUNNER_TEMP/sekinfra-fictional-acquisition.jsonl"
+          import { buildWebsiteDiagnosticIntakeCandidate } from "./lib/diagnostic-intake.ts";
+          import { deriveTriage } from "./lib/diagnostic-triage.ts";
+          import { toAvuhzAcquisitionIntake } from "./lib/server/avuhz-acquisition-adapter.ts";
+
+          const fixtures = [
+            {
+              organization: "Fictional Alpha Field Services",
+              email: "alpha@example.invalid",
+              id: "a4730000-0000-4000-8000-000000000061",
+              triage: { pressure: "operations", scope: "cross-team", frequency: "daily", impact: "delivery", spread: "many" },
+            },
+            {
+              organization: "Fictional Beta Logistics",
+              email: "beta@example.invalid",
+              id: "a4730000-0000-4000-8000-000000000062",
+              triage: { pressure: "leads", scope: "contained", frequency: "isolated", impact: "friction", spread: "one" },
+            },
+          ];
+
+          for (const item of fixtures) {
+            const draft = {
+              organization: { displayName: item.organization },
+              contact: {
+                fullName: "Example Fictional Operator",
+                businessEmail: item.email,
+                preferredContactMethod: "EMAIL",
+              },
+              contactRequested: true,
+            };
+            const candidate = buildWebsiteDiagnosticIntakeCandidate(
+              draft, item.triage, deriveTriage(item.triage),
+              { requestId: item.id, generatedAt: "2026-10-11T06:00:00.000Z" },
+            );
+            process.stdout.write(JSON.stringify(toAvuhzAcquisitionIntake(candidate)) + "\n");
+          }
+          NODE
+
+          # Execute the actual Avuhz Python validator, not a copied schema or
+          # duplicated Sekinfra-specific rules. No hosted data access occurs.
+          PYTHONPATH="$GITHUB_WORKSPACE/_avuhz_contract/src" python3 - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          from avuhz_service.acquisition_intake import validate_acquisition_intake
+
+          payloads = [
+              json.loads(line) for line in
+              (Path(os.environ["RUNNER_TEMP"]) / "sekinfra-fictional-acquisition.jsonl")
+              .read_text(encoding="utf-8").splitlines() if line.strip()
+          ]
+          assert len(payloads) == 2
+          assert len({p["external_request_id"] for p in payloads}) == 2
+          assert {p["route_reference"] for p in payloads} == {
+              "diagnostic.focused", "diagnostic.oia"
+          }
+          required = {
+              "external_request_id", "source_system", "route_reference",
+              "business_name", "contact_name", "contact_email", "contact_phone",
+              "preferred_contact_method", "contact_requested",
+              "diagnostic_summary",
+          }
+          for payload in payloads:
+              assert set(payload) == required
+              assert payload["source_system"] == "sekinfra.website"
+              assert payload["contact_email"].endswith("@example.invalid")
+              value = validate_acquisition_intake(payload)
+              assert {key: getattr(value, key) for key in required} == payload
+              assert not hasattr(value, "tenant_id")
+              assert not hasattr(value, "organization_id")
+              for forbidden in ("tenant_id", "organization_id", "authority"):
+                  spoofed = {**payload, forbidden: "attacker"}
+                  try:
+                      validate_acquisition_intake(spoofed)
+                  except ValueError as error:
+                      assert str(error) == "invalid_acquisition_intake"
+                  else:
+                      raise AssertionError("Untrusted authority field was accepted")
+          print("PASS: two fictional Sekinfra candidates validated by immutable Avuhz core")
+          PY
