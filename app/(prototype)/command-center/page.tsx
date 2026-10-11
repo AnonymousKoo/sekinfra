@@ -27,7 +27,7 @@ export default function CommandCenterPreviewPage() {
     organization: item.identity.organization,
     label: item.identity.label,
     stage: item.stage,
-    attention: item.presentationAttentionOwner?.owner ?? "MONITOR",
+    attention: item.presentationAttentionOwner?.owner === "SEKINFRA" ? "SEKINFRA" as const : item.presentationAttentionOwner?.owner === "CLIENT" ? "CLIENT" as const : "MONITOR" as const,
     nextAction: item.readModel?.nextRequiredAction.code ?? null,
     assessmentState: item.assessmentState ?? null,
   }));
