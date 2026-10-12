@@ -24,5 +24,8 @@ export function privateOperatorRouteDecision(
 ): PrivateOperatorRouteDecision {
   if (pathname === "/" || pathname === "/command-center/") return "rewrite";
   if (pathname === "/command-center") return "forward";
+  // The page itself enforces a separate disabled-by-default opt-in and
+  // a signed, exact-owner Cloudflare Access JWT. No public-path bypass.
+  if (pathname === "/owner-enrollment") return "forward";
   return "deny";
 }
