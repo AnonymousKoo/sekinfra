@@ -16,7 +16,6 @@ import { privateOperatorRouteDecision } from "../lib/command-center/operator-rou
 const key = "sb_publishable_12345678901234567890";
 const email = "operator@example.com";
 const subject = "a4730000-0000-4000-8000-000000000101";
-const other = "a4730000-0000-4000-8000-000000000999";
 const factorId = "a4730000-0000-4000-8000-000000000102";
 const challengeId = "a4730000-0000-4000-8000-000000000103";
 const token = "header.payload.signature";
