@@ -112,23 +112,24 @@ test("there is no browser credential, demo authentication, or Avuhz authority sh
   assert.doesNotMatch(page, /setState\(|useState\(|onClick=|fetch\([^)]*\/v1\/commands/);
 });
 
-test("dashboard hostname is restricted to the verified operator route", () => {
-  assert.match(privateHostProxy, /const PRIVATE_OPERATOR_HOST = "dashboard\.sekinfra\.com"/);
-  assert.match(privateHostProxy, /request\.nextUrl\.hostname\.toLowerCase\(\) !== PRIVATE_OPERATOR_HOST/);
-  assert.match(privateHostProxy, /NextResponse\.next\(\)/);
-  assert.match(privateHostProxy, /pathname === "\/"/);
-  assert.match(privateHostProxy, /destination\.pathname = "\/command-center"/);
-  assert.match(privateHostProxy, /destination\.search = ""/);
-  assert.match(privateHostProxy, /NextResponse\.rewrite\(destination\)/);
-  assert.match(privateHostProxy, /pathname === "\/command-center"/);
+test("the private deployment proxy restricts every route, including Vercel project aliases", () => {
+  assert.match(privateHostProxy, /isPrivateOperatorDeployment\\(/);
+  assert.match(privateHostProxy, /process\\.env\\.SEKINFRA_DEPLOYMENT_ROLE/);
+  assert.match(privateHostProxy, /privateOperatorRouteDecision\\(/);
+  assert.match(privateHostProxy, /NextResponse\\.next\\(\\)/);
+  assert.match(privateHostProxy, /action === "rewrite"/);
+  assert.match(privateHostProxy, /destination\\.pathname = "\\/command-center"/);
+  assert.match(privateHostProxy, /destination\\.search = ""/);
+  assert.match(privateHostProxy, /NextResponse\\.rewrite\\(destination\\)/);
+  assert.match(privateHostProxy, /action === "forward"/);
   assert.match(privateHostProxy, /status: 404/);
   assert.match(privateHostProxy, /private, no-store, max-age=0/);
   assert.match(privateHostProxy, /noindex, nofollow, noarchive/);
   assert.match(privateHostProxy, /matcher:/);
-  assert.match(privateHostProxy, /_next\//);
-  // A host-level rewrite is not Avuhz identity or a substitute for signature verification.
-  assert.match(page, /authorizeOperator\(await headers\(\)\)/);
-  assert.doesNotMatch(privateHostProxy, /service_role|SUPABASE_|fetch\(|headers\.get\("cf-access/);
+  assert.match(privateHostProxy, /_next\\//);
+  // The route restriction is not Avuhz identity or JWT authentication.
+  assert.match(page, /authorizeOperator\\(await headers\\(\\)\\)/);
+  assert.doesNotMatch(privateHostProxy, /service_role|SUPABASE_|fetch\\(|headers\\.get\\("cf-access/);
 });
 
 test("only the private Vercel project role or exact dashboard hostname activates restricted routing", () => {
