@@ -4,6 +4,10 @@ import { readFileSync } from "node:fs";
 import { generateKeyPairSync, sign } from "node:crypto";
 
 import { authorizeOperator } from "../lib/command-center/operator-access.ts";
+import {
+  isPrivateOperatorDeployment,
+  privateOperatorRouteDecision,
+} from "../lib/command-center/operator-route-policy.ts";
 
 const page = readFileSync(new URL("../app/(prototype)/command-center/page.tsx", import.meta.url), "utf8");
 const auth = readFileSync(new URL("../lib/command-center/operator-access.ts", import.meta.url), "utf8");
@@ -108,21 +112,63 @@ test("there is no browser credential, demo authentication, or Avuhz authority sh
   assert.doesNotMatch(page, /setState\(|useState\(|onClick=|fetch\([^)]*\/v1\/commands/);
 });
 
-test("dashboard hostname is restricted to the verified operator route", () => {
-  assert.match(privateHostProxy, /const PRIVATE_OPERATOR_HOST = "dashboard\.sekinfra\.com"/);
-  assert.match(privateHostProxy, /request\.nextUrl\.hostname\.toLowerCase\(\) !== PRIVATE_OPERATOR_HOST/);
+test("the private deployment proxy restricts every route, including Vercel project aliases", () => {
+  assert.match(privateHostProxy, /isPrivateOperatorDeployment\(/);
+  assert.match(privateHostProxy, /process\.env\.SEKINFRA_DEPLOYMENT_ROLE/);
+  assert.match(privateHostProxy, /privateOperatorRouteDecision\(/);
   assert.match(privateHostProxy, /NextResponse\.next\(\)/);
-  assert.match(privateHostProxy, /pathname === "\/"/);
+  assert.match(privateHostProxy, /action === "rewrite"/);
   assert.match(privateHostProxy, /destination\.pathname = "\/command-center"/);
   assert.match(privateHostProxy, /destination\.search = ""/);
   assert.match(privateHostProxy, /NextResponse\.rewrite\(destination\)/);
-  assert.match(privateHostProxy, /pathname === "\/command-center"/);
+  assert.match(privateHostProxy, /action === "forward"/);
   assert.match(privateHostProxy, /status: 404/);
   assert.match(privateHostProxy, /private, no-store, max-age=0/);
   assert.match(privateHostProxy, /noindex, nofollow, noarchive/);
   assert.match(privateHostProxy, /matcher:/);
   assert.match(privateHostProxy, /_next\//);
-  // A host-level rewrite is not Avuhz identity or a substitute for signature verification.
+  // The route restriction is not Avuhz identity or JWT authentication.
   assert.match(page, /authorizeOperator\(await headers\(\)\)/);
   assert.doesNotMatch(privateHostProxy, /service_role|SUPABASE_|fetch\(|headers\.get\("cf-access/);
+});
+
+test("only the private Vercel project role or exact dashboard hostname activates restricted routing", () => {
+  for (const publicHost of [
+    "sekinfra.com",
+    "www.sekinfra.com",
+    "sekinfra-website.vercel.app",
+    "sekinfra-website-git-main-anonymouskoo.vercel.app",
+  ]) {
+    assert.equal(isPrivateOperatorDeployment(publicHost, undefined), false);
+    assert.equal(isPrivateOperatorDeployment(publicHost, "public-website"), false);
+    assert.equal(isPrivateOperatorDeployment(publicHost, "private-operator-fake"), false);
+  }
+  for (const privateHost of [
+    "sekinfra-command-center.vercel.app",
+    "sekinfra-command-center-git-main-anonymouskoo.vercel.app",
+    "sekinfra-command-center-pr-preview.vercel.app",
+  ]) {
+    assert.equal(isPrivateOperatorDeployment(privateHost, "private-operator"), true);
+    assert.equal(isPrivateOperatorDeployment(privateHost, undefined), false);
+  }
+  assert.equal(isPrivateOperatorDeployment("dashboard.sekinfra.com", undefined), true);
+  assert.equal(isPrivateOperatorDeployment("DASHBOARD.SEKINFRA.COM", undefined), true);
+});
+
+test("private project never serves public website routes or APIs", () => {
+  assert.equal(privateOperatorRouteDecision("/"), "rewrite");
+  assert.equal(privateOperatorRouteDecision("/command-center/"), "rewrite");
+  assert.equal(privateOperatorRouteDecision("/command-center"), "forward");
+  for (const path of [
+    "/start", "/about", "/outcomes", "/how-it-works",
+    "/api/diagnostic-intake", "/workspace", "/client/engagements/demo",
+    "/robots.txt", "/.well-known/security.txt",
+  ]) {
+    assert.equal(privateOperatorRouteDecision(path), "deny");
+  }
+  // The actual operator page still requires the exact dashboard hostname and
+  // a signed Cloudflare Access JWT. A Vercel alias must never bypass identity.
+  assert.match(auth, /incomingHost !== hostname/);
+  assert.match(auth, /hostname !== "dashboard.sekinfra.com"/);
+  assert.match(auth, /SEKINFRA_COMMAND_CENTER_ENABLED !== "true"/);
 });

@@ -10,7 +10,8 @@ This document does **not** assert that the private deployment, Cloudflare policy
 
 - Repository: `AnonymousKoo/sekinfra` (Next.js website).
 - Intended private hostname: `dashboard.sekinfra.com`. The hostname is pinned in source; public `sekinfra.com`, `www.sekinfra.com`, Vercel aliases, and unknown hosts fail closed.
-- Current public website deployment must stay untouched while a separately scoped private operator deployment is verified.
+- Vercel project `sekinfra-command-center` (`prj_lUa67e16EsLK6OhJFjDBPmUjIuKz`) is independent of the public website project `sekinfra-website` (`prj_Cx03RXZ6zBCmq1i70UQPjtxth4SN`); both build the same Git repository, so the private project must have an explicit routing marker to avoid serving the public homepage on its Vercel URL. Its distinct private deployment marker affects routing only, **not authentication**.
+- Current public website deployment must stay untouched while the separately scoped private operator deployment is verified.
 - Cloudflare Access is an outer operator perimeter only. Its JWT **does not** confer Avuhz tenant, organization, capability, or approval authority.
 - All business access and business mutations remain governed by the **shared Avuhz API**, not by the website, Cloudflare or direct n8n calls.
 
@@ -20,6 +21,7 @@ Only configure these on the **separately approved private operator deployment** 
 
 | Name | Meaning |
 | --- | --- |
+| `SEKINFRA_DEPLOYMENT_ROLE` | Exact `private-operator` value, **configured only in the dedicated Vercel Command Center project**, for Preview and Production. Restricts its Vercel alias to the private route; never set this on the public website project. Not a credential or an authentication bypass. |
 | `SEKINFRA_COMMAND_CENTER_ENABLED` | Must equal exactly `true` or every request is refused. |
 | `SEKINFRA_OPERATOR_HOST` | Must equal exactly `dashboard.sekinfra.com`. The incoming Host must match. |
 | `SEKINFRA_ACCESS_TEAM_DOMAIN` | Exact `https://<team>.cloudflareaccess.com` issuer; HTTPS only. |
@@ -28,6 +30,8 @@ Only configure these on the **separately approved private operator deployment** 
 | `SEKINFRA_AVUHZ_READINESS_URL` | Optional approved `https://<hostname>.onrender.com/health/ready` for a no-credential, server-side readiness check. Not an authenticated client-data transport. |
 
 Do not commit the real owner email, tokens, private keys, credentials, provider payloads, or secret values. Cloudflare's issuer/audience are configuration values, not independent proof of authorized deployment. Never register the private operator hostname against the existing public Vercel project without a separate exact plan and direct-origin review.
+
+**Expected behavior before Cloudflare cutover:** `sekinfra-command-center.vercel.app` should no longer display the public Sekinfra site after this routing change deploys. Its root rewrites to `/command-center`, which **still responds 404** without the exact `dashboard.sekinfra.com` hostname and a properly signed Cloudflare Access JWT. Do not set `SEKINFRA_COMMAND_CENTER_ENABLED=true` to try to make the Vercel alias work. The existing Cloudflare Tunnel/DNS/Access remain unchanged until an independently approved cutover.
 
 ## Security model implemented in repository code
 
