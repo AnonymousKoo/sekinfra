@@ -101,7 +101,10 @@ export async function authorizeOperator(
     );
     if (!matching) return null;
 
-    const publicKey = createPublicKey({ key: matching as JsonWebKey, format: "jwk" });
+    const publicKey = createPublicKey({
+      key: { kty: "RSA", n: matching.n as string, e: matching.e as string },
+      format: "jwk",
+    });
     const verified = verifySignature(
       "RSA-SHA256",
       Buffer.from(`${parts[0]}.${parts[1]}`, "utf8"),
