@@ -8,6 +8,7 @@ on:
       - 'components/command-center/**'
       - 'lib/command-center/**'
       - 'next.config.ts'
+      - 'proxy.ts'
       - 'tests/command-center-preview.test.ts'
       - '.github/workflows/command-center-preview.yml'
   workflow_dispatch:

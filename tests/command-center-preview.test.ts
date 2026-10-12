@@ -7,6 +7,7 @@ import { authorizeOperator } from "../lib/command-center/operator-access.ts";
 
 const page = readFileSync(new URL("../app/(prototype)/command-center/page.tsx", import.meta.url), "utf8");
 const auth = readFileSync(new URL("../lib/command-center/operator-access.ts", import.meta.url), "utf8");
+const privateHostProxy = readFileSync(new URL("../proxy.ts", import.meta.url), "utf8");
 const now = 1_800_000_000;
 const issuer = "https://sek-test.cloudflareaccess.com";
 const audience = "testaudienceabcdefghijklmnopqrst";
@@ -105,4 +106,23 @@ test("there is no browser credential, demo authentication, or Avuhz authority sh
   assert.match(auth, /cdn-cgi\/access\/certs/);
   assert.doesNotMatch(auth, /localStorage|sessionStorage|service_role|process\.env\.NEXT_PUBLIC/);
   assert.doesNotMatch(page, /setState\(|useState\(|onClick=|fetch\([^)]*\/v1\/commands/);
+});
+
+test("dashboard hostname is restricted to the verified operator route", () => {
+  assert.match(privateHostProxy, /const PRIVATE_OPERATOR_HOST = "dashboard\.sekinfra\.com"/);
+  assert.match(privateHostProxy, /request\.nextUrl\.hostname\.toLowerCase\(\) !== PRIVATE_OPERATOR_HOST/);
+  assert.match(privateHostProxy, /NextResponse\.next\(\)/);
+  assert.match(privateHostProxy, /pathname === "\/"/);
+  assert.match(privateHostProxy, /destination\.pathname = "\/command-center"/);
+  assert.match(privateHostProxy, /destination\.search = ""/);
+  assert.match(privateHostProxy, /NextResponse\.rewrite\(destination\)/);
+  assert.match(privateHostProxy, /pathname === "\/command-center"/);
+  assert.match(privateHostProxy, /status: 404/);
+  assert.match(privateHostProxy, /private, no-store, max-age=0/);
+  assert.match(privateHostProxy, /noindex, nofollow, noarchive/);
+  assert.match(privateHostProxy, /matcher:/);
+  assert.match(privateHostProxy, /_next\//);
+  // A host-level rewrite is not Avuhz identity or a substitute for signature verification.
+  assert.match(page, /authorizeOperator\(await headers\(\)\)/);
+  assert.doesNotMatch(privateHostProxy, /service_role|SUPABASE_|fetch\(|headers\.get\("cf-access/);
 });
