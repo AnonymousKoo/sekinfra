@@ -4,7 +4,7 @@
  * This is a thin caller of the existing shared Supabase AUTH GoTrue endpoints,
  * NOT a Sekinfra login provider, user database, or tenant-authority service.
  * Exactly one AUTH project is pinned. No service-role/secret keys, refresh
- * token persistence, cookies, localStorage, third-party scripts, analytics,
+ * token persistence, cookies, persistent browser storage, third-party scripts, analytics,
  * logging, callback redirect, or server-side password handling.
  *
  * A signed Cloudflare Access operator gate is required on the route that
