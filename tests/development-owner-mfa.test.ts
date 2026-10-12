@@ -118,7 +118,9 @@ test("signed owner is checked against verified Supabase user, not browser input"
 
 test("wrong owner, tenant binding, anonymous and unconfirmed users fail closed", async () => {
   for (const partial of [
-    { id: other },
+    // A signed Cloudflare email is the owner selector. The independent
+    // Supabase subject is learned from GET /user, not preselected by UI.
+    { id: "not-a-uuid" },
     { email: "wrong@example.com" },
     { email_confirmed_at: null },
     { app_metadata: { avuhz_tenant_id: subject } },
