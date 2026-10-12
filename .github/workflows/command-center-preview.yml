@@ -5,8 +5,12 @@ on:
     branches: [main]
     paths:
       - 'app/(prototype)/command-center/**'
+      - 'app/(prototype)/owner-enrollment/**'
       - 'components/command-center/**'
       - 'lib/command-center/**'
+      - 'lib/shared-auth/development-owner-mfa.ts'
+      - 'next.config.ts'
+      - 'tests/development-owner-mfa.test.ts'
       - 'next.config.ts'
       - 'proxy.ts'
       - 'tests/command-center-preview.test.ts'
@@ -39,7 +43,7 @@ jobs:
       - name: Restore lockfile dependencies
         run: npm ci --ignore-scripts --no-audit --no-fund
       - name: Verify JWT signatures, owner perimeter, and no fake client actions
-        run: node --experimental-strip-types --test tests/command-center-preview.test.ts
+        run: node --experimental-strip-types --test tests/command-center-preview.test.ts tests/development-owner-mfa.test.ts
       - name: Check repository lint rules
         run: npm run lint
       - name: Generate Next.js route types
