@@ -55,7 +55,7 @@ test("command center is private and has no synthetic portfolio or command facade
   assert.match(page, /if \(!identity\) notFound\(\)/);
   assert.doesNotMatch(page, /orderedWorkspaceEngagements|oiaWorkspaceFixture|CommandCenterExperience|fixtures\/oia-workspace/);
   assert.doesNotMatch(page, /service_role|SUPABASE_SERVICE|Authorization:\s*Bearer/);
-  assert.match(page, /client.*not connected/i);
+  assert.match(page, /Client read access not connected/);
   assert.match(page, /cache: "no-store"/);
 });
 
@@ -89,7 +89,9 @@ test("operator access fails closed before network contact for invalid input and 
 });
 
 test("operator access rejects forged signatures, missing cert keys and JWKS outages", async () => {
-  const forgedToken = signedToken().replace(/.$/, (value) => value === "A" ? "B" : "A");
+  const original = signedToken();
+  const [h, c, signature] = original.split(".");
+  const forgedToken = `${h}.${c}.${signature[0] === "A" ? "B" : "A"}${signature.slice(1)}`;
   assert.equal(await authorizeOperator(request(forgedToken), env, retrieve, now), null);
   const missingKey = (async () => new Response(JSON.stringify({ keys: [] }), { status: 200 })) as typeof fetch;
   assert.equal(await authorizeOperator(request(signedToken()), env, missingKey, now), null);
