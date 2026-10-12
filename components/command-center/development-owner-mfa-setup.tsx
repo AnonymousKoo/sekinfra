@@ -14,8 +14,9 @@ type Props = { publishableKey: string; expectedEmail: string };
 
 export function DevelopmentOwnerMfaSetup({ publishableKey, expectedEmail }: Props) {
   const session = useRef<OwnerSession | null>(null);
-  const failedVerifications = useRef(0);
   const [password, setPassword] = useState("");
+  const [existingFactor, setExistingFactor] = useState(false);
+  const [verificationAttempts, setVerificationAttempts] = useState(0);
   const [code, setCode] = useState("");
   const [stage, setStage] = useState<Stage>("signin");
   const [candidate, setCandidate] = useState<TotpEnrollment | null>(null);
@@ -24,7 +25,8 @@ export function DevelopmentOwnerMfaSetup({ publishableKey, expectedEmail }: Prop
 
   function clearPrivateState() {
     session.current = null;
-    failedVerifications.current = 0;
+    setVerificationAttempts(0);
+    setExistingFactor(false);
     setPassword("");
     setCode("");
     setCandidate(null);
@@ -41,6 +43,7 @@ export function DevelopmentOwnerMfaSetup({ publishableKey, expectedEmail }: Prop
       session.current = await authenticateDevelopmentOwner(
         publishableKey, expectedEmail, password,
       );
+      setExistingFactor(Boolean(session.current.factorId));
       setStage("ready");
     } catch {
       session.current = null;
@@ -77,7 +80,7 @@ export function DevelopmentOwnerMfaSetup({ publishableKey, expectedEmail }: Prop
     const active = session.current;
     const factor = candidate?.factorId ?? active?.factorId;
     if (busy || stage !== "enrolled" || !active || !factor
-      || !/^\d{6}$/.test(code) || failedVerifications.current >= 5) return;
+      || !/^\d{6}$/.test(code) || verificationAttempts >= 5) return;
     setBusy(true);
     setError("");
     try {
@@ -88,10 +91,11 @@ export function DevelopmentOwnerMfaSetup({ publishableKey, expectedEmail }: Prop
       setStage("completed");
       session.current = null;
       setCandidate(null);
-      failedVerifications.current = 0;
+      setVerificationAttempts(0);
     } catch {
-      failedVerifications.current += 1;
-      setError(failedVerifications.current >= 5
+      const nextAttempts = verificationAttempts + 1;
+      setVerificationAttempts(nextAttempts);
+      setError(nextAttempts >= 5
         ? "Too many attempts in this setup. Close the page and contact the operator."
         : "The authenticator code could not be verified. Try the latest code.");
     } finally {
@@ -134,7 +138,7 @@ export function DevelopmentOwnerMfaSetup({ publishableKey, expectedEmail }: Prop
       <p className="text-sm text-[#d8e7e0]">Your confirmed identity matched the private operator account.</p>
       <p className="text-sm text-[#a6bfba]">An authenticator generates a new six-digit code about every 30 seconds.</p>
       <button type="button" className={button} onClick={enroll} disabled={busy}>
-        {busy ? "Preparing MFA…" : session.current?.factorId ? "Verify existing authenticator" : "Start authenticator setup"}
+        {busy ? "Preparing MFA…" : existingFactor ? "Verify existing authenticator" : "Start authenticator setup"}
       </button>
     </div>}
 
@@ -162,7 +166,7 @@ export function DevelopmentOwnerMfaSetup({ publishableKey, expectedEmail }: Prop
           className={field} required />
       </div>
       <button className={button} type="submit"
-        disabled={busy || code.length !== 6 || failedVerifications.current >= 5}>
+        disabled={busy || code.length !== 6 || verificationAttempts >= 5}>
         {busy ? "Verifying…" : "Verify authenticator"}
       </button>
     </form>}
