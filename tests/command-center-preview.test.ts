@@ -113,23 +113,23 @@ test("there is no browser credential, demo authentication, or Avuhz authority sh
 });
 
 test("the private deployment proxy restricts every route, including Vercel project aliases", () => {
-  assert.match(privateHostProxy, /isPrivateOperatorDeployment\\(/);
-  assert.match(privateHostProxy, /process\\.env\\.SEKINFRA_DEPLOYMENT_ROLE/);
-  assert.match(privateHostProxy, /privateOperatorRouteDecision\\(/);
-  assert.match(privateHostProxy, /NextResponse\\.next\\(\\)/);
+  assert.match(privateHostProxy, /isPrivateOperatorDeployment\(/);
+  assert.match(privateHostProxy, /process\.env\.SEKINFRA_DEPLOYMENT_ROLE/);
+  assert.match(privateHostProxy, /privateOperatorRouteDecision\(/);
+  assert.match(privateHostProxy, /NextResponse\.next\(\)/);
   assert.match(privateHostProxy, /action === "rewrite"/);
-  assert.match(privateHostProxy, /destination\\.pathname = "\\/command-center"/);
-  assert.match(privateHostProxy, /destination\\.search = ""/);
-  assert.match(privateHostProxy, /NextResponse\\.rewrite\\(destination\\)/);
+  assert.match(privateHostProxy, /destination\.pathname = "\/command-center"/);
+  assert.match(privateHostProxy, /destination\.search = ""/);
+  assert.match(privateHostProxy, /NextResponse\.rewrite\(destination\)/);
   assert.match(privateHostProxy, /action === "forward"/);
   assert.match(privateHostProxy, /status: 404/);
   assert.match(privateHostProxy, /private, no-store, max-age=0/);
   assert.match(privateHostProxy, /noindex, nofollow, noarchive/);
   assert.match(privateHostProxy, /matcher:/);
-  assert.match(privateHostProxy, /_next\\//);
+  assert.match(privateHostProxy, /_next\//);
   // The route restriction is not Avuhz identity or JWT authentication.
-  assert.match(page, /authorizeOperator\\(await headers\\(\\)\\)/);
-  assert.doesNotMatch(privateHostProxy, /service_role|SUPABASE_|fetch\\(|headers\\.get\\("cf-access/);
+  assert.match(page, /authorizeOperator\(await headers\(\)\)/);
+  assert.doesNotMatch(privateHostProxy, /service_role|SUPABASE_|fetch\(|headers\.get\("cf-access/);
 });
 
 test("only the private Vercel project role or exact dashboard hostname activates restricted routing", () => {
