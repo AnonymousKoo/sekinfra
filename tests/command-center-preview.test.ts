@@ -159,8 +159,12 @@ test("private project never serves public website routes or APIs", () => {
   assert.equal(privateOperatorRouteDecision("/"), "rewrite");
   assert.equal(privateOperatorRouteDecision("/command-center/"), "rewrite");
   assert.equal(privateOperatorRouteDecision("/command-center"), "forward");
+  // Even with private deployment routing, enrollment stays individually
+  // disabled and signed-operator gated inside the page itself.
+  assert.equal(privateOperatorRouteDecision("/owner-enrollment"), "forward");
   for (const path of [
     "/start", "/about", "/outcomes", "/how-it-works",
+    "/owner-enrollment/", "/owner-enrollment/api",
     "/api/diagnostic-intake", "/workspace", "/client/engagements/demo",
     "/robots.txt", "/.well-known/security.txt",
   ]) {
