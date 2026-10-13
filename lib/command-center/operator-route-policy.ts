@@ -27,5 +27,7 @@ export function privateOperatorRouteDecision(
   // The page itself enforces a separate disabled-by-default opt-in and
   // a signed, exact-owner Cloudflare Access JWT. No public-path bypass.
   if (pathname === "/owner-enrollment") return "forward";
+  // Separate private password-recovery route; its page has additional gates.
+  if (pathname === "/owner-password-recovery") return "forward";
   return "deny";
 }

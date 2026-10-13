@@ -90,7 +90,7 @@ async function authRequest(
   }
 }
 
-function ownerIdentity(user: Record<string, unknown>, expectedEmail: string): string {
+export function ownerIdentity(user: Record<string, unknown>, expectedEmail: string): string {
   const appMetadata = record(user.app_metadata);
   if (typeof user.id !== "string" || !idPattern.test(user.id)
     || typeof user.email !== "string"
