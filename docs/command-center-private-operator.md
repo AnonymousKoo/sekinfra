@@ -27,7 +27,7 @@ Only configure these on the **separately approved private operator deployment** 
 | `SEKINFRA_ACCESS_TEAM_DOMAIN` | Exact `https://<team>.cloudflareaccess.com` issuer; HTTPS only. |
 | `SEKINFRA_ACCESS_AUD` | Exact Cloudflare Access application audience for this private operator app. |
 | `SEKINFRA_OPERATOR_EMAIL` | One owner email allowed by the private Cloudflare Access policy; checked against the **signed** JWT email claim. |
-| `SEKINFRA_AVUHZ_READINESS_URL` | Optional approved `https://<hostname>.onrender.com/health/ready` for a no-credential, server-side readiness check. Not an authenticated client-data transport. |
+| `SEKINFRA_DEV_OWNER_PASSWORD_RECOVERY_ENABLED` | Separate disabled-by-default DEVELOPMENT password recovery pilot flag. Only the private operator deployment may set it to exactly `true` after security review, dedicated redirect allowlist verification and explicit approval. |\n| `SEKINFRA_AVUHZ_READINESS_URL` | Optional approved `https://<hostname>.onrender.com/health/ready` for a no-credential, server-side readiness check. Not an authenticated client-data transport. |
 
 Do not commit the real owner email, tokens, private keys, credentials, provider payloads, or secret values. Cloudflare's issuer/audience are configuration values, not independent proof of authorized deployment. Never register the private operator hostname against the existing public Vercel project without a separate exact plan and direct-origin review.
 
@@ -53,6 +53,16 @@ The Cloudflare Access gate does **not** replace defense-in-depth at the Avuhz AP
 - Verify from the direct Vercel origin and public website hostname: denied. Confirm unauthenticated requests make no Avuhz/provider data calls.
 - Verify only signed, approved operator traffic on the exact private hostname can render the shell. Compare external probe status independently; do not label a URL's mere presence as healthy.
 - Confirm relevant CI gate, immutable reviewed commit, secure environment configuration, logging, incident/rollback path, and explicit production change approval **before** binding/repointing the hostname.
+
+## DEVELOPMENT owner password setup (prepared, NOT activated)
+
+This repository now contains a **disabled-by-default** private `/owner-password-recovery` route and an exact one-owner shared Supabase DEVELOPMENT AUTH browser transport. It is a companion to `/owner-enrollment`, not another authentication service. It does not grant tenant, organization, Avuhz session, MFA or business authority. The same Cloudflare signed-JWT verifier, exact private hostname, owner, private deployment role, valid server-configured publishable key and new separate recovery flag are mandatory. The public Sekinfra website and direct Vercel aliases fail closed; the private project's proxy allows this one exact pathname only.
+
+Before enabling anything, obtain a separate owner approval for **exactly one DEVELOPMENT AUTH URL configuration change** in Supabase project `pwlhruwutoitnieactol` (not DATA `gnuqaefotwgkwurjpyik`): add only `https://dashboard.sekinfra.com/owner-password-recovery` to the Redirect URLs allowlist. Preserve the existing Site URL and other providers. Do not use the Supabase dashboard's `Send password recovery` command while its default Site URL is `http://localhost:3000`: it may direct the existing account to localhost. Instead, once the allowlist and callback are verified, the private recovery page can request one password email for the already signed owner through the pinned GoTrue `/auth/v1/recover` endpoint with its exact `redirect_to` value.
+
+The default GoTrue implicit-recovery link redirects with a `#type=recovery&access_token=…` fragment. This client removes the fragment from browser history immediately, independently queries `GET /auth/v1/user` and requires the same confirmed, non-anonymous and unbound existing owner identity before permitting one `PUT /auth/v1/user` password update. It never sends the password or recovery bearer token to a Sekinfra server, does not use refresh tokens, and reports separately whether local logout of the temporary recovery session was accepted. Unsupported PKCE `?code`, query tokens or changed email templates fail closed. Cloudflare Access redirection may affect fragment delivery; confirm the actual end-to-end signed-in callback behavior before issuing any live email. Never paste the email link, token, password or session into chat, CI, logs, committed files or tickets.
+
+**Further separately approved boundaries:** verify private project Production assignment for `SEKINFRA_DEV_OWNER_PASSWORD_RECOVERY_ENABLED`, confirm the deployed review SHA, run the offline CI and security denial tests, verify the redirect allowlist, and issue exactly one owner-interactive recovery email with no retry by default. After the owner completes password setup privately, verify temporary session revocation and return to existing TOTP MFA enrollment. No user creation, admin key, AUTH provider schema change, DATA access, production Avuhz activation or customer record action is authorized by this preparation.
 
 ## Remaining integrations — not implemented
 
