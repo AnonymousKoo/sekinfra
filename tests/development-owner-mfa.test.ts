@@ -7,6 +7,7 @@ import {
   OwnerEnrollmentDenied,
   authenticateDevelopmentOwner,
   beginTotpEnrollment,
+  clearUnverifiedDevelopmentOwnerTotp,
   verifyTotpEnrollment,
   validDevelopmentPublishableKey,
   type OwnerSession,
@@ -76,6 +77,8 @@ test("private route is not public or another login infrastructure", () => {
   assert.match(nextConfig, /no-referrer/);
   assert.match(nextConfig, /no-store/);
   assert.match(client, /useRef<OwnerSession \| null>/);
+  assert.match(client, /Clear unfinished authenticator setup/);
+  assert.match(client, /clearUnverifiedDevelopmentOwnerTotp/);
   assert.doesNotMatch(client + transport, /localStorage|sessionStorage|document\.cookie|navigator\.sendBeacon|console\.|refresh_token\s*=/);
   assert.doesNotMatch(client + transport, /n8n|service_role|SECRET_KEY|\/rest\/v1\//);
 });
@@ -125,7 +128,15 @@ test("wrong owner, tenant binding, anonymous and unconfirmed users fail closed",
     { app_metadata: { avuhz_tenant_id: subject } },
     { app_metadata: { avuhz_workload: "test" } },
     { is_anonymous: true },
-    { factors: [{ id: factorId, factor_type: "totp", status: "unverified" }] },
+    { factors: [
+      { id: factorId, factor_type: "totp", status: "unverified" },
+      { id: challengeId, factor_type: "totp", status: "unverified" },
+    ] },
+    { factors: [{ id: "invalid-id", factor_type: "totp", status: "unverified" }] },
+    { factors: [
+      { id: factorId, factor_type: "totp", status: "unverified" },
+      { id: challengeId, factor_type: "totp", status: "verified" },
+    ] },
   ]) {
     const net = mock([
       { path: "/auth/v1/token?grant_type=password", result: { access_token: token } },
@@ -136,6 +147,89 @@ test("wrong owner, tenant binding, anonymous and unconfirmed users fail closed",
       OwnerEnrollmentDenied,
     );
   }
+});
+
+test("one pending TOTP is observed but never deleted automatically during sign-in", async () => {
+  const net = mock([
+    { path: "/auth/v1/token?grant_type=password", result: { access_token: token } },
+    { path: "/auth/v1/user", result: user({
+      factors: [{ id: factorId, factor_type: "totp", status: "unverified" }],
+    }) },
+  ]);
+  const owner = await authenticateDevelopmentOwner(key, email, "private-test-password", net.retrieve);
+  assert.deepEqual(owner, { ...session, pendingFactorId: factorId });
+  assert.equal(net.calls.length, 2);
+  assert.equal(net.calls.some(call => call.init.method === "DELETE"), false);
+  await assert.rejects(beginTotpEnrollment(key, owner, net.retrieve), OwnerEnrollmentDenied);
+  assert.equal(net.calls.length, 2);
+});
+
+test("owner can remove exactly one unverified TOTP only after fresh verified identity checks", async () => {
+  const pending = [{ id: factorId, factor_type: "totp", status: "unverified" }];
+  const net = mock([
+    { path: "/auth/v1/user", result: user({ factors: pending }) },
+    { path: `/auth/v1/factors/${factorId}`, result: { id: factorId } },
+    { path: "/auth/v1/user", result: user({ factors: [] }) },
+  ]);
+  await clearUnverifiedDevelopmentOwnerTotp(
+    key, { ...session, pendingFactorId: factorId }, email, net.retrieve,
+  );
+  assert.deepEqual(net.calls.map(c => c.init.method), ["GET", "DELETE", "GET"]);
+  assert.equal((net.calls[1].init.headers as Record<string,string>).Authorization, `Bearer ${token}`);
+  for (const call of net.calls) {
+    assert.equal(call.init.cache, "no-store");
+    assert.equal(call.init.credentials, "omit");
+    assert.equal(call.init.referrerPolicy, "no-referrer");
+    assert.equal(call.init.redirect, "error");
+  }
+});
+
+test("cleanup rejects verified factors, wrong owner, changed status, and ambiguous response", async () => {
+  for (const rejected of [
+    user({ email: "other@example.com", factors: [{ id: factorId, factor_type: "totp", status: "unverified" }] }),
+    user({ factors: [{ id: factorId, factor_type: "totp", status: "verified" }] }),
+    user({ factors: [
+      { id: factorId, factor_type: "totp", status: "unverified" },
+      { id: challengeId, factor_type: "totp", status: "unverified" },
+    ] }),
+    user({ factors: [
+      { id: factorId, factor_type: "totp", status: "unverified" },
+      { id: challengeId, factor_type: "totp", status: "verified" },
+    ] }),
+  ]) {
+    const net = mock([{ path: "/auth/v1/user", result: rejected }]);
+    await assert.rejects(
+      clearUnverifiedDevelopmentOwnerTotp(
+        key, { ...session, pendingFactorId: factorId }, email, net.retrieve,
+      ), OwnerEnrollmentDenied,
+    );
+    assert.equal(net.calls.length, 1);
+    assert.equal(net.calls.some(call => call.init.method === "DELETE"), false);
+  }
+  const mismatch = mock([
+    { path: "/auth/v1/user", result: user({
+      factors: [{ id: factorId, factor_type: "totp", status: "unverified" }],
+    }) },
+    { path: `/auth/v1/factors/${factorId}`, result: { id: challengeId } },
+  ]);
+  await assert.rejects(
+    clearUnverifiedDevelopmentOwnerTotp(key, { ...session, pendingFactorId: factorId }, email, mismatch.retrieve),
+    OwnerEnrollmentDenied,
+  );
+  assert.equal(mismatch.calls.length, 2);
+});
+
+test("cleanup never reports success if the factor remains after API deletion", async () => {
+  const pending = [{ id: factorId, factor_type: "totp", status: "unverified" }];
+  const net = mock([
+    { path: "/auth/v1/user", result: user({ factors: pending }) },
+    { path: `/auth/v1/factors/${factorId}`, result: { id: factorId } },
+    { path: "/auth/v1/user", result: user({ factors: pending }) },
+  ]);
+  await assert.rejects(
+    clearUnverifiedDevelopmentOwnerTotp(key, { ...session, pendingFactorId: factorId }, email, net.retrieve),
+    OwnerEnrollmentDenied,
+  );
 });
 
 test("already verified TOTP factor prevents duplicate factor creation", async () => {

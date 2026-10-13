@@ -20,6 +20,8 @@ export type OwnerSession = Readonly<{
   accessToken: string;
   subject: string;
   factorId: string | null;
+  /** Present only when the signed-in owner has exactly one unverified TOTP. */
+  pendingFactorId?: string;
 }>;
 
 export type TotpEnrollment = Readonly<{
@@ -51,11 +53,11 @@ function record(value: unknown): Record<string, unknown> | null {
 async function authRequest(
   path: string,
   key: string,
-  options: { method: "POST" | "GET"; body?: Record<string, string>; token?: string },
+  options: { method: "POST" | "GET" | "DELETE"; body?: Record<string, string>; token?: string },
   retrieve: Requester,
 ): Promise<Record<string, unknown>> {
   if (!validDevelopmentPublishableKey(key)
-    || !/^\/auth\/v1\/(?:token\?grant_type=password|user|factors(?:\/[0-9a-f-]{36}\/(?:challenge|verify))?)$/.test(path)) {
+    || !/^\/auth\/v1\/(?:token\?grant_type=password|user|factors(?:\/[0-9a-f-]{36}(?:\/(?:challenge|verify))?)?)$/.test(path)) {
     throw new OwnerEnrollmentDenied();
   }
   if (options.token && (options.token.length > 16384 || !tokenPattern.test(options.token))) {
@@ -124,24 +126,73 @@ export async function authenticateDevelopmentOwner(
     { method: "GET", token: accessToken }, retrieve);
   const subject = ownerIdentity(user, expectedEmail);
 
-  // Do not silently duplicate an existing TOTP factor. A second visit
-  // should challenge an existing verified factor, not enroll a new one.
+  // Observe pending MFA after independent confirmed-owner authentication;
+  // never automatically delete it or silently create another factor.
   const factors = Array.isArray(user.factors) ? user.factors : [];
-  if (factors.some((item: unknown) => {
+  const pending = factors.filter((item: unknown) => {
     const factor = record(item);
     return factor?.factor_type === "totp" && factor.status === "unverified";
-  })) throw new OwnerEnrollmentDenied();
+  });
+  if (pending.length > 1) throw new OwnerEnrollmentDenied();
+  const candidate = pending.length === 1 ? record(pending[0]) : null;
+  if (candidate && (typeof candidate.id !== "string" || !idPattern.test(candidate.id))) {
+    throw new OwnerEnrollmentDenied();
+  }
   const verified = factors.find((item: unknown) => {
     const factor = record(item);
     return factor?.factor_type === "totp" && factor.status === "verified"
       && typeof factor.id === "string" && idPattern.test(factor.id);
   });
+  if (verified && candidate) throw new OwnerEnrollmentDenied();
   const validFactor = record(verified);
   return {
     accessToken,
     subject,
     factorId: validFactor && typeof validFactor.id === "string" ? validFactor.id : null,
+    ...(candidate ? { pendingFactorId: candidate.id as string } : {}),
   };
+}
+
+/**
+ * One owner-initiated deletion of a confirmed UNVERIFIED TOTP factor.
+ * Only pinned DEVELOPMENT AUTH GoTrue, a publishable key and the existing
+ * verified user's bearer session are involved. No admin keys or direct SQL.
+ */
+export async function clearUnverifiedDevelopmentOwnerTotp(
+  key: string,
+  session: OwnerSession,
+  expectedEmail: string,
+  retrieve: Requester = fetch,
+): Promise<void> {
+  const pendingId = session.pendingFactorId;
+  if (!pendingId || !idPattern.test(pendingId) || session.factorId !== null
+    || !idPattern.test(session.subject)) throw new OwnerEnrollmentDenied();
+
+  const before = await authRequest("/auth/v1/user", key,
+    { method: "GET", token: session.accessToken }, retrieve);
+  if (ownerIdentity(before, expectedEmail) !== session.subject) throw new OwnerEnrollmentDenied();
+  const factors = Array.isArray(before.factors) ? before.factors : [];
+  const pending = factors.filter((entry: unknown) => {
+    const factor = record(entry);
+    return factor?.factor_type === "totp" && factor.status === "unverified";
+  });
+  if (pending.length !== 1 || record(pending[0])?.id !== pendingId
+    || factors.some((entry: unknown) => {
+      const factor = record(entry);
+      return factor?.factor_type === "totp" && factor.status === "verified";
+    })) throw new OwnerEnrollmentDenied();
+
+  const deleted = await authRequest(`/auth/v1/factors/${pendingId}`, key,
+    { method: "DELETE", token: session.accessToken }, retrieve);
+  if (deleted.id !== pendingId) throw new OwnerEnrollmentDenied();
+
+  const after = await authRequest("/auth/v1/user", key,
+    { method: "GET", token: session.accessToken }, retrieve);
+  if (ownerIdentity(after, expectedEmail) !== session.subject
+    || !Array.isArray(after.factors)
+    || after.factors.some((entry: unknown) => record(entry)?.id === pendingId)) {
+    throw new OwnerEnrollmentDenied();
+  }
 }
 
 export async function beginTotpEnrollment(
@@ -149,7 +200,8 @@ export async function beginTotpEnrollment(
   session: OwnerSession,
   retrieve: Requester = fetch,
 ): Promise<TotpEnrollment> {
-  if (!idPattern.test(session.subject) || session.factorId !== null) {
+  if (!idPattern.test(session.subject) || session.factorId !== null
+    || session.pendingFactorId) {
     throw new OwnerEnrollmentDenied();
   }
   const data = await authRequest("/auth/v1/factors", key, {

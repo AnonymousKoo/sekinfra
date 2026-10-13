@@ -64,6 +64,14 @@ The default GoTrue implicit-recovery link redirects with a `#type=recovery&acces
 
 **Further separately approved boundaries:** verify private project Production assignment for `SEKINFRA_DEV_OWNER_PASSWORD_RECOVERY_ENABLED`, confirm the deployed review SHA, run the offline CI and security denial tests, verify the redirect allowlist, and issue exactly one owner-interactive recovery email with no retry by default. After the owner completes password setup privately, verify temporary session revocation and return to existing TOTP MFA enrollment. No user creation, admin key, AUTH provider schema change, DATA access, production Avuhz activation or customer record action is authorized by this preparation.
 
+## Unverified DEVELOPMENT owner TOTP cleanup (source only until reviewed)
+
+The existing `/owner-enrollment` page may encounter an **unverified** TOTP factor when a setup secret has been exposed before six-digit verification. The Supabase admin dashboard's **Remove MFA factors** success message is not proof that an unverified factor was deleted; verify the actual count read-only first. Never reuse an exposed enrollment secret and never delete rows directly from `auth.mfa_factors`.
+
+A separate explicit **Clear unfinished authenticator setup** action is available only after the existing signed Cloudflare operator check and owner password sign-in. It accepts exactly one pending `totp/unverified` factor, rejects invalid IDs, duplicate or verified factors, and independently checks current GoTrue `GET /auth/v1/user` identity before sending one owner-authenticated `DELETE /auth/v1/factors/{id}` request to pinned DEVELOPMENT AUTH `pwlhruwutoitnieactol`. It requires matching deletion confirmation and another owner-authenticated user read showing the factor is gone before enabling fresh enrollment. Uncertain outcomes stop. No service role, admin key, new provider, client customer data, RLS change, SQL deletion, or automatic cleanup on login.
+
+**Approval boundary:** Repository PR only; merging may deploy both Vercel projects because the repository is shared. Confirm CI/PR review and explicit merge approval, then verify the private deployment before the owner opens the existing page. The owner must deliberately click cleanup. Keep the next newly generated QR/secret private; do not photograph or send it to assistants. Once setup verifies, independently confirm MFA state read-only and disable recovery-only features per a separately approved deployment configuration change.
+
 ## Remaining integrations — not implemented
 
 - No shared Avuhz human operator access token or authenticated tenant-scoped query bridge has been registered for this website. The Avuhz DEVELOPMENT AUTH project is `pwlhruwutoitnieactol`; DEVELOPMENT DATA is `gnuqaefotwgkwurjpyik`. Never confuse them or access DATA directly from the website.
