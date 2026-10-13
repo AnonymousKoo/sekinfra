@@ -4,12 +4,13 @@ import { useRef, useState, type FormEvent } from "react";
 import {
   authenticateDevelopmentOwner,
   beginTotpEnrollment,
+  clearUnverifiedDevelopmentOwnerTotp,
   verifyTotpEnrollment,
   type OwnerSession,
   type TotpEnrollment,
 } from "@/lib/shared-auth/development-owner-mfa";
 
-type Stage = "signin" | "ready" | "enrolled" | "completed";
+type Stage = "signin" | "cleanup" | "ready" | "enrolled" | "completed";
 type Props = { publishableKey: string; expectedEmail: string };
 
 export function DevelopmentOwnerMfaSetup({ publishableKey, expectedEmail }: Props) {
@@ -44,13 +45,32 @@ export function DevelopmentOwnerMfaSetup({ publishableKey, expectedEmail }: Prop
         publishableKey, expectedEmail, password,
       );
       setExistingFactor(Boolean(session.current.factorId));
-      setStage("ready");
+      setStage(session.current.pendingFactorId ? "cleanup" : "ready");
     } catch {
       session.current = null;
       setError("Sign-in could not be verified. Check your credentials and try again.");
     } finally {
       // No application, analytics, or server storage of credentials.
       setPassword("");
+      setBusy(false);
+    }
+  }
+
+  async function clearUnverifiedFactor() {
+    const active = session.current;
+    if (busy || stage !== "cleanup" || !active?.pendingFactorId) return;
+    setBusy(true);
+    setError("");
+    try {
+      await clearUnverifiedDevelopmentOwnerTotp(publishableKey, active, expectedEmail);
+      // Only permit fresh enrollment after independently confirmed cleanup.
+      session.current = { ...active, pendingFactorId: undefined };
+      setStage("ready");
+    } catch {
+      session.current = null;
+      setError("Unfinished setup was not confirmed removed. Stop and request a fresh account review.");
+      setStage("signin");
+    } finally {
       setBusy(false);
     }
   }
@@ -133,6 +153,20 @@ export function DevelopmentOwnerMfaSetup({ publishableKey, expectedEmail }: Prop
         If you accepted the invitation without setting a password, stop here; do not create another account.
       </p>
     </form>}
+
+    {stage === "cleanup" && <div className="mt-7 space-y-4">
+      <p className="text-sm leading-6 text-[#d8e7e0]">
+        One unfinished authenticator setup exists. It cannot be used because its setup key
+        may have been exposed. Only its unverified factor can be cleared.
+      </p>
+      <button type="button" className={button} onClick={clearUnverifiedFactor} disabled={busy}>
+        {busy ? "Clearing unfinished setup…" : "Clear unfinished authenticator setup"}
+      </button>
+      <p className="text-xs text-[#aac0b7]">
+        This explicit action checks your confirmed identity before removing one unverified factor.
+        It will not remove an existing verified authenticator.
+      </p>
+    </div>}
 
     {stage === "ready" && <div className="mt-7 space-y-4">
       <p className="text-sm text-[#d8e7e0]">Your confirmed identity matched the private operator account.</p>
