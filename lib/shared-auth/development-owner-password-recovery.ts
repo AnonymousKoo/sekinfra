@@ -9,7 +9,7 @@ import {
   OwnerEnrollmentDenied,
   ownerIdentity,
   validDevelopmentPublishableKey,
-} from "./development-owner-mfa";
+} from "./development-owner-mfa.ts";
 
 export const DEVELOPMENT_RECOVERY_CALLBACK =
   "https://dashboard.sekinfra.com/owner-password-recovery";
