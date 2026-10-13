@@ -19,6 +19,7 @@ type Props = { publishableKey: string; expectedEmail: string };
  */
 export function DevelopmentOwnerPasswordRecovery({ publishableKey, expectedEmail }: Props) {
   const recoveryToken = useRef<string | null>(null);
+  const verificationEpoch = useRef(0);
   const [stage, setStage] = useState<Stage>("request");
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
@@ -26,6 +27,7 @@ export function DevelopmentOwnerPasswordRecovery({ publishableKey, expectedEmail
   const [logoutVerified, setLogoutVerified] = useState(false);
 
   useEffect(() => {
+    const epoch = ++verificationEpoch.current;
     const fragment = window.location.hash;
     const query = window.location.search;
     if (!fragment && !query) return;
@@ -33,16 +35,22 @@ export function DevelopmentOwnerPasswordRecovery({ publishableKey, expectedEmail
     window.history.replaceState(window.history.state, "", window.location.pathname);
     const token = !query ? recoveryAccessTokenFromFragment(fragment) : null;
     if (!token) {
-      setStage("invalid");
+      queueMicrotask(() => {
+        if (verificationEpoch.current === epoch) setStage("invalid");
+      });
       return;
     }
-    setStage("checking");
+    queueMicrotask(() => {
+      if (verificationEpoch.current === epoch) setStage("checking");
+    });
     verifyDevelopmentRecoverySession(publishableKey, expectedEmail, token)
       .then(() => {
+        if (verificationEpoch.current !== epoch) return;
         recoveryToken.current = token;
         setStage("reset");
       })
       .catch(() => {
+        if (verificationEpoch.current !== epoch) return;
         recoveryToken.current = null;
         setStage("invalid");
       });
@@ -88,6 +96,7 @@ export function DevelopmentOwnerPasswordRecovery({ publishableKey, expectedEmail
   }
 
   function clearPage() {
+    verificationEpoch.current += 1;
     recoveryToken.current = null;
     setPassword("");
     setConfirm("");
