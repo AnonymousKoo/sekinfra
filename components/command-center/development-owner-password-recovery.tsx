@@ -27,10 +27,10 @@ export function DevelopmentOwnerPasswordRecovery({ publishableKey, expectedEmail
   const [logoutVerified, setLogoutVerified] = useState(false);
 
   useEffect(() => {
-    const epoch = ++verificationEpoch.current;
     const fragment = window.location.hash;
     const query = window.location.search;
     if (!fragment && !query) return;
+    const epoch = ++verificationEpoch.current;
     // Remove all link tokens from the address bar/history before any network I/O.
     window.history.replaceState(window.history.state, "", window.location.pathname);
     const token = !query ? recoveryAccessTokenFromFragment(fragment) : null;
