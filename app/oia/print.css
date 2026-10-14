@@ -1,0 +1,25 @@
+@media print {
+  @page { margin: 16mm; size: auto; }
+  body { color: #111 !important; background: #fff !important; }
+  body * { visibility: hidden !important; }
+  .oia-print-report, .oia-print-report * { visibility: visible !important; }
+  .oia-print-report {
+    position: absolute;
+    inset: 0 auto auto 0;
+    width: 100%;
+    color: #111 !important;
+    font: 11pt/1.5 Arial, sans-serif;
+  }
+  .oia-print-report > * {
+    break-inside: avoid;
+    box-shadow: none !important;
+    background: #fff !important;
+    color: #111 !important;
+  }
+  .oia-print-report * {
+    color: #111 !important;
+    box-shadow: none !important;
+  }
+  .oia-print-report .grid > * { break-inside: avoid; }
+  .oia-no-print { display: none !important; }
+}

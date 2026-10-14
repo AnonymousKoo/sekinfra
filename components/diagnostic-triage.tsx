@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useMemo, useState } from "react";
 import { DiagnosticIntake } from "@/components/diagnostic-intake";
 import { usePersonalization } from "@/components/personalization-provider";
@@ -238,6 +239,9 @@ export function DiagnosticTriage() {
             >
               Prepare my request
             </button>
+            <Link href="/oia" className="inline-flex min-h-12 items-center justify-center rounded-[var(--radius-button)] border border-[var(--brand)] bg-[var(--brand-wash)] px-5 text-sm font-semibold text-[var(--brand)] transition hover:bg-white">
+              Take the guided OIA walkthrough →
+            </Link>
             <button
               type="button"
               onClick={copyBrief}

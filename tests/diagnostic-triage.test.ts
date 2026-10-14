@@ -66,7 +66,7 @@ test("problem review is explicit about browser-only triage and missing online in
   const brief = buildTriageBrief(input, result);
   assert.match(brief, /SEKINFRA PROBLEM REVIEW/);
   assert.match(brief, /first review, not a diagnosis/i);
-  assert.match(brief, /does not send the information/i);
-  assert.match(brief, /online intake is not connected yet/i);
+  assert.match(brief, /does not send this brief/i);
+  assert.match(brief, /online submission is not connected yet/i);
   assert.match(brief, /Routine work has a visible owner/);
 });

@@ -5,6 +5,7 @@ import {useEffect,useState}from"react";
 const links=[
   {href:"/outcomes",label:"Outcomes"},
   {href:"/how-it-works",label:"How It Works"},
+  {href:"/oia",label:"OIA Walkthrough"},
   {href:"/about",label:"About"}
 ];
 
@@ -21,7 +22,7 @@ export function MobileNav(){
     }
   },[open]);
 
-  return <div className="md:hidden">
+  return <div className="lg:hidden">
     <button
       aria-expanded={open}
       aria-controls="mobile-navigation"
