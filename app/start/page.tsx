@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { DiagnosticTriage } from "@/components/diagnostic-triage";
 import { SiteShell } from "@/components/site-shell";
 import { SystemDiagram } from "@/components/visuals/system-diagram";
@@ -95,6 +96,9 @@ export default function Start() {
                   Email Sekinfra to get started
                   <span className="ml-2" aria-hidden="true">→</span>
                 </a>
+                <Link href="/oia" className="text-sm font-semibold text-[var(--brand)] underline-offset-4 hover:underline">
+                  Or take the guided OIA walkthrough →
+                </Link>
                 <p className="max-w-lg text-sm leading-6 text-[var(--ink-muted)]">
                   This opens your email app; it does not book a meeting or submit an online form.
                   Describe the business problem briefly. Please do not email passwords, customer records,

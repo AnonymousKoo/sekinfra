@@ -19,6 +19,7 @@ export function SiteFooter(){
           <Link href="/outcomes">Outcomes</Link>
           <Link href="/how-it-works">How it works</Link>
           <Link href="/about">About</Link>
+          <Link href="/oia">OIA walkthrough</Link>
           <Link href="/start">Show us what&apos;s happening</Link>
         </div>
       </div>
