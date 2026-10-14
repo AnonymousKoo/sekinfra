@@ -284,7 +284,7 @@ export function DiagnosticIntake({
           <h3 className="mt-3 text-2xl font-semibold tracking-[-.04em]">Your request is ready.</h3>
           <p className="mt-3 max-w-2xl text-sm leading-6 text-[var(--ink-muted)]">
             Step 1: Copy your request. Step 2: Open an email to Sekinfra, paste the request, and press Send in your email app.
-            This website does not send or save your details.
+            This website does not send or save your details. Your request has not yet reached Sekinfra.
           </p>
           <div className="mt-5 flex flex-col gap-3 sm:flex-row">
             <button
@@ -302,6 +302,13 @@ export function DiagnosticIntake({
             </a>
           </div>
           <p className="mt-3 min-h-6 text-sm font-medium text-[var(--brand)]" aria-live="polite">{copyStatus}</p>
+          <p className="mt-3 text-sm leading-6 text-[var(--ink-muted)]">
+            Once you send your email, Sekinfra can review it and agree on the next step with you.
+            The shared System #001 work tracker is not connected to this website yet. No work item has been opened automatically.
+            <a href="#after-request" className="ml-1 font-semibold text-[var(--brand)] underline-offset-4 hover:underline">
+              See what happens next →
+            </a>
+          </p>
           <details className="mt-3 rounded-xl bg-white p-4">
             <summary className="cursor-pointer text-sm font-semibold">View prepared request</summary>
             <pre className="mt-4 whitespace-pre-wrap font-sans text-sm leading-6 text-[var(--ink-muted)]">{candidateText}</pre>

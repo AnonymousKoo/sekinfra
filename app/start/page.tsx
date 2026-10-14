@@ -11,10 +11,14 @@ export const metadata: Metadata = {
   alternates: { canonical: "/start" },
 };
 
+// Presentation only. This does not issue System #001 commands or imply that
+// the website has a hosted work-item API. Avuhz owns the shared work lifecycle;
+// the OIA is Sekinfra's separate consulting diagnostic method.
 const nextSteps = [
-  ["We choose how deep to look", "Sekinfra uses your answers to recommend a Focused Diagnostic or a deeper Operational Infrastructure Assessment (OIA)."],
-  ["We keep small problems small", "A clear problem stays focused. A bigger or unclear problem gets a deeper review only when needed."],
-  ["You stay in control", "This problem check does not give Sekinfra permission to inspect or change your systems."],
+  ["01", "You send the request", "For now, prepare the request here, copy it, and email it to Sekinfra. This website does not submit or track requests."],
+  ["02", "Sekinfra reviews it", "We discuss what is happening and whether a focused review or Sekinfra's OIA makes sense. A website answer is not a verified finding."],
+  ["03", "We agree on the next step", "Scope, fee, timing, and any access are agreed separately. Sending a request never authorizes inspection, implementation, or deployment."],
+  ["04", "Work moves with clear ownership", "System #001 is our reusable model for intake, handoffs, blocked work, and resolution. Automatic tracking will only begin after its website integration is approved and activated."],
 ] as const;
 
 export default function Start() {
@@ -155,19 +159,23 @@ export default function Start() {
         </div>
       </section>
 
-      <section className="section-rule tech-light-surface bg-white py-16 sm:py-22">
+      <section id="after-request" className="section-rule tech-light-surface bg-white py-16 sm:py-22 scroll-mt-24">
         <div className="mx-auto max-w-[var(--page-width)] px-5 lg:px-8">
           <div className="grid gap-8 lg:grid-cols-[.7fr_1.3fr] lg:items-start">
             <div>
-              <p className="eyebrow">What happens next</p>
+              <p className="eyebrow">What happens after your request</p>
               <h2 className="mt-4 text-balance text-3xl font-semibold tracking-[-.045em] sm:text-4xl">
-                The result is a next step, not permission to change anything.
+                A clear next step. A responsible owner. No surprises.
               </h2>
+              <p className="mt-4 max-w-xl text-sm leading-6 text-[var(--ink-muted)]">
+                The public request is still prepared in your browser. These are the steps we aim to
+                follow after you contact us, not a live status tracker.
+              </p>
             </div>
-            <div className="grid gap-4 sm:grid-cols-3">
-              {nextSteps.map(([title, body], index) => (
-                <article className="tech-card tech-card--light p-5" key={title}>
-                  <span className="font-mono text-xs text-[var(--brand)]">0{index + 1}</span>
+            <div className="grid gap-4 sm:grid-cols-2">
+              {nextSteps.map(([number, title, body]) => (
+                <article className="tech-card tech-card--light p-5" key={number}>
+                  <span className="font-mono text-xs text-[var(--brand)]">{number}</span>
                   <h3 className="mt-5 text-lg font-semibold">{title}</h3>
                   <p className="mt-2 text-sm leading-6 text-[var(--ink-muted)]">{body}</p>
                 </article>
