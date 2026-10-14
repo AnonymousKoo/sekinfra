@@ -1,0 +1,69 @@
+name: Public OIA walkthrough gate
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/public-oia-walkthrough.yml'
+      - 'app/oia/**'
+      - 'app/start/page.tsx'
+      - 'components/oia-walkthrough.tsx'
+      - 'components/diagnostic-triage.tsx'
+      - 'components/site-header.tsx'
+      - 'components/mobile-nav.tsx'
+      - 'components/site-footer.tsx'
+      - 'lib/oia-walkthrough.ts'
+      - 'tests/oia-walkthrough.test.ts'
+      - 'tests/diagnostic-triage.test.ts'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: public-oia-walkthrough-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  static-oia:
+    name: Standalone OIA website verification
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      NEXT_TELEMETRY_DISABLED: '1'
+    steps:
+      - name: Checkout exact pull request candidate without persisted credentials
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - name: Install pinned Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22.16.0'
+          cache: npm
+      - name: Install locked dependencies without lifecycle scripts
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Run all existing and new offline website tests
+        run: node --experimental-strip-types --test tests/*.test.ts
+      - name: Check Next.js generated types and TypeScript
+        run: |
+          ./node_modules/.bin/next typegen
+          ./node_modules/.bin/tsc --noEmit
+      - name: Check changed public UI source
+        run: |
+          ./node_modules/.bin/eslint \
+            app/oia/page.tsx app/start/page.tsx \
+            components/oia-walkthrough.tsx components/diagnostic-triage.tsx \
+            components/site-header.tsx components/mobile-nav.tsx \
+            components/site-footer.tsx lib/oia-walkthrough.ts \
+            tests/oia-walkthrough.test.ts tests/diagnostic-triage.test.ts
+      - name: Prove no public DATA intake or provider access was activated
+        run: |
+          grep -Fq 'INTAKE_NOT_CONNECTED' app/api/diagnostic-intake/route.ts
+          grep -Fq 'status: 503' app/api/diagnostic-intake/route.ts
+          ! grep -Eq 'fetch[(]|localStorage|sessionStorage|sendBeacon' components/oia-walkthrough.tsx
+          ! grep -Eq 'supabase|service_role|createClient|createConnection' app/oia/page.tsx
+      - name: Production build with static OIA route
+        run: |
+          npm run build
+          test -f .next/server/app/oia.html
