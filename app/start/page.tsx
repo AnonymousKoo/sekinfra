@@ -18,7 +18,7 @@ const nextSteps = [
   ["01", "You send the request", "For now, prepare the request here, copy it, and email it to Sekinfra. This website does not submit or track requests."],
   ["02", "Sekinfra reviews it", "We discuss what is happening and whether a focused review or Sekinfra's OIA makes sense. A website answer is not a verified finding."],
   ["03", "We agree on the next step", "Scope, fee, timing, and any access are agreed separately. Sending a request never authorizes inspection, implementation, or deployment."],
-  ["04", "Work moves with clear ownership", "System #001 is our reusable model for intake, handoffs, blocked work, and resolution. Automatic tracking will only begin after its website integration is approved and activated."],
+  ["04", "Work moves with clear ownership", "Avuhz System #001 is reusable work-intake infrastructure for ownership, handoffs, blocked work, and resolution. Sekinfra can use it after a separately approved integration; this website does not track work automatically yet."],
 ] as const;
 
 export default function Start() {

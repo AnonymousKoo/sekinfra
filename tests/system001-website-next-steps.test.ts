@@ -8,9 +8,10 @@ const read = (path: string) => readFileSync(new URL(path, root), "utf8");
 
 test("next steps keep Sekinfra's OIA separate from reusable Avuhz System #001", () => {
   const page = read("app/start/page.tsx");
-  assert.match(page, /the OIA is Sekinfra's separate consulting diagnostic method/);
-  assert.match(page, /System #001 is our reusable model for intake, handoffs, blocked work, and resolution/);
-  assert.match(page, /website integration is approved and activated/);
+  // Require visitor-visible attribution, not a source comment.
+  assert.match(page, /whether a focused review or Sekinfra's OIA makes sense/);
+  assert.match(page, /Avuhz System #001 is reusable work-intake infrastructure/);
+  assert.match(page, /Sekinfra can use it after a separately approved integration/);
   assert.match(page, /not a live status tracker/);
   assert.match(page, /id="after-request"/);
   for (const title of [
