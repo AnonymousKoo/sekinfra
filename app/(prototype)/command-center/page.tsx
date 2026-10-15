@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 
 import { authorizeOperator } from "@/lib/command-center/operator-access";
 import { fetchAvuhzActivity, type AvuhzActivityLane } from "@/lib/command-center/avuhz-activity";
+import { fetchAvuhzReviewQueue } from "@/lib/command-center/avuhz-review-queue";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -90,7 +91,7 @@ export default async function CommandCenterPage() {
   if (!identity) notFound();
 
   // Health is fetched only AFTER successful cryptographic operator validation.
-  const [avuhz, activity] = await Promise.all([avuhzReadiness(), fetchAvuhzActivity()]);
+  const [avuhz, activity, reviewQueue] = await Promise.all([avuhzReadiness(), fetchAvuhzActivity(), fetchAvuhzReviewQueue()]);
   const lanes: readonly AvuhzActivityLane[] = ["Security", "Infrastructure", "Automation", "Business"];
 
   return <div className="min-h-screen bg-[#071419] text-[#e9f0ed]" style={{ colorScheme: "dark" }}>
@@ -143,7 +144,7 @@ export default async function CommandCenterPage() {
               <SectionHeading
                 eyebrow="Avuhz / activity"
                 title="What changed in Avuhz"
-                subtitle="Verified public GitHub repository merges only. An engineering merge is not a deployment, a workflow execution, or a customer outcome."
+                subtitle="Public GitHub review and merge evidence. PR and CI activity is engineering progress, not a deployed workflow execution or customer outcome."
               />
               <span className="rounded-full border border-[#3f5d61] px-3 py-1.5 text-xs text-[#c5d9d5]">
                 {activity.state === "verified" ? "GitHub source verified" : "GitHub source unavailable"}
@@ -159,6 +160,35 @@ export default async function CommandCenterPage() {
                 </div>;
               })}
             </div>
+            <section aria-label="Open Avuhz engineering reviews" className="mt-5 rounded-xl border border-[#294851] bg-[#102630] p-4">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <h3 className="text-sm font-semibold text-[#e4eee9]">Review queue · GitHub PRs</h3>
+                <span className="text-[11px] text-[#90aaa8]">{reviewQueue.state === "verified" ? "Public GitHub source verified" : "GitHub review source unavailable"}</span>
+              </div>
+              {reviewQueue.state === "unavailable" ? (
+                <p className="mt-3 text-xs text-[#abc3be]">Review queue unavailable. This does not mean all work has been merged or that CI passed.</p>
+              ) : reviewQueue.items.length === 0 ? (
+                <p className="mt-3 text-xs text-[#abc3be]">No open main-targeted PRs found in the latest sample.</p>
+              ) : (
+                <ol className="mt-3 divide-y divide-[#294851]">
+                  {reviewQueue.items.map((item) => <li key={item.number} className="flex flex-wrap items-center gap-3 py-3">
+                    <div className="min-w-0 flex-1">
+                      <a href={item.url} target="_blank" rel="noopener noreferrer"
+                        className="text-sm font-medium text-white underline-offset-4 hover:text-[#c9ec81] hover:underline">
+                        #{item.number} · {item.title}
+                      </a>
+                      <p className="mt-1 text-[11px] text-[#90aaa8]">
+                        {item.draft ? "Draft · " : "Open for review · "}
+                        Updated {new Date(item.updatedAt).toLocaleString("en-US", { timeZone: "America/New_York", month: "short", day: "numeric", hour: "numeric", minute: "2-digit", timeZoneName: "short" })}
+                      </p>
+                    </div>
+                    <span className="rounded-md border border-[#3f5d61] px-3 py-1 text-[11px] font-medium text-[#c9ec81]">
+                      {item.ci === "passing" ? "CI passed" : item.ci === "failing" ? "CI failed" : item.ci === "running" ? "CI running" : "CI unverified"}
+                    </span>
+                  </li>)}
+                </ol>
+              )}
+            </section>
             <div className="mt-5 border-t border-[#294851] pt-5">
               {activity.state === "unavailable" ? (
                 <p className="text-sm text-[#abc3be]">The GitHub activity source could not be verified. No events are shown; this is not evidence of zero activity.</p>

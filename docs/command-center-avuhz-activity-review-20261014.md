@@ -12,15 +12,20 @@ confuse these project scopes or make the public site an operator route.
 - An **Avuhz Activity** section inside the existing private, server-rendered
   `/command-center` page with Security, Infrastructure, Automation and
   Business engineering lanes.
-- Only **verified, merged PRs** from the existing public
-  `AnonymousKoo/avuhz-infra` GitHub repository are displayed. Merges
-  are marked as **source-only engineering activity**, not deployments or
-  customer outcomes. The source is requested server-side only after the
-  existing signed operator gate passes.
+- Only verified public GitHub repository metadata is displayed: recent
+  **main-branch merges** and a **review queue of open main-targeted PRs**.
+  For each open PR, bounded GitHub check-run metadata is used to show
+  `CI passed`, `CI failed`, `CI running` or `CI unverified`. Missing or
+  malformed check evidence never becomes a false success. These signals
+  are source/review activity, not deployments, n8n executions or business
+  outcomes. All provider requests happen server-side after signed operator
+  authorization succeeds.
 - The GitHub REST URL is fixed; requests are GET-only, no authorization
   headers or cookies, no redirects, bounded response size and timeout.
   Only a narrow set of metadata is rendered after validation; URLs are
-  constructed from fixed repository path plus validated PR number.
+  constructed from fixed repository path plus validated PR number. Check
+  lookups use only validated 40-character commit SHAs and render a status,
+  never provider response bodies or arbitrary check-run names.
   Suspicious titles with emails/URLs are discarded rather than displayed.
 - Provider failure shows **Source unavailable**, not a false zero.
   Supabase tenant data, Render deployments and n8n runs are explicitly
@@ -58,6 +63,7 @@ confuse these project scopes or make the public site an operator route.
 ```bash
 node --experimental-strip-types --test \
   tests/command-center-activity.test.ts \
+  tests/command-center-review-queue.test.ts \
   tests/command-center-preview.test.ts
 npm run build
 ```
