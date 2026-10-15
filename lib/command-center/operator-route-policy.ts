@@ -24,9 +24,6 @@ export function privateOperatorRouteDecision(
 ): PrivateOperatorRouteDecision {
   if (pathname === "/" || pathname === "/command-center/") return "rewrite";
   if (pathname === "/command-center") return "forward";
-  // Exact, already-public website asset used by the private sidebar. This
-  // permits only the logo file, never an arbitrary public directory or route.
-  if (pathname === "/brand/sekinfra-wordmark.webp") return "forward";
   // The API still independently verifies signed Cloudflare owner identity.
   if (pathname === "/api/operator/ai-chat") return "forward";
   // The page itself enforces a separate disabled-by-default opt-in and

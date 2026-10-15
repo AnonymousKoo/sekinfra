@@ -11,16 +11,16 @@ const route = readFileSync(new URL("../app/api/operator/ai-chat/route.ts", impor
 const proxy = readFileSync(new URL("../proxy.ts", import.meta.url),"utf8");
 const client = readFileSync(new URL("../components/command-center/ai-operator.tsx", import.meta.url),"utf8");
 
-test("logo file is exact-allowlisted but arbitrary static paths and public app routes remain denied",()=>{
-  assert.equal(privateOperatorRouteDecision("/brand/sekinfra-wordmark.webp"),"forward");
+test("Avuhz inline brand requires no static route; private-path allowlist stays strict",()=>{
+  assert.equal(privateOperatorRouteDecision("/brand/sekinfra-wordmark.webp"),"deny");
   assert.equal(privateOperatorRouteDecision("/brand/secret-key.json"),"deny");
   assert.equal(privateOperatorRouteDecision("/brand/"),"deny");
   assert.equal(privateOperatorRouteDecision("/api/operator/ai-chat"),"forward");
   assert.equal(privateOperatorRouteDecision("/api/operator/anything-else"),"deny");
   assert.equal(privateOperatorRouteDecision("/api/diagnostic-intake"),"deny");
-  assert.match(page, /unoptimized priority sizes="196px"/);
-  assert.match(page, /src="\/brand\/sekinfra-wordmark.webp"/);
-  assert.match(page, /aria-label="Sekinfra Command Center home"/);
+  assert.match(page, /<AvuhzBrand \/>/);
+  assert.match(page, /aria-label="Avuhz Command Center home"/);
+  assert.doesNotMatch(page, /sekinfra-wordmark\.webp/);
   assert.match(proxy, /privateOperatorRouteDecision\(request.nextUrl.pathname\)/);
 });
 

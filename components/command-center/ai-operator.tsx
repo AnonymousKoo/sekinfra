@@ -56,7 +56,7 @@ export function AiOperator({ available, credentialConfigured }: { available: boo
     <div className="flex flex-wrap items-start justify-between gap-3">
       <div>
         <p className="operator-eyebrow">Assistant / private workspace</p>
-        <h2 className="mt-3 text-2xl font-semibold tracking-[-.05em] text-white sm:text-3xl">AI Operator</h2>
+        <h2 className="mt-3 text-2xl font-semibold tracking-[-.05em] text-white sm:text-3xl">Avuhz AI Operator</h2>
         <p className="mt-2 max-w-2xl text-sm leading-6 text-[#a4c4bd]">
           Ask questions about verified Avuhz engineering progress. The assistant is read-only;
           tenant data, local n8n executions and live operational commands are not connected.
