@@ -61,7 +61,7 @@ test("command center is private and has no synthetic portfolio or command facade
   assert.doesNotMatch(page, /orderedWorkspaceEngagements|oiaWorkspaceFixture|CommandCenterExperience|fixtures\/oia-workspace/);
   assert.doesNotMatch(page, /service_role|SUPABASE_SERVICE|Authorization:\s*Bearer/);
   assert.match(page, /Client read access not connected/);
-  assert.match(page, /cache: "no-store"/);
+  assert.match(readFileSync(new URL("../lib/command-center/operator-runtime-probes.ts", import.meta.url), "utf8"), /cache: "no-store"/);
 });
 
 test("operator access requires a valid Cloudflare signature, audience, issuer, owner and private host", async () => {
