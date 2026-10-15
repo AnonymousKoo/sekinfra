@@ -1,0 +1,151 @@
+/*
+ * Sekinfra Command Center visual system — private-route only.
+ * Reuses the public site's teal/lime technical language with dark operator
+ * surfaces. Never imported by the public Sekinfra site.
+ */
+.operator-shell {
+  --operator-deep: #091217;
+  --operator-teal: #0f9f98;
+  --operator-lime: #b9ef70;
+  --operator-muted: #abc0bc;
+  isolation: isolate;
+  background:
+    radial-gradient(ellipse at 85% 7%, rgb(15 159 152 / .09), transparent 42rem),
+    radial-gradient(ellipse at 14% 56%, rgb(185 239 112 / .024), transparent 40rem),
+    #071016;
+  color: #e9f4ef;
+  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+}
+.operator-rail {
+  background:
+    radial-gradient(circle at -22% -10%, rgb(15 159 152 / .20), transparent 19rem),
+    #09171c;
+}
+.operator-brand-mark {
+  display: grid;
+  place-items: center;
+  background: linear-gradient(142deg, #b9ef70, #79bdb1);
+  box-shadow: 0 0 45px rgb(185 239 112 / .11);
+}
+.operator-nav-link {
+  transition: background-color .18s ease, color .18s ease, border-color .18s ease;
+  border: 1px solid transparent;
+}
+.operator-nav-link:hover, .operator-nav-link:focus-visible {
+  background: rgb(15 159 152 / .11);
+  border-color: rgb(15 159 152 / .24);
+  color: #e8fff4;
+}
+.operator-hero {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 76% 27%, rgb(15 159 152 / .27), transparent 36%),
+    radial-gradient(circle at 16% 94%, rgb(185 239 112 / .075), transparent 31%),
+    linear-gradient(rgb(89 190 184 / .065) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(89 190 184 / .065) 1px, transparent 1px),
+    linear-gradient(125deg, #101f27, #0a141c);
+  background-size: auto, auto, 44px 44px, 44px 44px, auto;
+  border: 1px solid rgb(107 164 154 / .34);
+  box-shadow: 0 18px 60px rgb(2 12 17 / .29), inset 0 1px rgb(255 255 255 / .038);
+}
+.operator-hero:after {
+  position: absolute;
+  content: "";
+  inset: auto -5rem -13rem auto;
+  width: 27rem;
+  height: 27rem;
+  border: 1px solid rgb(185 239 112 / .13);
+  border-radius: 50%;
+  pointer-events: none;
+  box-shadow: 0 0 0 5rem rgb(15 159 152 / .018), 0 0 0 10rem rgb(15 159 152 / .014);
+}
+.operator-panel {
+  position: relative;
+  background: linear-gradient(145deg, rgb(18 39 46 / .97), rgb(11 27 34 / .99));
+  border: 1px solid rgb(116 154 155 / .22);
+  box-shadow: inset 0 1px rgb(255 255 255 / .035), 0 12px 32px rgb(0 7 10 / .12);
+}
+.operator-panel:before {
+  position: absolute;
+  content: "";
+  left: 2rem;
+  right: 2rem;
+  top: -1px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgb(15 159 152 / .45), rgb(185 239 112 / .22), transparent);
+  pointer-events: none;
+}
+.operator-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: .65rem;
+  color: #b9ef70;
+  font-weight: 740;
+  letter-spacing: .18em;
+  font-size: .69rem;
+  text-transform: uppercase;
+}
+.operator-eyebrow:before { content:""; height:1px; width:1.25rem; background: currentColor; opacity:.75; }
+.operator-system {
+  position: relative;
+  border: 1px solid rgb(116 154 155 / .22);
+  background: linear-gradient(138deg, rgb(16 39 45 / .82), rgb(10 25 32 / .96));
+  border-radius: 1.15rem;
+  padding: 1.25rem;
+  transition: border-color .2s ease, transform .2s ease;
+}
+.operator-system:hover { border-color: rgb(15 159 152 / .50); transform: translateY(-2px); }
+.operator-system:before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 1.25rem;
+  right: 1.25rem;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgb(185 239 112 / .38), transparent);
+}
+.operator-stage {
+  display: inline-flex;
+  min-height: 1.7rem;
+  align-items: center;
+  border: 1px solid rgb(185 239 112 / .23);
+  border-radius: 999px;
+  color: #c3e6a6;
+  background: rgb(185 239 112 / .055);
+  padding: 0 .65rem;
+  font-size: .68rem;
+  font-weight: 650;
+}
+.operator-connection {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: start;
+  gap: 1rem;
+  padding: 1.2rem 0;
+  border-bottom: 1px solid rgb(116 154 155 / .19);
+}
+.operator-connection:last-child { border-bottom: 0; }
+.operator-status {
+  border: 1px solid rgb(133 166 164 / .28);
+  border-radius: 999px;
+  white-space: nowrap;
+  padding: .3rem .7rem;
+  color: #c3d9d2;
+  font-size: .68rem;
+  font-weight: 700;
+}
+.operator-status[data-connected="true"] {
+  color: #cbf3a2;
+  border-color: rgb(185 239 112 / .30);
+  background: rgb(185 239 112 / .055);
+}
+.operator-mononum { font-variant-numeric: tabular-nums; letter-spacing: -.04em; }
+@media (prefers-reduced-motion: reduce) {
+  .operator-system, .operator-nav-link { transition: none; }
+  .operator-system:hover { transform: none; }
+}
+@media (max-width: 470px) {
+  .operator-connection { grid-template-columns: 1fr; gap: .5rem; }
+  .operator-hero:after { display: none; }
+}
