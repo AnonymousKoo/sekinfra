@@ -3,6 +3,7 @@ import Link from "next/link";
 import { DiagnosticTriage } from "@/components/diagnostic-triage";
 import { SiteShell } from "@/components/site-shell";
 import { SystemDiagram } from "@/components/visuals/system-diagram";
+import { readCalcomDiscoveryLink } from "@/lib/server/calcom-discovery-link";
 
 export const metadata: Metadata = {
   title: "Show us what is happening",
@@ -22,6 +23,7 @@ const nextSteps = [
 ] as const;
 
 export default function Start() {
+  const calcomDiscoveryLink = readCalcomDiscoveryLink();
   return (
     <SiteShell>
       <section className="tech-hero relative overflow-hidden bg-[var(--brand-deep)] text-white">
@@ -100,12 +102,25 @@ export default function Start() {
                   Email Sekinfra to get started
                   <span className="ml-2" aria-hidden="true">→</span>
                 </a>
+                {calcomDiscoveryLink ? (
+                  <a
+                    href={calcomDiscoveryLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    referrerPolicy="no-referrer"
+                    className="inline-flex min-h-12 items-center justify-center rounded-[var(--radius-button)] border border-[var(--brand)] px-5 text-sm font-semibold text-[var(--brand)] transition hover:bg-[var(--surface-muted)]"
+                  >
+                    Book a discovery conversation on Cal.com
+                    <span className="ml-2" aria-hidden="true">→</span>
+                  </a>
+                ) : null}
                 <Link href="/oia" className="text-sm font-semibold text-[var(--brand)] underline-offset-4 hover:underline">
                   Or take the guided OIA walkthrough →
                 </Link>
                 <p className="max-w-lg text-sm leading-6 text-[var(--ink-muted)]">
-                  This opens your email app; it does not book a meeting or submit an online form.
-                  Describe the business problem briefly. Please do not email passwords, customer records,
+                  Emailing Sekinfra does not book a meeting or submit an online form. If a Cal.com booking
+                  link is available, it opens Cal.com&apos;s separate scheduling page; bookings there do not yet
+                  create Avuhz System #001 work items. Please do not share passwords, customer records,
                   access tokens, or sensitive system details.
                 </p>
               </div>
