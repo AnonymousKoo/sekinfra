@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { authorizeOperator } from "@/lib/command-center/operator-access";
 import { fetchAvuhzActivity, type AvuhzActivityLane } from "@/lib/command-center/avuhz-activity";
 import { fetchAvuhzReviewQueue } from "@/lib/command-center/avuhz-review-queue";
+import "./operator-visual.css";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -64,14 +65,14 @@ function Indicator({ kind }: { kind: "ready" | "pending" | "warning" }) {
 }
 
 function Panel({ children, id }: { children: React.ReactNode; id?: string }) {
-  return <section id={id} className="rounded-2xl border border-[#24434a] bg-[#0d2026] p-5 sm:p-7">
+  return <section id={id} className="operator-panel rounded-[22px] p-5 sm:p-7">
     {children}
   </section>;
 }
 
 function SectionHeading({ eyebrow, title, subtitle }: { eyebrow: string; title: string; subtitle: string }) {
   return <div className="mb-6">
-    <p className="text-[10px] font-bold uppercase tracking-[.20em] text-[#c9ec81]">{eyebrow}</p>
+    <p className="operator-eyebrow">{eyebrow}</p>
     <h2 className="mt-2 text-xl font-semibold tracking-tight text-white sm:text-2xl">{title}</h2>
     <p className="mt-2 max-w-2xl text-sm leading-6 text-[#9bb1b0]">{subtitle}</p>
   </div>;
@@ -94,24 +95,25 @@ export default async function CommandCenterPage() {
   const [avuhz, activity, reviewQueue] = await Promise.all([avuhzReadiness(), fetchAvuhzActivity(), fetchAvuhzReviewQueue()]);
   const lanes: readonly AvuhzActivityLane[] = ["Security", "Infrastructure", "Automation", "Business"];
 
-  return <div className="min-h-screen bg-[#071419] text-[#e9f0ed]" style={{ colorScheme: "dark" }}>
+  return <div className="operator-shell min-h-screen text-[#e9f0ed]" style={{ colorScheme: "dark" }}>
     <a href="#main-content" className="fixed left-3 top-3 z-50 -translate-y-24 rounded-lg bg-[#c9ec81] px-4 py-3 text-sm font-bold text-[#102017] focus:translate-y-0">Skip to workspace</a>
     <div className="mx-auto min-h-screen max-w-[1800px] lg:grid lg:grid-cols-[250px_minmax(0,1fr)]">
-      <aside className="border-b border-[#24434a] bg-[#0a1b20] px-5 py-6 lg:sticky lg:top-0 lg:flex lg:h-screen lg:flex-col lg:border-b-0 lg:border-r">
+      <aside className="operator-rail border-b border-[#24434a] px-5 py-6 lg:sticky lg:top-0 lg:flex lg:h-screen lg:flex-col lg:border-b-0 lg:border-r">
         <div className="flex items-center gap-3">
-          <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#c9ec81] text-xl font-black text-[#0e2119]">S/</span>
-          <div><p className="text-sm font-extrabold tracking-[.14em] text-white">SEKINFRA</p><p className="mt-0.5 text-[10px] font-semibold uppercase tracking-[.15em] text-[#92acaa]">Command Center</p></div>
+          <span className="operator-brand-mark flex h-11 w-11 items-center justify-center rounded-xl text-xl font-black text-[#0e2119]">S/</span>
+          <div><p className="text-sm font-extrabold tracking-[.16em] text-white">SEKINFRA</p><p className="mt-0.5 text-[10px] font-semibold uppercase tracking-[.18em] text-[#92acaa]">Operations / Avuhz</p></div>
         </div>
         <p className="mt-9 text-[10px] font-semibold uppercase tracking-[.16em] text-[#779398]">Operator workspace</p>
         <nav aria-label="Command Center sections" className="mt-3 flex gap-1 overflow-x-auto lg:flex-col lg:overflow-visible">
           {[
             ["#overview", "Overview"],
             ["#activity", "Avuhz Activity"],
+            ["#systems", "System Library"],
             ["#clients", "Client work"],
             ["#operations", "Operations"],
             ["#security", "Security"],
           ].map(([href, label], index) =>
-            <a key={href} href={href} className="flex min-h-11 shrink-0 items-center gap-3 rounded-lg px-3 text-xs font-semibold text-[#b4c8c5] hover:bg-[#163039] hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#c9ec81]">
+            <a key={href} href={href} className="operator-nav-link flex min-h-11 shrink-0 items-center gap-3 rounded-lg px-3 text-xs font-semibold text-[#b4c8c5] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#c9ec81]">
               <span className="font-mono text-[10px] text-[#7f9d9f]">{String(index + 1).padStart(2, "0")}</span>{label}
             </a>
           )}
@@ -124,18 +126,18 @@ export default async function CommandCenterPage() {
 
       <main id="main-content" className="min-w-0">
         <header className="flex flex-wrap items-center justify-between gap-3 border-b border-[#24434a] px-5 py-5 sm:px-9">
-          <span className="text-xs text-[#9db5b3]">Sekinfra / Private operations</span>
+          <span className="text-xs font-semibold tracking-[.12em] uppercase text-[#9db5b3]">Sekinfra <span className="mx-1.5 text-[#85d3bb]">/</span> Operating infrastructure</span>
           <span className="inline-flex items-center gap-2 rounded-full border border-[#38584b] bg-[#172d29] px-3 py-1.5 text-xs font-semibold text-[#c9ec81]"><Indicator kind="ready" /> Operator verified</span>
         </header>
 
         <div className="mx-auto max-w-[1420px] space-y-6 px-5 py-8 sm:px-9 sm:py-10">
-          <section id="overview" className="rounded-[22px] border border-[#3c594b] bg-[radial-gradient(circle_at_90%_20%,#28483c,#11272b_43%,#0e2027_100%)] p-7 sm:p-10">
-            <p className="text-[11px] font-bold uppercase tracking-[.20em] text-[#c9ec81]">Private operator workspace</p>
-            <h1 className="mt-4 max-w-[780px] text-3xl font-semibold leading-tight tracking-[-.05em] text-white sm:text-5xl">Your business systems. <span className="text-[#c9ec81]">Verified, not simulated.</span></h1>
-            <p className="mt-4 max-w-[660px] text-sm leading-7 text-[#b0c4bd] sm:text-base">Only verified service information appears here. Customer records, approvals, workflows and AI actions remain unavailable until their real, authorized Avuhz connections are established.</p>
+          <section id="overview" className="operator-hero rounded-[24px] p-7 sm:p-10 lg:p-12">
+            <p className="operator-eyebrow">Private control plane / 01</p>
+            <h1 className="mt-4 max-w-[780px] text-3xl font-semibold leading-tight tracking-[-.05em] text-white sm:text-5xl">Where your systems <span className="text-[#c9ec81]">come into focus.</span></h1>
+            <p className="mt-4 max-w-[660px] text-sm leading-7 text-[#b0c4bd] sm:text-base">A single view of the work behind the business. See verified engineering activity, review your system templates and understand exactly which environments are connected. Avuhz remains the authority; n8n is the orchestrator.</p>
             <div className="mt-7 flex flex-wrap gap-3">
-              <a href="#operations" className="inline-flex min-h-11 items-center rounded-lg bg-[#c9ec81] px-5 text-xs font-bold text-[#12241b] hover:bg-[#e1f7b3]">Review connections →</a>
-              <a href="/command-center" className="inline-flex min-h-11 items-center rounded-lg border border-[#56756a] px-5 text-xs font-bold text-white hover:bg-white/10">Refresh verified status ↻</a>
+              <a href="#systems" className="inline-flex min-h-11 items-center rounded-lg bg-[#b9ef70] px-5 text-xs font-bold text-[#12241b] hover:bg-[#e1f7b3]">Explore systems →</a>
+              <a href="#operations" className="inline-flex min-h-11 items-center rounded-lg border border-[#56756a] bg-[#0a1c22]/70 px-5 text-xs font-bold text-white hover:bg-white/10">Connection status ↗</a>
             </div>
           </section>
 
@@ -218,6 +220,34 @@ export default async function CommandCenterPage() {
             </div>
           </Panel>
 
+          <Panel id="systems">
+            <SectionHeading eyebrow="Shared backbone / 02" title="System Library" subtitle="Five reusable, policy-driven system families. Avuhz owns business decisions, tenancy and state; n8n coordinates approved actions. These are target outcomes, not claims of activated automation." />
+            <div className="mb-5 rounded-xl border border-[#426258]/60 bg-[#13302b]/60 px-4 py-4 text-sm leading-6 text-[#c0d9cd]">
+              <span className="font-semibold text-[#d8f2a7]">Verified distinction:</span> repository templates and a passing CI check do not prove a runtime is wired, authorized or processing customer work.
+            </div>
+            <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3" aria-label="System template families">
+              {[
+                { id:"001", category:"REVENUE", name:"Revenue Engine", outcome:"From incoming request to owned work and tracked follow-up.", source:"https://github.com/AnonymousKoo/avuhz-infra/pull/690", sourceLabel:"System #001 source review", first:true },
+                { id:"002", category:"SCHEDULING", name:"Booking Engine", outcome:"From authorized booking request to verified appointment and handoff.", source:null, sourceLabel:null, first:false },
+                { id:"003", category:"DELIVERY", name:"Client Onboarding", outcome:"From approved engagement to accountable onboarding.", source:null, sourceLabel:null, first:false },
+                { id:"004", category:"OPERATIONS", name:"Work & Operations", outcome:"From assigned task to verified outcome or recovery.", source:null, sourceLabel:null, first:false },
+                { id:"005", category:"RELATIONSHIPS", name:"Customer Retention", outcome:"From policy-defined follow-up obligation to recorded result.", source:null, sourceLabel:null, first:false },
+              ].map((system) => <article className="operator-system" key={system.id}>
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <span className="operator-mononum font-mono text-3xl font-semibold text-[#b9ef70]">{system.id}</span>
+                  <span className="text-[10px] font-bold tracking-[.18em] text-[#8cb9b0]">{system.category}</span>
+                </div>
+                <h3 className="mt-6 text-lg font-semibold tracking-[-.04em] text-white">{system.name}</h3>
+                <p className="mt-2 min-h-12 text-xs leading-6 text-[#acc1be]">{system.outcome}</p>
+                <div className="mt-6 flex flex-wrap items-center justify-between gap-2 border-t border-[#315057]/70 pt-4">
+                  <span className="operator-stage">{system.first ? "Source tracked · runtime unverified" : "Template readiness unverified"}</span>
+                  {system.source && <a className="text-xs font-semibold text-[#b9ef70] underline-offset-4 hover:underline" href={system.source} target="_blank" rel="noopener noreferrer">{system.sourceLabel} ↗</a>}
+                </div>
+              </article>)}
+            </div>
+            <p className="mt-5 text-xs leading-6 text-[#9fb8b4]">No template is installed or activated from this page. Shared policy evaluation, tenant-scoped state and command authority remain in Avuhz; n8n is never an alternate policy engine.</p>
+          </Panel>
+
           <div className="grid gap-4 md:grid-cols-3" aria-label="Verified operating boundaries">
             <Panel>
               <div className="flex items-center justify-between"><span className="text-xs font-semibold text-[#abc0ba]">Private access</span><Indicator kind="ready" /></div>
@@ -242,7 +272,23 @@ export default async function CommandCenterPage() {
           </Panel>
 
           <Panel id="operations">
-            <SectionHeading eyebrow="Systems / 02" title="Operational connections" subtitle="These statuses reflect actual verification boundaries, not assumptions from DNS entries or saved links." />
+            <SectionHeading eyebrow="Systems / 02" title="Environment connections" subtitle="This page is hosted in production. A running local or production system is not a connected telemetry feed until an authorized, read-only server integration proves it." />
+            <div className="mb-6 grid gap-3 lg:grid-cols-2" aria-label="Local and production environment integration">
+              {[
+                { label:"Command Center / production", state:"Connected", detail:"Authenticated private operator session verified for this request.", connected:true },
+                { label:"GitHub / engineering activity", state:activity.state === "verified" || reviewQueue.state === "verified" ? "Source verified" : "Unavailable", detail:"Public code review and merge metadata only; not workflow executions.", connected:activity.state === "verified" || reviewQueue.state === "verified" },
+                { label:"n8n / local", state:"Not connected", detail:"Your localhost n8n requires a private read-only bridge. No public tunnel, credentials or direct browser request is configured.", connected:false },
+                { label:"n8n / production", state:"Not connected", detail:"A separately approved, authenticated production execution-summary adapter is required.", connected:false },
+                { label:"Avuhz / runtime", state:readinessLabels[avuhz.status], detail:avuhz.detail, connected:avuhz.status === "ready" },
+                { label:"Avuhz / tenant operations", state:"Not connected", detail:"No authenticated, tenant-scoped Work Item or lifecycle-event read model is mounted here.", connected:false },
+              ].map((source) => <div className="rounded-xl border border-[#294851] bg-[#10262d]/80 p-4" key={source.label}>
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <h3 className="text-sm font-semibold text-white">{source.label}</h3>
+                  <span className="operator-status" data-connected={source.connected}>{source.state}</span>
+                </div>
+                <p className="mt-3 text-xs leading-6 text-[#a6c0bb]">{source.detail}</p>
+              </div>)}
+            </div>
             <div className="divide-y divide-[#27444a]">
               <div className="flex flex-wrap items-start justify-between gap-3 py-4 first:pt-0">
                 <div><p className="text-sm font-semibold text-white">Avuhz API readiness</p><p className="mt-1 text-xs leading-5 text-[#90aaaa]">{avuhz.detail}</p></div>
