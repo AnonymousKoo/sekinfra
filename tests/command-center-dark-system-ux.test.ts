@@ -38,11 +38,13 @@ test("all five system outcomes are visible with explicit unverified runtime stat
 
 test("local and production integration matrix cannot misrepresent provider connections", () => {
   assert.match(page, /n8n \/ local", state:"Not connected"/);
-  assert.match(page, /n8n \/ production", state:"Not connected"/);
+  assert.match(page, /n8n \/ production", state:n8nProduction.state/);
+  assert.match(page, /"Health failed"/);
+  assert.match(page, /connected:false/);
   assert.match(page, /Avuhz \/ tenant operations", state:"Not connected"/);
   assert.match(page, /GitHub \/ engineering activity/);
   assert.match(page, /data-connected=\{source.connected\}/);
-  assert.match(page, /connected:avuhz.status === "ready"/);
+  assert.match(page, /Avuhz \/ runtime", state:readinessLabels\[avuhz.status\].*connected:false/);
   assert.match(page, /No public tunnel, credentials or direct browser request is configured/);
   assert.doesNotMatch(page, /localhost:5678|127\.0\.0\.1:5678|NEXT_PUBLIC_N8N|service_role|Bearer [A-Za-z]/);
 });

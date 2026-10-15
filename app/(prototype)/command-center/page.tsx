@@ -6,6 +6,7 @@ import { notFound } from "next/navigation";
 import { authorizeOperator } from "@/lib/command-center/operator-access";
 import { fetchAvuhzActivity, type AvuhzActivityLane } from "@/lib/command-center/avuhz-activity";
 import { fetchAvuhzReviewQueue } from "@/lib/command-center/avuhz-review-queue";
+import { probeAvuhzDevelopment, probeProductionN8n } from "@/lib/command-center/operator-runtime-probes";
 import { AiOperator } from "@/components/command-center/ai-operator";
 import "./operator-visual.css";
 
@@ -18,43 +19,20 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false, nocache: true, noarchive: true },
 };
 
-type ProbeStatus = "ready" | "unavailable" | "not_configured";
+type ProbeStatus = "ready" | "unavailable" | "not_ready";
 
 async function avuhzReadiness(): Promise<{ status: ProbeStatus; detail: string }> {
-  const raw = process.env.SEKINFRA_AVUHZ_READINESS_URL;
-  if (!raw) return { status: "not_configured", detail: "No approved Avuhz health endpoint is configured." };
-
-  try {
-    const url = new URL(raw);
-    // An environment-owned, exact HTTPS Render health target only. No arbitrary
-    // hosts, redirects, query strings, credentials, or customer data transport.
-    if (url.protocol !== "https:" || !/^[a-z0-9-]+\.onrender\.com$/.test(url.hostname)
-      || url.username || url.password || url.port || url.pathname !== "/health/ready"
-      || url.search || url.hash) {
-      return { status: "not_configured", detail: "The health endpoint configuration is not approved." };
-    }
-    const response = await fetch(url, {
-      method: "GET",
-      cache: "no-store",
-      redirect: "error",
-      signal: AbortSignal.timeout(4000),
-    });
-    const payload: unknown = await response.json();
-    if (response.status === 200 && payload && typeof payload === "object"
-      && "status" in payload && payload.status === "ready") {
-      return { status: "ready", detail: "The Avuhz readiness endpoint reported ready on this request." };
-    }
-    return { status: "unavailable", detail: "Avuhz did not report ready on this request." };
-  } catch {
-    // Do not persist provider response bodies, exception messages, or URLs.
-    return { status: "unavailable", detail: "Avuhz readiness could not be verified." };
-  }
+  const probe = await probeAvuhzDevelopment();
+  return {
+    status: probe.state === "responding" ? "ready" : probe.state,
+    detail: probe.detail,
+  };
 }
 
-const readinessLabels: Record<ProbeStatus, string> = {
-  ready: "Ready",
-  unavailable: "Unavailable",
-  not_configured: "Not configured",
+const readinessLabels: Record<ProbeStatus,string> = {
+  ready:"Ready (health only)",
+  unavailable:"Unavailable",
+  not_ready:"Not ready",
 };
 
 function Indicator({ kind }: { kind: "ready" | "pending" | "warning" }) {
@@ -94,7 +72,7 @@ export default async function CommandCenterPage() {
   if (!identity) notFound();
 
   // Health is fetched only AFTER successful cryptographic operator validation.
-  const [avuhz, activity, reviewQueue] = await Promise.all([avuhzReadiness(), fetchAvuhzActivity(), fetchAvuhzReviewQueue()]);
+  const [avuhz, activity, reviewQueue, n8nProduction] = await Promise.all([avuhzReadiness(), fetchAvuhzActivity(), fetchAvuhzReviewQueue(), probeProductionN8n()]);
   const lanes: readonly AvuhzActivityLane[] = ["Security", "Infrastructure", "Automation", "Business"];
 
   return <div className="operator-shell min-h-screen text-[#e9f0ed]" style={{ colorScheme: "dark" }}>
@@ -283,14 +261,14 @@ export default async function CommandCenterPage() {
           </Panel>
 
           <Panel id="operations">
-            <SectionHeading eyebrow="Systems / 02" title="Environment connections" subtitle="This page is hosted in production. A running local or production system is not a connected telemetry feed until an authorized, read-only server integration proves it." />
+            <SectionHeading eyebrow="Systems / 02" title="Environment connections" subtitle="Live HTTP health probes for the known DEVELOPMENT API and production n8n are read-only diagnostics, not authenticated execution feeds. Local n8n and tenant data remain unconnected." />
             <div className="mb-6 grid gap-3 lg:grid-cols-2" aria-label="Local and production environment integration">
               {[
                 { label:"Command Center / production", state:"Connected", detail:"Authenticated private operator session verified for this request.", connected:true },
                 { label:"GitHub / engineering activity", state:activity.state === "verified" || reviewQueue.state === "verified" ? "Source verified" : "Unavailable", detail:"Public code review and merge metadata only; not workflow executions.", connected:activity.state === "verified" || reviewQueue.state === "verified" },
                 { label:"n8n / local", state:"Not connected", detail:"Your localhost n8n requires a private read-only bridge. No public tunnel, credentials or direct browser request is configured.", connected:false },
-                { label:"n8n / production", state:"Not connected", detail:"A separately approved, authenticated production execution-summary adapter is required.", connected:false },
-                { label:"Avuhz / runtime", state:readinessLabels[avuhz.status], detail:avuhz.detail, connected:avuhz.status === "ready" },
+                { label:"n8n / production", state:n8nProduction.state === "responding" ? "HTTP responds · not integrated" : n8nProduction.state === "not_ready" ? "Health failed" : "Health unavailable", detail:n8nProduction.detail, connected:false },
+                { label:"Avuhz / runtime", state:readinessLabels[avuhz.status], detail:avuhz.detail, connected:false },
                 { label:"Avuhz / tenant operations", state:"Not connected", detail:"No authenticated, tenant-scoped Work Item or lifecycle-event read model is mounted here.", connected:false },
               ].map((source) => <div className="rounded-xl border border-[#294851] bg-[#10262d]/80 p-4" key={source.label}>
                 <div className="flex flex-wrap items-center justify-between gap-2">
