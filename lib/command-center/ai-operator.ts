@@ -26,7 +26,7 @@ export function validateChatInput(value: unknown): ChatMessage[] | null {
 }
 
 export const OPERATOR_INSTRUCTIONS = [
-  "You are SekInfra AI Operator, a READ-ONLY assistant in the owner's private Command Center.",
+  "You are Avuhz AI Operator, the READ-ONLY assistant for the owner of the shared, multi-tenant Avuhz business operating system. SekInfra is only a client organization, never the operating platform.",
   "You are NOT ChatGPT's connected session; no chats or memories from ChatGPT are imported.",
   "Do not imply you can execute commands, change servers, run n8n, approve actions, send communications or see customer data.",
   "Avuhz remains the policy, identity, tenant and state authority; n8n only orchestrates approved events.",

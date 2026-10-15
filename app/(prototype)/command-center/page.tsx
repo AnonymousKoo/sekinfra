@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 
@@ -8,14 +7,21 @@ import { fetchAvuhzActivity, type AvuhzActivityLane } from "@/lib/command-center
 import { fetchAvuhzReviewQueue } from "@/lib/command-center/avuhz-review-queue";
 import { probeAvuhzDevelopment, probeProductionN8n } from "@/lib/command-center/operator-runtime-probes";
 import { AiOperator } from "@/components/command-center/ai-operator";
+import { AvuhzBrand } from "@/components/command-center/avuhz-brand";
 import "./operator-visual.css";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
+// Private, route-scoped favicon so the shared public site retains its own icon.
+const avuhzFavicon = "data:image/svg+xml," + encodeURIComponent(
+  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="16" fill="#071016"/><path d="M10 52L29 12h6l19 40M22 39h20" fill="none" stroke="#b9ef70" stroke-width="7" stroke-linecap="square"/></svg>'
+);
+
 export const metadata: Metadata = {
-  title: "Sekinfra Command Center",
-  description: "Private Sekinfra operator workspace.",
+  title: "Avuhz Command Center | AI Operator",
+  description: "Private Avuhz operating system and AI Operator workspace.",
+  icons: { icon: avuhzFavicon, shortcut: avuhzFavicon },
   robots: { index: false, follow: false, nocache: true, noarchive: true },
 };
 
@@ -79,14 +85,10 @@ export default async function CommandCenterPage() {
     <a href="#main-content" className="fixed left-3 top-3 z-50 -translate-y-24 rounded-lg bg-[#c9ec81] px-4 py-3 text-sm font-bold text-[#102017] focus:translate-y-0">Skip to workspace</a>
     <div className="mx-auto min-h-screen max-w-[1800px] lg:grid lg:grid-cols-[250px_minmax(0,1fr)]">
       <aside className="operator-rail border-b border-[#24434a] px-5 py-6 lg:sticky lg:top-0 lg:flex lg:h-screen lg:flex-col lg:border-b-0 lg:border-r">
-        <div className="space-y-2">
-          <a href="/command-center" aria-label="Sekinfra Command Center home"
-            className="operator-logo-plate inline-flex min-h-16 w-[196px] max-w-full items-center justify-center rounded-xl px-3 py-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#b9ef70]">
-            <Image src="/brand/sekinfra-wordmark.webp" alt="Sekinfra" width={600} height={155}
-              unoptimized priority sizes="196px" className="h-auto w-full object-contain" />
-          </a>
-          <p className="pl-1 text-[10px] font-semibold uppercase tracking-[.19em] text-[#92acaa]">Command Center <span aria-hidden="true" className="px-1.5 text-[#b9ef70]">/</span> Avuhz</p>
-        </div>
+        <a href="/command-center" aria-label="Avuhz Command Center home"
+          className="inline-flex min-h-16 max-w-full items-center rounded-xl px-1 py-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#b9ef70]">
+          <AvuhzBrand />
+        </a>
         <p className="mt-9 text-[10px] font-semibold uppercase tracking-[.16em] text-[#779398]">Operator workspace</p>
         <nav aria-label="Command Center sections" className="mt-3 flex gap-1 overflow-x-auto lg:flex-col lg:overflow-visible">
           {[
@@ -111,7 +113,7 @@ export default async function CommandCenterPage() {
 
       <main id="main-content" className="min-w-0">
         <header className="flex flex-wrap items-center justify-between gap-3 border-b border-[#24434a] px-5 py-5 sm:px-9">
-          <span className="text-xs font-semibold tracking-[.12em] uppercase text-[#9db5b3]">Sekinfra <span className="mx-1.5 text-[#85d3bb]">/</span> Operating infrastructure</span>
+          <span className="text-xs font-semibold tracking-[.12em] uppercase text-[#9db5b3]">AVUHZ <span className="mx-1.5 text-[#85d3bb]">/</span> Operator intelligence</span>
           <span className="inline-flex items-center gap-2 rounded-full border border-[#38584b] bg-[#172d29] px-3 py-1.5 text-xs font-semibold text-[#c9ec81]"><Indicator kind="ready" /> Operator verified</span>
         </header>
 
@@ -121,7 +123,7 @@ export default async function CommandCenterPage() {
           </section>
 
           <section id="overview" className="operator-hero rounded-[24px] p-7 sm:p-10 lg:p-12">
-            <p className="operator-eyebrow">Private control plane / 01</p>
+            <p className="operator-eyebrow">Avuhz / Private control plane</p>
             <h1 className="mt-4 max-w-[780px] text-3xl font-semibold leading-tight tracking-[-.05em] text-white sm:text-5xl">Where your systems <span className="text-[#c9ec81]">come into focus.</span></h1>
             <p className="mt-4 max-w-[660px] text-sm leading-7 text-[#b0c4bd] sm:text-base">A single view of the work behind the business. See verified engineering activity, review your system templates and understand exactly which environments are connected. Avuhz remains the authority; n8n is the orchestrator.</p>
             <div className="mt-7 flex flex-wrap gap-3">
@@ -303,7 +305,7 @@ export default async function CommandCenterPage() {
               </div>)}
             </div>
           </Panel>
-          <p className="pb-3 text-xs leading-6 text-[#79999b]">Sekinfra Command Center · Private operator surface · No client state is displayed without verified shared-core authorization.</p>
+          <p className="pb-3 text-xs leading-6 text-[#79999b]">Avuhz Command Center · Private operator surface · Client organizations remain separate tenants · No client state is displayed without verified shared-core authorization.</p>
         </div>
       </main>
     </div>

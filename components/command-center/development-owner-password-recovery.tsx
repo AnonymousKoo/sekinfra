@@ -181,7 +181,7 @@ export function DevelopmentOwnerPasswordRecovery({ publishableKey, expectedEmail
       </button>
       <p className="mt-3 text-xs leading-5 text-[#839f9d]">
         Passwords and recovery tokens stay in browser memory only. No browser storage,
-        cookies, analytics or Sekinfra server receives them.
+        cookies, analytics or Command Center server receives them.
       </p>
     </div>
   </section>;

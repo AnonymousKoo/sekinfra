@@ -149,7 +149,7 @@ export function DevelopmentOwnerMfaSetup({ publishableKey, expectedEmail }: Prop
         {busy ? "Checking account…" : "Verify my sign-in"}
       </button>
       <p className="text-xs leading-5 text-[#93adaa]">
-        Your password is sent directly from this browser to the pinned DEVELOPMENT AUTH provider, not to the Sekinfra server.
+        Your password is sent directly from this browser to the pinned DEVELOPMENT AUTH provider, not to the Command Center server.
         If you accepted the invitation without setting a password, stop here; do not create another account.
       </p>
     </form>}

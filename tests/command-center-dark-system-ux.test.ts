@@ -9,7 +9,7 @@ const css = readFileSync(cssPath, "utf8");
 const security = readFileSync(new URL("../lib/command-center/operator-access.ts", import.meta.url), "utf8");
 const route = readFileSync(new URL("../lib/command-center/operator-route-policy.ts", import.meta.url), "utf8");
 
-test("operator brand UI uses scoped dark Sekinfra visual language, never alters public styles", () => {
+test("operator uses scoped dark Avuhz visual language, never alters public styles", () => {
   assert.match(page, /import "\.\/operator-visual\.css"/);
   assert.match(page, /operator-shell/);
   assert.match(page, /operator-hero/);
