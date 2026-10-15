@@ -6,6 +6,7 @@ import { notFound } from "next/navigation";
 import { authorizeOperator } from "@/lib/command-center/operator-access";
 import { fetchAvuhzActivity, type AvuhzActivityLane } from "@/lib/command-center/avuhz-activity";
 import { fetchAvuhzReviewQueue } from "@/lib/command-center/avuhz-review-queue";
+import { AiOperator } from "@/components/command-center/ai-operator";
 import "./operator-visual.css";
 
 export const dynamic = "force-dynamic";
@@ -83,7 +84,7 @@ const boundaries = [
   { name: "Client records", status: "Not connected", description: "A real tenant-scoped Avuhz query adapter is required before showing a client or assessment." },
   { name: "Approvals and decisions", status: "Not connected", description: "Only governed Avuhz authority may create or progress approvals. The interface cannot approve by itself." },
   { name: "Workflow execution", status: "Not connected", description: "No browser-to-n8n credentials, direct database writes, or silent workflow execution." },
-  { name: "AI assistance", status: "Not connected", description: "A future AI assistant needs a reviewed, read-only first integration and explicit approval for every consequential action." },
+  { name: "AI assistance", status: "Configuration gated", description: "The operator chat has a server-only OpenAI adapter; no Avuhz commands, live n8n access, or mutation tools. Explicit protected configuration and activation required." },
 ] as const;
 
 export default async function CommandCenterPage() {
@@ -104,13 +105,14 @@ export default async function CommandCenterPage() {
           <a href="/command-center" aria-label="Sekinfra Command Center home"
             className="operator-logo-plate inline-flex min-h-16 w-[196px] max-w-full items-center justify-center rounded-xl px-3 py-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#b9ef70]">
             <Image src="/brand/sekinfra-wordmark.webp" alt="Sekinfra" width={600} height={155}
-              priority sizes="196px" className="h-auto w-full object-contain" />
+              unoptimized priority sizes="196px" className="h-auto w-full object-contain" />
           </a>
           <p className="pl-1 text-[10px] font-semibold uppercase tracking-[.19em] text-[#92acaa]">Command Center <span aria-hidden="true" className="px-1.5 text-[#b9ef70]">/</span> Avuhz</p>
         </div>
         <p className="mt-9 text-[10px] font-semibold uppercase tracking-[.16em] text-[#779398]">Operator workspace</p>
         <nav aria-label="Command Center sections" className="mt-3 flex gap-1 overflow-x-auto lg:flex-col lg:overflow-visible">
           {[
+            ["#ai-operator", "AI Operator"],
             ["#overview", "Overview"],
             ["#activity", "Avuhz Activity"],
             ["#systems", "System Library"],
@@ -136,6 +138,10 @@ export default async function CommandCenterPage() {
         </header>
 
         <div className="mx-auto max-w-[1420px] space-y-6 px-5 py-8 sm:px-9 sm:py-10">
+          <section id="ai-operator" aria-label="AI Operator" className="scroll-mt-6">
+            <AiOperator available={process.env.SEKINFRA_AI_OPERATOR_ENABLED === "true" && !!process.env.OPENAI_API_KEY} />
+          </section>
+
           <section id="overview" className="operator-hero rounded-[24px] p-7 sm:p-10 lg:p-12">
             <p className="operator-eyebrow">Private control plane / 01</p>
             <h1 className="mt-4 max-w-[780px] text-3xl font-semibold leading-tight tracking-[-.05em] text-white sm:text-5xl">Where your systems <span className="text-[#c9ec81]">come into focus.</span></h1>
