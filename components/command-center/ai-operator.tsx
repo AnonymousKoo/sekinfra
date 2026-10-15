@@ -10,7 +10,7 @@ const starter = [
   "What's blocking the first client?",
 ] as const;
 
-export function AiOperator({ available }: { available: boolean }) {
+export function AiOperator({ available, credentialConfigured }: { available: boolean; credentialConfigured: boolean }) {
   const [history, setHistory] = useState<ChatMessage[]>([]);
   const [draft, setDraft] = useState("");
   const [busy, setBusy] = useState(false);
@@ -63,9 +63,21 @@ export function AiOperator({ available }: { available: boolean }) {
         </p>
       </div>
       <span aria-label="AI Operator configuration status" className="operator-status" data-connected={available}>
-        {available ? "Read-only · configured" : "API not connected"}
+        {available ? "Read-only API enabled · not yet verified" : credentialConfigured ? "Key configured · requests paused" : "Awaiting secure API key"}
       </span>
     </div>
+    {!available && <div className="mt-5 rounded-xl border border-[#446258] bg-[#0f292d] p-4" aria-label="AI Operator setup pending">
+      <p className="text-sm font-semibold text-[#d8f2a7]">Avuhz OpenAI account · connection setup</p>
+      <p className="mt-2 text-xs leading-6 text-[#c2d5cd]">
+        {credentialConfigured
+          ? "The private server has an API key configured. AI requests remain paused until usage safeguards, API billing, and a separate enablement approval are verified."
+          : "The private server has no OpenAI API key configured. Your existing Avuhz account can be prepared without adding credit or making a paid request."}
+      </p>
+      <p className="mt-2 text-xs leading-6 text-[#9ebbb4]">
+        Create a project-scoped API key privately at platform.openai.com, then store it only in the private Sekinfra Command Center project settings. Never paste a key here, in chat, or in n8n. Leave the AI feature disabled while your credit is $0.
+      </p>
+      <p className="mt-2 text-[11px] text-[#8caaa3]">Account access is not verified here. No key, billing balance or private project details are displayed.</p>
+    </div>}
     <div className="mt-6 min-h-48 space-y-3 rounded-2xl border border-[#315057] bg-[#091920] p-4 sm:p-5" aria-label="AI Operator conversation" aria-live="polite">
       {history.length === 0 && <div className="py-5">
         <p className="text-sm font-semibold text-[#dceee4]">Your command center, in conversation form.</p>
@@ -93,7 +105,7 @@ export function AiOperator({ available }: { available: boolean }) {
       <label htmlFor="operator-message" className="block text-xs font-semibold text-[#d7e9e0]">Ask AI Operator</label>
       <textarea id="operator-message" name="message" value={draft} onChange={event => setDraft(event.target.value)}
         maxLength={2000} rows={3} autoComplete="off" disabled={!available || busy}
-        placeholder={available ? "Ask about Avuhz engineering activity…" : "AI setup is pending; no API key or commands are exposed here."}
+        placeholder={available ? "Ask about Avuhz engineering activity…" : "AI requests paused — prepare the Avuhz API key privately."}
         className="w-full resize-y rounded-xl border border-[#44646a] bg-[#0a1a21] px-4 py-3 text-sm leading-6 text-white outline-none placeholder:text-[#829d9d] focus:border-[#b9ef70] disabled:cursor-not-allowed disabled:opacity-60" />
       <div className="flex flex-wrap items-center justify-between gap-3">
         <p className="max-w-xl text-[11px] leading-5 text-[#8faba7]">
