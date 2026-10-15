@@ -60,7 +60,7 @@ test("page calls health probes only after verified operator guard",()=>{
   assert.match(page,/probeProductionN8n\(\)/);
   assert.match(page,/probeAvuhzDevelopment\(\)/);
   const guard=page.indexOf("if (!identity) notFound()");
-  const fetch=page.indexOf("const [avuhz, activity, reviewQueue, n8nProduction]");
+  const fetch=page.indexOf("const [avuhz, activity, reviewQueue, n8nProduction, authHealth, dataHealth]");
   assert.ok(guard>=0 && fetch>guard);
   assert.match(page,/connected:false \},\n\s*\{ label:"Avuhz \/ tenant operations"/);
   assert.match(page,/Health failed/);
