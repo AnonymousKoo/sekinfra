@@ -117,7 +117,7 @@ export default async function CommandCenterPage() {
 
         <div className="mx-auto max-w-[1420px] space-y-6 px-5 py-8 sm:px-9 sm:py-10">
           <section id="ai-operator" aria-label="AI Operator" className="scroll-mt-6">
-            <AiOperator available={process.env.SEKINFRA_AI_OPERATOR_ENABLED === "true" && !!process.env.OPENAI_API_KEY} />
+            <AiOperator available={process.env.SEKINFRA_AI_OPERATOR_ENABLED === "true" && !!process.env.OPENAI_API_KEY} credentialConfigured={!!process.env.OPENAI_API_KEY} />
           </section>
 
           <section id="overview" className="operator-hero rounded-[24px] p-7 sm:p-10 lg:p-12">
