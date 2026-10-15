@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 
@@ -99,9 +100,13 @@ export default async function CommandCenterPage() {
     <a href="#main-content" className="fixed left-3 top-3 z-50 -translate-y-24 rounded-lg bg-[#c9ec81] px-4 py-3 text-sm font-bold text-[#102017] focus:translate-y-0">Skip to workspace</a>
     <div className="mx-auto min-h-screen max-w-[1800px] lg:grid lg:grid-cols-[250px_minmax(0,1fr)]">
       <aside className="operator-rail border-b border-[#24434a] px-5 py-6 lg:sticky lg:top-0 lg:flex lg:h-screen lg:flex-col lg:border-b-0 lg:border-r">
-        <div className="flex items-center gap-3">
-          <span className="operator-brand-mark flex h-11 w-11 items-center justify-center rounded-xl text-xl font-black text-[#0e2119]">S/</span>
-          <div><p className="text-sm font-extrabold tracking-[.16em] text-white">SEKINFRA</p><p className="mt-0.5 text-[10px] font-semibold uppercase tracking-[.18em] text-[#92acaa]">Operations / Avuhz</p></div>
+        <div className="space-y-2">
+          <a href="/command-center" aria-label="Sekinfra Command Center home"
+            className="operator-logo-plate inline-flex min-h-16 w-[196px] max-w-full items-center justify-center rounded-xl px-3 py-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#b9ef70]">
+            <Image src="/brand/sekinfra-wordmark.webp" alt="Sekinfra" width={600} height={155}
+              priority sizes="196px" className="h-auto w-full object-contain" />
+          </a>
+          <p className="pl-1 text-[10px] font-semibold uppercase tracking-[.19em] text-[#92acaa]">Command Center <span aria-hidden="true" className="px-1.5 text-[#b9ef70]">/</span> Avuhz</p>
         </div>
         <p className="mt-9 text-[10px] font-semibold uppercase tracking-[.16em] text-[#779398]">Operator workspace</p>
         <nav aria-label="Command Center sections" className="mt-3 flex gap-1 overflow-x-auto lg:flex-col lg:overflow-visible">
