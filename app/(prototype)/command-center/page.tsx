@@ -7,6 +7,7 @@ import { authorizeOperator } from "@/lib/command-center/operator-access";
 import { fetchAvuhzActivity, type AvuhzActivityLane } from "@/lib/command-center/avuhz-activity";
 import { fetchAvuhzReviewQueue } from "@/lib/command-center/avuhz-review-queue";
 import { probeAvuhzDevelopment, probeProductionN8n } from "@/lib/command-center/operator-runtime-probes";
+import { probeSupabaseHealth } from "@/lib/command-center/supabase-health";
 import { AiOperator } from "@/components/command-center/ai-operator";
 import "./operator-visual.css";
 
@@ -72,7 +73,7 @@ export default async function CommandCenterPage() {
   if (!identity) notFound();
 
   // Health is fetched only AFTER successful cryptographic operator validation.
-  const [avuhz, activity, reviewQueue, n8nProduction] = await Promise.all([avuhzReadiness(), fetchAvuhzActivity(), fetchAvuhzReviewQueue(), probeProductionN8n()]);
+  const [avuhz, activity, reviewQueue, n8nProduction, authHealth, dataHealth] = await Promise.all([avuhzReadiness(), fetchAvuhzActivity(), fetchAvuhzReviewQueue(), probeProductionN8n(), probeSupabaseHealth("AUTH"), probeSupabaseHealth("DATA")]);
   const lanes: readonly AvuhzActivityLane[] = ["Security", "Infrastructure", "Automation", "Business"];
 
   return <div className="operator-shell min-h-screen text-[#e9f0ed]" style={{ colorScheme: "dark" }}>
@@ -269,6 +270,8 @@ export default async function CommandCenterPage() {
                 { label:"n8n / local", state:"Not connected", detail:"Your localhost n8n requires a private read-only bridge. No public tunnel, credentials or direct browser request is configured.", connected:false },
                 { label:"n8n / production", state:n8nProduction.state === "responding" ? "HTTP responds · not integrated" : n8nProduction.state === "not_ready" ? "Health failed" : "Health unavailable", detail:n8nProduction.detail, connected:false },
                 { label:"Avuhz / runtime", state:readinessLabels[avuhz.status], detail:avuhz.detail, connected:false },
+                { label:"Supabase / DEVELOPMENT AUTH", state:authHealth.state === "api_responding" ? "API responds · not integrated" : authHealth.state === "not_configured" ? "Health not configured" : "Health unavailable", detail:authHealth.detail, connected:false },
+                { label:"Supabase / DEVELOPMENT DATA", state:dataHealth.state === "api_responding" ? "API responds · not integrated" : dataHealth.state === "not_configured" ? "Health not configured" : "Health unavailable", detail:dataHealth.detail, connected:false },
                 { label:"Avuhz / tenant operations", state:"Not connected", detail:"No authenticated, tenant-scoped Work Item or lifecycle-event read model is mounted here.", connected:false },
               ].map((source) => <div className="rounded-xl border border-[#294851] bg-[#10262d]/80 p-4" key={source.label}>
                 <div className="flex flex-wrap items-center justify-between gap-2">
