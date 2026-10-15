@@ -3,6 +3,7 @@ import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 
 import { authorizeOperator } from "@/lib/command-center/operator-access";
+import { fetchAvuhzActivity, type AvuhzActivityLane } from "@/lib/command-center/avuhz-activity";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -89,7 +90,8 @@ export default async function CommandCenterPage() {
   if (!identity) notFound();
 
   // Health is fetched only AFTER successful cryptographic operator validation.
-  const avuhz = await avuhzReadiness();
+  const [avuhz, activity] = await Promise.all([avuhzReadiness(), fetchAvuhzActivity()]);
+  const lanes: readonly AvuhzActivityLane[] = ["Security", "Infrastructure", "Automation", "Business"];
 
   return <div className="min-h-screen bg-[#071419] text-[#e9f0ed]" style={{ colorScheme: "dark" }}>
     <a href="#main-content" className="fixed left-3 top-3 z-50 -translate-y-24 rounded-lg bg-[#c9ec81] px-4 py-3 text-sm font-bold text-[#102017] focus:translate-y-0">Skip to workspace</a>
@@ -103,6 +105,7 @@ export default async function CommandCenterPage() {
         <nav aria-label="Command Center sections" className="mt-3 flex gap-1 overflow-x-auto lg:flex-col lg:overflow-visible">
           {[
             ["#overview", "Overview"],
+            ["#activity", "Avuhz Activity"],
             ["#clients", "Client work"],
             ["#operations", "Operations"],
             ["#security", "Security"],
@@ -134,6 +137,56 @@ export default async function CommandCenterPage() {
               <a href="/command-center" className="inline-flex min-h-11 items-center rounded-lg border border-[#56756a] px-5 text-xs font-bold text-white hover:bg-white/10">Refresh verified status ↻</a>
             </div>
           </section>
+
+          <Panel id="activity">
+            <div className="flex flex-wrap items-start justify-between gap-3">
+              <SectionHeading
+                eyebrow="Avuhz / activity"
+                title="What changed in Avuhz"
+                subtitle="Verified public GitHub repository merges only. An engineering merge is not a deployment, a workflow execution, or a customer outcome."
+              />
+              <span className="rounded-full border border-[#3f5d61] px-3 py-1.5 text-xs text-[#c5d9d5]">
+                {activity.state === "verified" ? "GitHub source verified" : "GitHub source unavailable"}
+              </span>
+            </div>
+            <div className="grid grid-cols-2 gap-3 md:grid-cols-4" aria-label="Four activity lanes">
+              {lanes.map((lane) => {
+                const count = activity.events.filter((event) => event.lane === lane).length;
+                return <div key={lane} className="rounded-xl border border-[#294851] bg-[#132a31] p-4">
+                  <p className="text-[11px] font-semibold text-[#abc3be]">{lane}</p>
+                  <p className="mt-2 text-xl font-semibold text-white">{activity.state === "verified" ? count : "—"}</p>
+                  <p className="mt-1 text-[11px] text-[#8faeab]">Merges in latest sample</p>
+                </div>;
+              })}
+            </div>
+            <div className="mt-5 border-t border-[#294851] pt-5">
+              {activity.state === "unavailable" ? (
+                <p className="text-sm text-[#abc3be]">The GitHub activity source could not be verified. No events are shown; this is not evidence of zero activity.</p>
+              ) : activity.events.length === 0 ? (
+                <p className="text-sm text-[#abc3be]">No verified main-branch merges in the latest returned sample.</p>
+              ) : (
+                <ol className="divide-y divide-[#294851]">
+                  {activity.events.map((event) => <li key={event.number} className="flex flex-wrap items-start gap-3 py-3">
+                    <span className="min-w-24 rounded-md border border-[#3b565e] px-2 py-1 text-[10px] font-bold uppercase tracking-wide text-[#c9ec81]">{event.lane}</span>
+                    <div className="min-w-0 flex-1">
+                      <a href={event.url} target="_blank" rel="noopener noreferrer"
+                        className="text-sm font-semibold text-[#e4eee9] underline-offset-4 hover:text-[#c9ec81] hover:underline">
+                        #{event.number} · {event.title}
+                      </a>
+                      <p className="mt-1 text-[11px] text-[#90aaa8]">
+                        {new Date(event.mergedAt).toLocaleString("en-US", { timeZone: "America/New_York", month: "short", day: "numeric", hour: "numeric", minute: "2-digit", timeZoneName: "short" })}
+                        {" · Source code merged · Not a hosted execution"}
+                      </p>
+                    </div>
+                  </li>)}
+                </ol>
+              )}
+            </div>
+            <div className="mt-4 rounded-xl border border-[#315058] bg-[#102830] p-4 text-xs leading-6 text-[#9db8b5]">
+              <p className="font-semibold text-white">Operational sources still need authenticated integration.</p>
+              <p className="mt-1">Supabase tenant activity, Render deployment history and n8n workflow executions are not connected to this view. Avuhz permissions and tenant RLS remain enforced outside this interface. No client activity counts are inferred from GitHub.</p>
+            </div>
+          </Panel>
 
           <div className="grid gap-4 md:grid-cols-3" aria-label="Verified operating boundaries">
             <Panel>
