@@ -21,11 +21,16 @@
     radial-gradient(circle at -22% -10%, rgb(15 159 152 / .20), transparent 19rem),
     #09171c;
 }
-.operator-brand-mark {
-  display: grid;
-  place-items: center;
-  background: linear-gradient(142deg, #b9ef70, #79bdb1);
-  box-shadow: 0 0 45px rgb(185 239 112 / .11);
+.operator-logo-plate {
+  /* The existing public-site wordmark has an opaque white background.
+   * Keep a small light plate for brand fidelity within the DARK interface.
+   * Do not recolor, replace, or export a new logo asset. */
+  background: #fff;
+  box-shadow: 0 0 0 1px rgb(15 159 152 / .26), 0 12px 36px rgb(1 11 14 / .28);
+  transition: box-shadow .18s ease, transform .18s ease;
+}
+.operator-logo-plate:hover {
+  box-shadow: 0 0 0 1px rgb(185 239 112 / .65), 0 12px 36px rgb(1 11 14 / .28);
 }
 .operator-nav-link {
   transition: background-color .18s ease, color .18s ease, border-color .18s ease;
