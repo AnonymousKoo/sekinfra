@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { DiagnosticTriage } from "@/components/diagnostic-triage";
-import { SiteShell } from "@/components/site-shell";
-import { SystemDiagram } from "@/components/visuals/system-diagram";
+import { PublicPremiumShell } from "@/components/public-site/public-premium-shell";
+import { PageHero } from "@/components/public-site/page-hero";
+import styles from "@/components/public-site/public-premium.module.css";
 
 export const metadata: Metadata = {
   title: "Show us what is happening",
@@ -23,54 +24,17 @@ const nextSteps = [
 
 export default function Start() {
   return (
-    <SiteShell>
-      <section className="tech-hero relative overflow-hidden bg-[var(--brand-deep)] text-white">
-        <div className="absolute inset-0 opacity-20 [background-image:linear-gradient(rgba(185,239,112,.22)_1px,transparent_1px),linear-gradient(90deg,rgba(185,239,112,.22)_1px,transparent_1px)] [background-size:52px_52px] [mask-image:linear-gradient(135deg,black,transparent_78%)]" />
-        <div className="relative mx-auto grid max-w-[var(--page-width)] gap-12 px-5 py-18 lg:grid-cols-[.9fr_1.1fr] lg:px-8 lg:py-24">
-          <div>
-            <p className="eyebrow !text-[var(--accent)]">Start with the problem</p>
-            <h1 className="text-balance mt-5 text-5xl font-semibold leading-[.96] tracking-[-.07em] sm:text-6xl lg:text-7xl">
-              Show us what&apos;s happening.
-            </h1>
-            <p className="mt-6 max-w-2xl text-lg leading-8 text-white/72">
-              You do not need to know the cause or choose a service. Answer a few simple questions about what is going
-              wrong, who it affects, and how often it happens.
-            </p>
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
-              <a
-                href="#first-review"
-                className="inline-flex min-h-12 w-fit items-center justify-center rounded-[var(--radius-button)] bg-[var(--accent)] px-5 text-sm font-semibold text-[var(--brand-deep)] transition hover:bg-white"
-              >
-                See how to get started
-              </a>
-              <p className="max-w-sm text-sm leading-6 text-white/70">
-                Have a project in mind? You do not need to finish this problem check first.
-              </p>
-            </div>
-            <div className="mt-8 flex flex-wrap gap-2 text-xs font-semibold text-white/70">
-              {["Operations", "Automation", "Business Systems", "Cloud & Network", "Security & Compliance"].map((item) => (
-                <span className="tech-chip rounded-full px-3 py-2" key={item}>
-                  {item}
-                </span>
-              ))}
-            </div>
-          </div>
-
-          <div className="space-y-5">
-            <SystemDiagram
-              variant="selector"
-              activeLabel="Your problem"
-              flow={["What is wrong", "Who it affects", "People & systems", "How deep to look", "Next step"]}
-            />
-            <div className="tech-card tech-card--dark p-5">
-              <p className="text-xs font-bold uppercase tracking-[.14em] text-[var(--accent)]">What this does</p>
-              <p className="mt-3 text-sm leading-6 text-white/70">
-                It helps choose how deep we need to look. It does not find the root cause, ask for system access, or approve any changes.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
+    <PublicPremiumShell>
+      <PageHero eyebrow="Start with the problem" title="Show us what’s happening."
+        visual={<div className={styles.reviewPanel}><p className={styles.label}>A useful starting point</p><ol>
+          <li><span>01</span> Describe what is getting in the way.</li>
+          <li><span>02</span> Explore which review may fit.</li>
+          <li><span>03</span> Copy your brief and email it yourself.</li>
+        </ol><p>Browser-only guidance. No system access, online submission or approval of changes.</p></div>}>
+        <p>You do not need to know the cause or choose a service. Answer a few simple questions about what is going wrong, who it affects, and how often it happens.</p>
+        <a href="#first-review" className={styles.heroAction}>See how to get started <span aria-hidden="true">↗</span></a>
+        <p className={styles.hint}>Have a project in mind? You do not need to finish this problem check first.</p>
+      </PageHero>
 
       <section
         id="first-review"
@@ -152,7 +116,7 @@ export default function Start() {
               Answer six simple questions.
             </h2>
             <p className="mt-5 text-lg leading-8 text-[var(--ink-muted)]">
-              Sekinfra will use your answers to show whether the problem looks small and focused or needs a deeper review.
+              This browser-only check uses your answers to show whether the problem looks small and focused or needs a deeper review.
             </p>
           </div>
           <DiagnosticTriage />
@@ -192,6 +156,6 @@ export default function Start() {
           </p>
         </div>
       </section>
-    </SiteShell>
+    </PublicPremiumShell>
   );
 }

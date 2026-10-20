@@ -257,7 +257,7 @@ export function DiagnosticTriage() {
           </details>
 
           <p className="mt-6 border-l-2 border-[var(--brand)] pl-4 text-sm leading-6 text-[var(--ink-muted)]">
-            Online submission is not enabled. No verified contact channel is available here yet. Copy this brief for your own records; nothing you entered was sent to Sekinfra.
+            Online submission is not enabled. Copy this brief, then email it to admin@sekinfra.com using your mail app. Nothing you entered was sent to Sekinfra.
           </p>
         </section>
       </div>

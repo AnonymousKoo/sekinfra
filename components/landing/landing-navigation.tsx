@@ -1,17 +1,21 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useRef } from "react";
 import styles from "./premium-home.module.css";
 
 const links = [
-  { href: "#services", label: "Services" },
-  { href: "#approach", label: "Approach" },
+  { href: "/#services", label: "Services" },
+  { href: "/how-it-works", label: "How it works" },
+  { href: "/outcomes", label: "Outcomes" },
   { href: "/oia", label: "OIA walkthrough" },
   { href: "/about", label: "About" },
+  { href: "/start", label: "Get started" },
 ];
 
 export function LandingNavigation() {
+  const pathname = usePathname();
   const disclosure = useRef<HTMLDetailsElement>(null);
 
   useEffect(() => {
@@ -46,7 +50,7 @@ export function LandingNavigation() {
   return (
     <>
       <nav className={styles.desktopNav} aria-label="Primary navigation">
-        {links.map((link) => <Link key={link.href} href={link.href}>{link.label}</Link>)}
+        {links.map((link) => <Link key={link.href} href={link.href} aria-current={pathname === link.href ? "page" : undefined}>{link.label}</Link>)}
       </nav>
       <details className={styles.mobileNav} ref={disclosure}>
         <summary aria-label="Toggle navigation" aria-controls="landing-mobile-navigation">
@@ -54,11 +58,10 @@ export function LandingNavigation() {
         </summary>
         <nav id="landing-mobile-navigation" aria-label="Mobile navigation">
           {links.map((link) => (
-            <Link key={link.href} href={link.href} onClick={() => { if (disclosure.current) disclosure.current.open = false; }}>
+            <Link key={link.href} href={link.href} aria-current={pathname === link.href ? "page" : undefined} onClick={() => { if (disclosure.current) disclosure.current.open = false; }}>
               {link.label}<span aria-hidden="true">↗</span>
             </Link>
           ))}
-          <Link href="/start">Get started<span aria-hidden="true">↗</span></Link>
           <a href="mailto:admin@sekinfra.com">Email Sekinfra<span aria-hidden="true">↗</span></a>
         </nav>
       </details>
