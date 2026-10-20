@@ -21,7 +21,7 @@ const neutral = {
   label: "Your problem",
   recognition: "You can see that something is wrong, even if you do not know where the problem starts.",
   consequence: "Guessing can waste time and money on a fix that does not solve the real problem.",
-  outcome: "Sekinfra follows the problem until we know what needs to change.",
+  outcome: "An agreed review can help identify what needs attention and what is still uncertain.",
   flow: ["Problem", "Impact", "People & systems", "Cause", "Next step"],
 };
 
@@ -66,7 +66,7 @@ export function ProblemSelector() {
             </p>
 
             <ButtonLink href="/start" className="mt-7">
-              Start the problem check
+              Prepare a problem brief
             </ButtonLink>
           </div>
 
