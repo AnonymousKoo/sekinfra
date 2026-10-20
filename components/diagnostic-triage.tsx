@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { DiagnosticIntake } from "@/components/diagnostic-intake";
 import { usePersonalization } from "@/components/personalization-provider";
 import { SystemDiagram } from "@/components/visuals/system-diagram";
 import { trackEvent } from "@/lib/analytics";
@@ -94,7 +93,6 @@ export function DiagnosticTriage() {
   const [step, setStep] = useState(0);
   const [showResult, setShowResult] = useState(false);
   const [copyStatus, setCopyStatus] = useState("");
-  const [showIntake, setShowIntake] = useState(false);
 
   const completeInput = useMemo<TriageInput | null>(() => {
     if (!pressure || !scope || !frequency || !impact || !spread) return null;
@@ -150,7 +148,6 @@ export function DiagnosticTriage() {
     setDesiredOutcome("");
     setStep(0);
     setShowResult(false);
-    setShowIntake(false);
     setCopyStatus("");
   };
 
@@ -158,16 +155,6 @@ export function DiagnosticTriage() {
     setPressure(value);
     setCopyStatus("");
   };
-
-  if (showIntake && completeInput && result) {
-    return (
-      <DiagnosticIntake
-        triageInput={completeInput}
-        triageResult={result}
-        onBack={() => setShowIntake(false)}
-      />
-    );
-  }
 
   if (showResult && completeInput && result) {
     const selectedProfile = profiles[completeInput.pressure];
@@ -215,7 +202,7 @@ export function DiagnosticTriage() {
           </div>
 
           <div className="mt-8">
-            <p className="eyebrow">Why we picked this path</p>
+            <p className="eyebrow">Why this path may fit</p>
             <ul className="mt-4 space-y-3">
               {result.reasons.map((reason, index) => (
                 <li className="flex gap-3 border-t border-[var(--line)] pt-3" key={reason}>
@@ -232,13 +219,6 @@ export function DiagnosticTriage() {
           </div>
 
           <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-            <button
-              type="button"
-              onClick={() => setShowIntake(true)}
-              className="tech-button inline-flex min-h-12 items-center justify-center rounded-[var(--radius-button)] bg-[var(--brand)] px-5 text-sm font-semibold text-white transition hover:bg-[var(--brand-deep)]"
-            >
-              Prepare my request
-            </button>
             <Link href="/oia" className="inline-flex min-h-12 items-center justify-center rounded-[var(--radius-button)] border border-[var(--brand)] bg-[var(--brand-wash)] px-5 text-sm font-semibold text-[var(--brand)] transition hover:bg-white">
               Take the guided OIA walkthrough →
             </Link>
@@ -277,7 +257,7 @@ export function DiagnosticTriage() {
           </details>
 
           <p className="mt-6 border-l-2 border-[var(--brand)] pl-4 text-sm leading-6 text-[var(--ink-muted)]">
-            Online submission is not connected yet. Nothing you entered here was sent to Sekinfra or anyone else.
+            Online submission is not enabled. No verified contact channel is available here yet. Copy this brief for your own records; nothing you entered was sent to Sekinfra.
           </p>
         </section>
       </div>
@@ -313,7 +293,7 @@ export function DiagnosticTriage() {
         <div className="flex items-start justify-between gap-5">
           <div>
             <p className="eyebrow">Step 0{step + 1}</p>
-            <h2 className="mt-3 text-3xl font-semibold tracking-[-.045em] sm:text-4xl">
+            <h2 aria-live="polite" aria-atomic="true" className="mt-3 text-3xl font-semibold tracking-[-.045em] sm:text-4xl">
               {step === 0 && "Where is the problem showing up?"}
               {step === 1 && "How far does it spread?"}
               {step === 2 && "How often does it happen?"}
