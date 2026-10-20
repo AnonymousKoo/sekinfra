@@ -1,107 +1,38 @@
-import { ButtonLink } from "@/components/ui/button-link";
+import Link from "next/link";
+import { OIA_AREAS } from "@/lib/oia-walkthrough";
 
-const paths = [
-  {
-    label: "Focused Diagnostic",
-    fit: "Best when the problem looks focused and has a clear starting point.",
-    examples: [
-      "Network or cloud problem",
-      "Access or security concern",
-      "System connection failure",
-      "One workflow keeps breaking",
-    ],
-    outcome: "Find where the problem starts, show the impact, and define the smallest fix that makes sense.",
-  },
-  {
-    label: "Operational Infrastructure Assessment (OIA)",
-    fit: "Best when the problem is bigger, keeps coming back, touches several teams or systems, or has no clear cause.",
-    examples: [
-      "Several teams or systems are involved",
-      "The same problem keeps coming back",
-      "Ownership and visibility are unclear",
-      "You can see the problem but not what is causing it",
-    ],
-    outcome: "Build a clear picture of what is happening, why it matters, what should change, and what comes next.",
-  },
-] as const;
-
-const flow = [
-  ["01", "Show us the problem", "Start with what you can see and why it matters."],
-  ["02", "We choose how deep to look", "Sekinfra decides whether the problem needs a focused review or the full OIA."],
-  ["03", "We find where it starts", "We use facts instead of guessing."],
-  ["04", "You see what we found", "We explain what is wrong, what matters most, and what should work better."],
-  ["05", "You choose the next move", "Nothing changes unless you approve it."],
-  ["06", "We make the approved change", "Sekinfra changes only what you approved."],
-  ["07", "We check the result", "We compare the result with the problem we started with."],
-] as const;
-
-export function DiagnosticPaths({ cta = false, showFlow = true }: { cta?: boolean; showFlow?: boolean }) {
+export function DiagnosticPaths() {
   return (
-    <section className="section-rule tech-light-surface bg-white py-16 sm:py-24">
+    <section className="section-rule bg-[var(--surface-muted)] py-14 sm:py-20" aria-labelledby="diagnostic-paths-title">
       <div className="mx-auto max-w-[var(--page-width)] px-5 lg:px-8">
-        <div className="grid gap-8 lg:grid-cols-[.72fr_1.28fr] lg:items-end">
-          <div>
-            <p className="eyebrow">Two ways we can review a problem</p>
-            <h2 className="mt-4 text-balance text-4xl font-semibold tracking-[-.055em] sm:text-5xl">
-              Start small. Go deeper only when needed.
-            </h2>
-          </div>
-          <p className="max-w-2xl text-lg leading-8 text-[var(--ink-muted)]">
-            Sekinfra starts with the smallest review that can answer the question. A clear problem stays focused. A bigger or unclear problem can move into the Operational Infrastructure Assessment.
-          </p>
+        <div className="max-w-2xl">
+          <p className="eyebrow">Two review options</p>
+          <h2 id="diagnostic-paths-title" className="mt-4 text-balance text-3xl font-semibold tracking-[-.05em] sm:text-4xl">Start focused. Look wider when needed.</h2>
+          <p className="mt-4 leading-7 text-[var(--ink-muted)]">Agree on the smallest useful review before granting access. Neither option authorizes implementation.</p>
         </div>
-
-        <div className="mt-12 grid gap-5 lg:grid-cols-2">
-          {paths.map((path, index) => (
-            <article
-              className={`tech-card tech-card--light p-7 sm:p-8 ${
-                index === 1
-                  ? "border-[var(--brand)] bg-[var(--brand-wash)]"
-                  : "border-[var(--line)] bg-[var(--surface)]"
-              }`}
-              key={path.label}
-            >
-              <div className="flex items-center justify-between gap-4">
-                <span className="font-mono text-xs text-[var(--brand)]">0{index + 1}</span>
-                <span className="rounded-full border border-[var(--line)] bg-white px-3 py-1 text-[10px] font-bold uppercase tracking-[.12em] text-[var(--ink-muted)]">
-                  {index === 0 ? "Focused problem" : "Bigger or unclear"}
-                </span>
-              </div>
-              <h3 className="mt-7 text-2xl font-semibold tracking-[-.04em]">{path.label}</h3>
-              <p className="mt-3 leading-7 text-[var(--ink-muted)]">{path.fit}</p>
-              <ul className="mt-6 space-y-2 border-t border-[var(--line)] pt-5">
-                {path.examples.map((item) => (
-                  <li className="flex gap-3 text-sm leading-6" key={item}>
-                    <span aria-hidden="true" className="mt-2 h-2 w-2 shrink-0 rounded-full bg-[var(--brand)]" />
-                    {item}
-                  </li>
-                ))}
+        <div className="mt-8 grid gap-4 lg:grid-cols-2">
+          <article className="tech-card tech-card--light bg-white p-6 sm:p-8">
+            <p className="eyebrow">One bounded problem</p>
+            <h3 className="mt-4 text-2xl font-semibold tracking-[-.035em]">Focused Diagnostic</h3>
+            <p className="mt-3 text-sm leading-7 text-[var(--ink-muted)]">For a recurring network interruption, a failed system connection or one workflow that keeps breaking. We trace the agreed issue using available evidence.</p>
+            <p className="mt-5 border-t border-[var(--line)] pt-4 text-sm leading-6"><strong>You receive:</strong> findings, evidence limits and recommended next steps for that problem.</p>
+            <Link href="/start" className="mt-5 inline-flex min-h-11 items-center text-sm font-semibold underline underline-offset-4">Prepare a problem brief →</Link>
+          </article>
+          <article className="tech-card tech-card--light border-[var(--brand)] bg-white p-6 sm:p-8">
+            <p className="eyebrow">Across the operation</p>
+            <h3 className="mt-4 text-2xl font-semibold tracking-[-.035em]">Operational Infrastructure Assessment (OIA)</h3>
+            <p className="mt-3 text-sm leading-7 text-[var(--ink-muted)]">For issues that cross teams or systems, keep returning or have an unclear cause. The OIA looks across seven operating areas to understand how the parts affect each other.</p>
+            <p className="mt-5 border-t border-[var(--line)] pt-4 text-sm leading-6"><strong>You receive:</strong> an operating picture, supported findings, priorities and a decision about what to address next.</p>
+            <details className="mt-4 text-sm">
+              <summary className="min-h-11 cursor-pointer py-2 font-semibold">The seven operating areas</summary>
+              <ul className="grid gap-2 py-3 text-[var(--ink-muted)] sm:grid-cols-2">
+                {OIA_AREAS.map((area) => <li key={area.id}>{area.number}. {area.category}</li>)}
               </ul>
-              <div className="mt-6 rounded-lg bg-white/70 p-4">
-                <p className="eyebrow">What you get</p>
-                <p className="mt-2 text-sm font-semibold leading-6">{path.outcome}</p>
-              </div>
-            </article>
-          ))}
+            </details>
+            <Link href="/oia" className="mt-1 inline-flex min-h-11 items-center text-sm font-semibold underline underline-offset-4">Try the seven-area OIA walkthrough →</Link>
+          </article>
         </div>
-
-        {showFlow ? (
-          <ol className="mt-12 grid gap-px overflow-hidden rounded-[var(--radius-card)] border border-[var(--line)] bg-[var(--line)] sm:grid-cols-2 lg:grid-cols-7">
-            {flow.map(([number, title, body]) => (
-              <li className="tech-grid-card bg-[var(--surface)] p-5" key={title}>
-                <span className="font-mono text-xs text-[var(--brand)]">{number}</span>
-                <h3 className="mt-6 text-lg font-semibold">{title}</h3>
-                <p className="mt-3 text-sm leading-6 text-[var(--ink-muted)]">{body}</p>
-              </li>
-            ))}
-          </ol>
-        ) : null}
-
-        {cta ? (
-          <div className="mt-8">
-            <ButtonLink href="/start">Show us what&apos;s happening</ButtonLink>
-          </div>
-        ) : null}
+        <p className="mt-5 text-sm leading-6 text-[var(--ink-muted)]">The free browser walkthrough is a self-review, not a completed assessment or verified diagnosis. A professional review requires an agreed scope, deliverables, fee and timing.</p>
       </div>
     </section>
   );
