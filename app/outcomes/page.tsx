@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { SiteShell } from "@/components/site-shell";
+import { PublicPremiumShell } from "@/components/public-site/public-premium-shell";
 import { OutcomesExperience } from "@/components/outcomes/outcomes-experience";
 
 export const metadata: Metadata = {
@@ -9,5 +9,5 @@ export const metadata: Metadata = {
 };
 
 export default function Outcomes() {
-  return <SiteShell><OutcomesExperience /></SiteShell>;
+  return <PublicPremiumShell><OutcomesExperience /></PublicPremiumShell>;
 }

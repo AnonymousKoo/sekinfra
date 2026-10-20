@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
-import { SiteShell } from "@/components/site-shell";
+import { PublicPremiumShell } from "@/components/public-site/public-premium-shell";
 import { ButtonLink } from "@/components/ui/button-link";
+import { PageHero, PremiumCard } from "@/components/public-site/page-hero";
+import styles from "@/components/public-site/public-premium.module.css";
 import { DiagnosticPaths } from "@/components/diagnostic-paths";
 
 export const metadata: Metadata = {
@@ -17,25 +19,17 @@ const journey = [
 
 export default function HowItWorks() {
   return (
-    <SiteShell>
-      <section className="tech-page-hero mx-auto max-w-[var(--page-width)] px-5 py-14 sm:py-20 lg:px-8">
-        <p className="eyebrow">How Sekinfra works</p>
-        <h1 className="mt-5 max-w-4xl text-balance text-4xl font-semibold tracking-[-.055em] sm:text-6xl">A clear picture before a bigger decision.</h1>
-        <p className="mt-6 max-w-2xl text-lg leading-8 text-[var(--ink-muted)]">Start with what is getting in the way. We help you understand the problem and the options, so you can decide what deserves to change.</p>
+    <PublicPremiumShell>
+      <PageHero eyebrow="How Sekinfra works" title="A clear picture before a bigger decision.">
+        <p>Start with what is getting in the way. We help you understand the problem and the options, so you can decide what deserves to change.</p>
         <ButtonLink href="/start" className="mt-8">Find your starting point</ButtonLink>
-      </section>
+      </PageHero>
 
       <section className="section-rule bg-white py-14 sm:py-20" aria-labelledby="review-process-title">
         <div className="mx-auto max-w-[var(--page-width)] px-5 lg:px-8">
           <h2 id="review-process-title" className="text-3xl font-semibold tracking-[-.04em] sm:text-4xl">Three decisions. Clear boundaries.</h2>
-          <ol className="mt-8 grid gap-4 lg:grid-cols-3">
-            {journey.map(([title, body], index) => (
-              <li className="tech-card tech-card--light p-6 sm:p-7" key={title}>
-                <span className="font-mono text-xs text-[var(--brand)]">0{index + 1}</span>
-                <h3 className="mt-5 text-xl font-semibold">{title}</h3>
-                <p className="mt-3 text-sm leading-7 text-[var(--ink-muted)]">{body}</p>
-              </li>
-            ))}
+          <ol className={styles.cardGrid}>
+            {journey.map(([title, body], index) => <li key={title}><PremiumCard number={index + 1} title={title}>{body}</PremiumCard></li>)}
           </ol>
         </div>
       </section>
@@ -55,6 +49,6 @@ export default function HowItWorks() {
           </div>
         </div>
       </section>
-    </SiteShell>
+    </PublicPremiumShell>
   );
 }

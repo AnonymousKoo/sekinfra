@@ -1,7 +1,8 @@
 "use client";
 
 import { ButtonLink } from "@/components/ui/button-link";
-import { SystemDiagram } from "@/components/visuals/system-diagram";
+import { PageHero } from "@/components/public-site/page-hero";
+import styles from "@/components/public-site/public-premium.module.css";
 import { usePersonalization } from "@/components/personalization-provider";
 import { orderedOutcomeFamilies, outcomeVsFeature, transformations } from "@/lib/outcomes";
 
@@ -11,32 +12,17 @@ export function OutcomesExperience() {
 
   return (
     <>
-      <section className="tech-light-surface relative overflow-hidden">
-        <div className="mx-auto grid max-w-[var(--page-width)] gap-12 px-5 py-20 sm:py-28 lg:grid-cols-[1.04fr_.96fr] lg:px-8 lg:py-32">
-          <div className="relative z-10">
-            <p className="eyebrow">{profile ? `What better looks like for ${profile.label}` : "Business outcomes"}</p>
-            <h1 className="text-balance mt-6 max-w-3xl text-5xl font-semibold leading-[.96] tracking-[-.07em] sm:text-6xl lg:text-7xl">
-              The goal is a business that works better.
-            </h1>
-            <p className="mt-7 max-w-xl text-lg leading-8 text-[var(--ink-muted)]">
-              {profile
-                ? profile.outcome
-                : "Faster response. Clear ownership. Less manual work. Better visibility. Safer access. Clearer compliance. More reliable systems."}
-            </p>
-            <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-              <ButtonLink href="/start">Show us what&apos;s happening</ButtonLink>
-              <ButtonLink href="/how-it-works" variant="secondary">
-                See how Sekinfra works
-              </ButtonLink>
-            </div>
-          </div>
-          <SystemDiagram variant="selector" activeLabel={profile?.label || "Better state"} flow={profile?.flow} />
-        </div>
-      </section>
+      <PageHero eyebrow={profile ? `What better looks like for ${profile.label}` : "Business outcomes"}
+        title="The goal is a business that works better."
+        visual={<div className={styles.reviewPanel}><p className={styles.label}>What progress can look like</p><ul><li>Clearer ownership</li><li>More dependable systems</li><li>Less repeated work</li><li>Visible next steps</li></ul><p>Intended outcomes. Feasibility and success measures depend on the agreed scope and evidence.</p></div>}>
+        <p>{profile ? profile.outcome : "Faster response. Clear ownership. Less manual work. Better visibility. Safer access. Clearer compliance. More reliable systems."}</p>
+        <div className="mt-8 flex flex-wrap gap-3"><ButtonLink href="/start">Show us what&apos;s happening</ButtonLink><ButtonLink href="/how-it-works" variant="secondary">See how Sekinfra works</ButtonLink></div>
+      </PageHero>
 
       <section className="section-rule bg-[var(--brand-deep)] py-16 text-white sm:py-24">
         <div className="mx-auto max-w-[var(--page-width)] px-5 lg:px-8">
           <p className="eyebrow text-[var(--accent)]">Before and after</p>
+          <p className={styles.disclosure}>Hypothetical examples of intended improvements, not client results or guaranteed outcomes.</p>
           <div className="mt-4 grid gap-6 lg:grid-cols-[.82fr_1.18fr] lg:items-end">
             <h2 className="text-balance text-4xl font-semibold tracking-[-.055em] sm:text-5xl">
               You should be able to see the difference in daily work.
