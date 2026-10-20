@@ -9,23 +9,23 @@ const instrumentSerif=Instrument_Serif({variable:"--font-display",weight:"400",s
 export const metadata:Metadata={
   metadataBase:new URL("https://www.sekinfra.com"),
   title:{
-    default:"Sekinfra | We build and fix the systems your business runs on",
+    default:"Sekinfra | Technology & operations, working together",
     template:"%s | Sekinfra"
   },
-  description:"Sekinfra finds and fixes the systems behind business problems across operations, automation, business software, cloud, network, security, compliance, and reliability.",
+  description:"Sekinfra helps your business work better together through reliable IT, networks and cloud, clearer workflows, and practical, permitted automation.",
   applicationName:"Sekinfra",
   openGraph:{
     type:"website",
     locale:"en_US",
     siteName:"Sekinfra",
-    title:"Sekinfra | We build and fix the systems your business runs on",
-    description:"Show us what is happening. Sekinfra finds where the problem starts and helps fix the right system.",
+    title:"Sekinfra | Technology & operations, working together",
+    description:"We make the different parts of your business work better together. Keep what works and improve what is missing.",
     url:"https://www.sekinfra.com"
   },
   twitter:{
     card:"summary_large_image",
-    title:"Sekinfra | We build and fix the systems your business runs on",
-    description:"Operations, automation, business systems, cloud, network, security, and compliance—understood before they are changed."
+    title:"Sekinfra | Technology & operations, working together",
+    description:"Reliable IT, networks and cloud. Clearer workflows. Practical automation. Evidence before separately approved changes."
   },
   robots:{index:true,follow:true}
 };
