@@ -1,2 +1,2 @@
 import type{ReactNode}from"react";import{ContextFocus}from"@/components/context-focus";import{SiteFooter}from"@/components/site-footer";import{SiteHeader}from"@/components/site-header";
-export function SiteShell({children}:{children:ReactNode}){return <><SiteHeader/><ContextFocus/><main className="flex-1">{children}</main><SiteFooter/></>}
+export function SiteShell({children}:{children:ReactNode}){return <><a href="#main-content" className="sr-only z-50 rounded-md bg-white p-4 font-semibold text-[var(--foreground)] focus:fixed focus:left-4 focus:top-4 focus:not-sr-only">Skip to content</a><SiteHeader/><ContextFocus/><main id="main-content" tabIndex={-1} className="flex-1">{children}</main><SiteFooter/></>}
